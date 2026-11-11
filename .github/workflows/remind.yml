@@ -1,13 +1,15 @@
 name: reminders
 on:
   schedule:
-    - cron: '*/10 * * * *'
+    - cron: '*/15 * * * *'
   workflow_dispatch:
-concurrency: reminders
+concurrency:
+  group: reminders
+  cancel-in-progress: false
 jobs:
   remind:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 58
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -21,3 +23,4 @@ jobs:
           APP_REPO: ${{ github.repository }}
           VAPID_PUBLIC: BA7QflWhv1ZhbD_XXZ7vG9voMlILYIijcjXUk5A4MnGd3Z1Fr6jcAhVRHrYJscO_RsQBw10RCp7xORARMi_YAQ8
           VAPID_PRIVATE: ${{ secrets.VAPID_PRIVATE }}
+          LOOP_MIN: '50'
