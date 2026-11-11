@@ -533,10 +533,10 @@ $('#vmMute').addEventListener('click',()=>{VM.muted=!VM.muted;$('#vmMute').inner
 $('#vmOrb').addEventListener('click',()=>{if(VM.state==='speaking'){try{VM.src&&VM.src.stop();VM.srcEnd&&VM.srcEnd()}catch(e){}try{speechSynthesis.cancel()}catch(e){}}else if(VM.state==='listening'&&VM.stopListen){VM.stopListen()}});
 
 /* ============ auto-update ============ */
-const APP_VERSION='20';
+const APP_VERSION='21';
 async function checkUpdate(){try{const r=await fetch('version.json?t='+now(),{cache:'no-store'});const j=await r.json();if(j.v&&j.v!==APP_VERSION&&!S.busy&&!VM.on){let k='';try{k=sessionStorage.getItem('upd')}catch(e){}if(k!==j.v){try{sessionStorage.setItem('upd',j.v)}catch(e){}await fetch('index.html?fresh=1',{cache:'no-store'}).catch(()=>{});location.reload()}}}catch(e){}}
 
-function priceList(){if(!Array.isArray(S.settings.priceList))return [{item:'שעתיים צילום',price:850},  {item:'רילס (צילום עד שעתיים)',price:800,note:'רילס ערוך + חומרי גלם'},  {item:'2 רילסים (צילום עד 3 שעות)',price:1200,note:'2 רילסים ערוכים + חומרי גלם'},  {item:'סרטון AI מושן גרפיקס',price:850,note:'בלי צילום, עד 45–50 שניות'},  {item:'סרטון AI עם AI B-roll',price:1200,note:'מושן גרפיקס + צילומי AI, עד 45–50 שניות'},  {item:'סרטון AI עם קריינות AI',price:1300,note:'מושן + AI B-roll + קריינות AI, עד 45–50 שניות'},  {item:'יום הפקה ועיצוב אירוע עד 8 שעות',price:2200,note:'6–8 סטוריז לייב + רילס מאחורי הקלעים + רילס עיצוב סופי + גלם באיירדרופ'},  {item:'יום הפקה ועיצוב אירוע עד 10 שעות',price:2500,note:'כמו עד 8 שעות'},  {item:'שירה (Event Design) — יום אירוע 8–10 שעות',price:1300,note:'לקוחה קבועה, מינימום 1,200, תשלום בסוף האירוע בלי מקדמה'}];return S.settings.priceList}
+function priceList(){if(!Array.isArray(S.settings.priceList))return [{item:'שעתיים צילום',price:850},  {item:'רילס (צילום עד שעתיים)',price:850,note:'רילס ערוך + חומרי גלם'},  {item:'2 רילסים (צילום עד 3 שעות)',price:1200,note:'2 רילסים ערוכים + חומרי גלם'},  {item:'סרטון AI מושן גרפיקס',price:850,note:'בלי צילום, עד 45–50 שניות'},  {item:'סרטון AI עם AI B-roll',price:1200,note:'מושן גרפיקס + צילומי AI, עד 45–50 שניות'},  {item:'סרטון AI עם קריינות AI',price:1300,note:'מושן + AI B-roll + קריינות AI, עד 45–50 שניות'},  {item:'יום הפקה ועיצוב אירוע עד 8 שעות',price:2200,note:'6–8 סטוריז לייב + רילס מאחורי הקלעים + רילס עיצוב סופי + גלם באיירדרופ'},  {item:'יום הפקה ועיצוב אירוע עד 10 שעות',price:2500,note:'כמו עד 8 שעות'},  {item:'שירה (Event Design) — יום אירוע 8–10 שעות',price:1300,note:'לקוחה קבועה, מינימום 1,200, תשלום בסוף האירוע בלי מקדמה'}];return S.settings.priceList}
 
 function parsePrices(t){return String(t||'').split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{const parts=l.split(/\s+[—–-]\s+/);let item=parts[0],price=0,note='';for(let i=1;i<parts.length;i++){const n=parts[i].replace(/[₪,\s]/g,'');if(!price&&/^\d+(\.\d+)?$/.test(n))price=+n;else note+=(note?' — ':'')+parts[i]}if(!price){const m=l.match(/(\d[\d,]*)\s*₪?/);if(m){price=+m[1].replace(/,/g,'');item=l.replace(m[0],'').replace(/[—–:\-]\s*$/,'').trim()}}return{item,price,...(note?{note}:{})}})}
 
@@ -551,7 +551,8 @@ async function init(){
   setInterval(()=>{if(!document.hidden&&cfg.ghToken)pullRemote().catch(()=>{})},60000);
   setInterval(()=>{if(S.tasks.some(t=>t.running)&&['today','work','money'].includes(S.view))render()},30000);
 }
-async function startSync(){try{await ensureRepo();await pullRemote()}catch(e){S.syncErr=e.message;render()}}
+async function startSync(){try{await ensureRepo();await pullRemote()}catch(e){S.syncErr=e.message;render()}migrate()}
+function migrate(){if(S.settings.mig850)return;const pl=Array.isArray(S.settings.priceList)?S.settings.priceList.map(p=>p.item&&p.item.startsWith('רילס')&&p.price===800?{...p,price:850}:p):undefined;saveSettings(pl?{priceList:pl,mig850:true}:{mig850:true})}
 const isStandalone=()=>window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
 function onboarding(){S.sheetLive=false;window._save=async d=>{d.apiKey=(d.apiKey||'').trim();d.ghToken=(d.ghToken||'').trim();if(!d.apiKey.startsWith('sk-ant-'))throw new Error('מפתח Anthropic צריך להתחיל ב-sk-ant-');if(!/^(ghp_|github_pat_)/.test(d.ghToken))throw new Error('טוקן GitHub צריך להתחיל ב-ghp_');cfg.apiKey=d.apiKey.trim();cfg.ghToken=d.ghToken.trim();cfg.geminiKey=(d.geminiKey||'').trim();saveCfg();toast('מתחבר…');await startSync();toast('מוכן ✓ אפשר לדבר עם העוזרת')};
   openSheet(()=>`<div class="sh-head"><div><h2>ברוך הבא, חננאל 👋</h2><div class="small muted">הגדרה חד־פעמית. המפתחות נשמרים רק בטלפון שלך.</div></div></div>
