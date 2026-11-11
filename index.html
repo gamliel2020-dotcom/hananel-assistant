@@ -506,7 +506,7 @@ $('#vmMute').addEventListener('click',()=>{VM.muted=!VM.muted;$('#vmMute').inner
 $('#vmOrb').addEventListener('click',()=>{if(VM.state==='speaking'){try{VM.src&&VM.src.stop();VM.srcEnd&&VM.srcEnd()}catch(e){}try{speechSynthesis.cancel()}catch(e){}}else if(VM.state==='listening'&&VM.stopListen){VM.stopListen()}});
 
 /* ============ auto-update ============ */
-const APP_VERSION='11';
+const APP_VERSION='12';
 async function checkUpdate(){try{const r=await fetch('version.json?t='+now(),{cache:'no-store'});const j=await r.json();if(j.v&&j.v!==APP_VERSION&&!S.busy&&!VM.on){let k='';try{k=sessionStorage.getItem('upd')}catch(e){}if(k!==j.v){try{sessionStorage.setItem('upd',j.v)}catch(e){}location.reload()}}}catch(e){}}
 
 /* ============ init ============ */
@@ -819,7 +819,7 @@ function setupComposer(){
 $('#input').addEventListener('input',()=>{grow();syncSend()});
 $('#input').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!/Mobi|Android|iPhone/.test(navigator.userAgent)){e.preventDefault();doSend()}});
 function doSend(){const v=$('#input').value;const img=S.pendingImg;if(!v.trim()&&!img)return;$('#input').value='';grow();S.pendingImg=null;$('#thumb').hidden=true;syncSend();sendChat(v,img)}
-$('#send').addEventListener('click',()=>{if(REC.on)recStop();else doSend()});
+$('#send').addEventListener('click',()=>{if(REC.on){recStop();return}if(rec){srStop();setTimeout(doSend,250);return}doSend()});
 /* ---- in-app voice recording → Gemini transcription ---- */
 const REC={on:false};
 function wavB64(chunks,inRate){let len=0;chunks.forEach(c=>len+=c.length);const all=new Float32Array(len);let o=0;chunks.forEach(c=>{all.set(c,o);o+=c.length});
@@ -839,11 +839,23 @@ async function recStart(){
   REC.on=true;REC.t0=now();recUI();REC.tick=setInterval(()=>{recUI();if(now()-REC.t0>180000)recStop()},500)}
 async function recStop(cancel){if(!REC.on)return;REC.on=false;clearInterval(REC.tick);try{REC.src.disconnect();REC.proc.disconnect()}catch(e){}REC.stream.getTracks().forEach(t=>t.stop());const rate=REC.ctx.sampleRate;REC.ctx.close().catch(()=>{});recUI();
   if(cancel||now()-REC.t0<700||!REC.chunks.length)return;const inp=$('#input');inp.placeholder='⏳ מתמללת…';$('#mic').disabled=true;
-  try{const text=await geminiTranscribe(wavB64(REC.chunks,rate));if(!text){toast('לא נשמע דיבור — נסה שוב');return}inp.value=(inp.value.trim()?inp.value.trim()+' ':'')+text;grow();syncSend();doSend()}
+  try{const text=await geminiTranscribe(wavB64(REC.chunks,rate));if(!text){toast('לא נשמע דיבור — נסה שוב');return}inp.value=(inp.value.trim()?inp.value.trim()+' ':'')+text;grow();syncSend();inp.focus()}
   catch(e){toast(e.message||'התמלול נכשל')}finally{$('#mic').disabled=false;inp.placeholder='כתוב לעוזרת…'}}
+function srStop(force){const r=rec;rec=null;$('#mic').classList.remove('rec');$('#input').placeholder='כתוב לעוזרת…';if(r){try{force?r.abort():r.stop()}catch(e){}}}
+function srStart(){const inp=$('#input');
+  try{const r=new SR();rec=r;r.lang='he-IL';r.interimResults=true;r.continuous=true;const base=inp.value.trim();let heard=false;
+    r.onresult=e=>{heard=true;let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;inp.value=(base?base+' ':'')+t.trim();grow();syncSend()};
+    r.onerror=e=>{if(rec!==r)return;srStop(true);if(e.error==='not-allowed'||e.error==='service-not-allowed')toast('אין הרשאה למיקרופון — אשר בהגדרות הטלפון');else if(e.error!=='aborted'&&e.error!=='no-speech')toast('ההקלטה נעצרה ('+e.error+') — לחץ שוב 🎤')};
+    r.onend=()=>{if(rec===r)srStop()};
+    r.start();$('#mic').classList.add('rec');inp.placeholder='🔴 מקשיבה… דבר, ולחץ 🎤 לסיום';
+    setTimeout(()=>{if(rec===r&&!heard){srStop(true);if(cfg.geminiKey){recStart()}else toast('המיקרופון לא הגיב — נסה שוב, או השתמש במיקרופון במקלדת 🎙')}},7000)}
+  catch(e){rec=null;if(cfg.geminiKey)recStart();else{inp.focus();toast('השתמש במיקרופון במקלדת 🎙')}}}
 $('#mic').addEventListener('click',()=>{
-  if(!cfg.geminiKey){$('#input').focus();toast('להקלטה בתוך האפליקציה: ⚙ ← מפתחות ← מפתח Gemini. בינתיים — המיקרופון במקלדת 🎙');return}
-  if(REC.on)recStop();else recStart()});
+  if(REC.on){recStop();return}
+  if(rec){srStop();return}
+  if(SR){srStart();return}
+  if(cfg.geminiKey){recStart();return}
+  $('#input').focus();toast('השתמש במיקרופון במקלדת 🎙')});
 $('#attach').addEventListener('click',()=>$('#file').click());
 $('#file').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(!f)return;S.pendingImg=f;const url=URL.createObjectURL(f);const th=$('#thumb');th.hidden=false;th.innerHTML=`<img src="${url}"><span>תמונה מצורפת</span><button class="cbtn" style="width:28px;height:28px" id="rmimg">${ic(I.x,14)}</button>`;$('#rmimg').onclick=()=>{S.pendingImg=null;th.hidden=true;syncSend()};syncSend()});
 
