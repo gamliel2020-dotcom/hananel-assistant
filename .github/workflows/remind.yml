@@ -1,0 +1,23 @@
+name: reminders
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+concurrency: reminders
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install web-push@3 --no-save --silent
+      - run: node scripts/remind.mjs
+        env:
+          GH_TOKEN: ${{ secrets.DATA_TOKEN }}
+          DATA_REPO: gamliel2020-dotcom/hananel-data
+          APP_REPO: ${{ github.repository }}
+          VAPID_PUBLIC: BA7QflWhv1ZhbD_XXZ7vG9voMlILYIijcjXUk5A4MnGd3Z1Fr6jcAhVRHrYJscO_RsQBw10RCp7xORARMi_YAQ8
+          VAPID_PRIVATE: ${{ secrets.VAPID_PRIVATE }}
