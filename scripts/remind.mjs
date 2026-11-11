@@ -33,5 +33,7 @@ if(!keys.keepalive||keys.keepalive<new Date(Date.now()-20*864e5).toISOString().s
 if(changed){const ns=await put(DATA_REPO,'notified.json',{keys},ST.sha,'notified');if(ns)ST.sha=ns;else ST=null}
 console.log('done',today,P.hour+':'+P.minute,'notifs',out.length,'subs',subs.length);
 }
+if(process.env.TEST_PUSH==='1'){const f=await get(DATA_REPO,'data.json');const subs=(f&&f.data.settings&&f.data.settings.pushSubs)||[];webpush.setVapidDetails('https://github.com/'+APP_REPO,VAPID_PUBLIC,VAPID_PRIVATE);
+  for(const s of subs){try{await webpush.sendNotification(s,JSON.stringify({title:'⏰ בדיקת תזכורות',body:'אם אתה רואה את זה — התזכורות מהיומן עובדות ✓',tag:'test'}));console.log('test sent')}catch(e){console.log('test failed',e.statusCode,e.body)}}}
 const LOOP=+(process.env.LOOP_MIN||50)*60000,T0=Date.now();
 while(true){try{await tick()}catch(e){console.log('tick error',e.message)}if(Date.now()-T0>LOOP)break;await new Promise(r=>setTimeout(r,60000))}
