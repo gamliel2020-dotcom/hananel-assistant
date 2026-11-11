@@ -650,7 +650,7 @@ function context(){
 צוות: ${(S.settings.team||[]).join(', ')||'רק '+owner()}.
 נתונים עדכניים (JSON):
 ${JSON.stringify({clients,projects,open_tasks:tasks,done_last_7_days:doneRecent,events,google_calendar_next_14_days:gcal,payments,expenses_last_60_days:expenses})}
-${gOk()?'Google מחובר: יש לך גישה ל-Gmail (חיפוש, קריאה, יצירת טיוטה — לא שליחה) וליומן Google. פגישה חדשה (add_event) נוספת אוטומטית גם ליומן Google. לסריקת קבלות: search_gmail עם newer_than:30d (קבלה OR חשבונית OR receipt OR invoice), read_gmail לרלוונטיים, והוסיפי הוצאות שלא קיימות (gmail_thread_id = id המייל).':'Google לא מחובר כרגע — אם מבקשים מייל או יומן Google, בקשי ממנו ללחוץ "התחבר לגוגל" בהגדרות.'}`;
+${gOk()?'Google מחובר: יש לך גישה ל-Gmail (חיפוש, קריאה, יצירת טיוטה — לא שליחה) וליומן Google. פגישה חדשה (add_event) נוספת אוטומטית גם ליומן Google. לסריקת קבלות: search_gmail עם newer_than:30d (קבלה OR חשבונית OR receipt OR invoice), read_gmail לרלוונטיים, והוסיפי הוצאות שלא קיימות (gmail_thread_id = id המייל).':'Google לא מחובר כרגע. אם מבקשים להתחבר לגוגל או משהו מהמייל/היומן של Google — הפעילי את הכלי connect_google, והסבירי בקצרה שייפתח מסך של גוגל (ללחוץ Continue אם מופיעה אזהרה). ההתחברות גם זמינה בהגדרות ⚙ ← "התחבר לגוגל".'}`;
 }
 const sch=(props,req=[])=>({type:'object',properties:props,required:req});
 const STR={type:'string'},NUM={type:'number'};
@@ -673,6 +673,7 @@ function tools(){
   {name:'delete_item',description:'מחיקת פריט (רק כשמבקשים במפורש)',inputSchema:sch({kind:{type:'string',enum:['client','project','task','event','payment','expense']},id:STR},['kind','id']),execute:async i=>{await del(i.kind,i.id);return{ok:true}}},
   {name:'update_settings',description:'עדכון הגדרות: רשימת צוות, שם העוזרת, פרטי תשלום',inputSchema:sch({team:{type:'array',items:STR},assistant_name:STR,payment_details:STR}),execute:async i=>{const u={};if(i.team)u.team=i.team;if(i.assistant_name)u.assistantName=i.assistant_name;if(i.payment_details)u.paymentDetails=i.payment_details;await saveSettings(u);act('הגדרות עודכנו');return{ok:true}}}
   ];
+  if(!gOk()&&gClient())T.push({name:'connect_google',description:'פותח את מסך ההתחברות לחשבון Google (Gmail + יומן). השתמשי כשהמשתמש מבקש להתחבר לגוגל או מבקש משהו מהמייל/יומן Google כשהחיבור לא פעיל.',inputSchema:sch({}),execute:async()=>{setTimeout(()=>googleConnect(false),2500);act('🔗 פותחת התחברות לגוגל');return{ok:true,note:'מסך ההתחברות של גוגל ייפתח בעוד רגע. אם מופיע "Google hasn\'t verified this app" — ללחוץ Continue.'}}});
   if(gOk()){
     T.push({name:'google_calendar_list',description:'רשימת אירועים מיומן Google של המשתמש בטווח תאריכים',inputSchema:sch({from:{type:'string',description:'YYYY-MM-DD'},to:{type:'string',description:'YYYY-MM-DD'}},['from','to']),execute:async i=>({events:await gcalList(i.from,i.to)})});
     T.push({name:'search_gmail',description:'חיפוש מיילים ב-Gmail (תחביר Gmail: from:, subject:, newer_than:7d, is:unread, has:attachment, OR...)',inputSchema:sch({query:STR},['query']),execute:async i=>{act('🔎 חיפוש במייל');return{messages:await gmailSearch(i.query)}}});
@@ -688,10 +689,11 @@ function compactThread(p){p=parseP(p);const ms=(p&&p.messages)||null;if(!ms)retu
   return{messages:ms.slice(-3).map(m=>({subject:m.subject,from:m.sender,date:m.date,body:String(m.plaintextBody||m.snippet||'').slice(0,2500),attachments:(m.attachments||[]).map(a=>a.filename||a.name).filter(Boolean).slice(0,5)}))}}
 
 let abortCtl=null;
-async function claudeCall(messages,toolsArr){
+async function claudeCall(messages,toolsArr,attempt=0){
   const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':cfg.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
     body:JSON.stringify({model:cfg.model||MODEL,max_tokens:2048,system:context(),messages,tools:toolsArr.map(t=>({name:t.name,description:t.description,input_schema:t.inputSchema}))})});
   let j={};try{j=await r.json()}catch(e){}
+  if(!r.ok&&[429,500,502,503,529].includes(r.status)&&attempt<2){await new Promise(z=>setTimeout(z,2500*(attempt+1)));return claudeCall(messages,toolsArr,attempt+1)}
   if(!r.ok){const m=(j.error&&j.error.message)||('שגיאה '+r.status);throw{code:r.status===401?'auth':r.status===429?'rate_limited':/credit|balance|billing/i.test(m)?'credit':'api',message:m}}
   return j}
 async function runAgent(msgs,toolsArr,onText){let all='',last='';
@@ -726,7 +728,7 @@ async function sendChat(text,img){
     if(code==='auth')reply+='\n\nמפתח ה-API לא תקין — עדכן אותו בהגדרות ⚙.';
     else if(code==='credit')reply+='\n\nנגמרה היתרה בחשבון Anthropic — צריך לטעון קרדיט ב-platform.claude.com ← Billing.';
     else if(code==='rate_limited')reply+='\n\nיותר מדי בקשות ברצף — נסה שוב בעוד דקה.';
-    else if(!reply)reply='משהו השתבש ('+(code||e.message||'שגיאה')+'). נסה שוב.';
+    else if(!reply)reply='משהו השתבש: '+((e&&e.message)||code||'שגיאה')+'. נסה שוב.';
   }
   const actions=ACTLOG;ACTLOG=null;
   S.chat=[...S.chat,{role:'assistant',text:reply.trim()||(actions.length?'בוצע ✓':'…'),actions,at:now()}];
