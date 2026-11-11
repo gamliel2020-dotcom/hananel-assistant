@@ -300,6 +300,7 @@ const S={clients:[],projects:[],tasks:[],events:[],payments:[],expenses:[],chat:
   busy:false,liveText:'',offline:false,slow:false,err:'',sheet:null,pendingImg:null};
 let mcp=null,canImg=true;
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null;
+const IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 const find=(col,id)=>S[col].find(x=>x.id===id);
 const clientName=id=>(find('clients',id)||{}).name||'';
 const projectName=id=>(find('projects',id)||{}).name||'';
@@ -707,13 +708,13 @@ $('#input').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!/Mo
 function doSend(){const v=$('#input').value;const img=S.pendingImg;if(!v.trim()&&!img)return;$('#input').value='';grow();S.pendingImg=null;$('#thumb').hidden=true;syncSend();sendChat(v,img)}
 $('#send').addEventListener('click',()=>{if(rec){try{rec.stop()}catch(e){}setTimeout(doSend,300)}else doSend()});
 $('#mic').addEventListener('click',()=>{const inp=$('#input');
-  if(!SR){inp.focus();toast('🎤 לחץ על המיקרופון במקלדת ודבר — ואז שלח');return}
+  if(!SR||IOS){inp.focus();toast('🎤 לחץ על המיקרופון 🎙 במקלדת (למטה) ודבר — ואז שלח');return}
   if(rec){try{rec.stop()}catch(e){}return}
   try{rec=new SR();rec.lang='he-IL';rec.interimResults=true;rec.continuous=true;const base=inp.value.trim();
     rec.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;inp.value=(base?base+' ':'')+t.trim();grow();syncSend()};
     rec.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed')toast('אין הרשאה למיקרופון — אפשר להשתמש במיקרופון של המקלדת');};
     rec.onend=()=>{rec=null;$('#mic').classList.remove('rec')};
-    rec.start();$('#mic').classList.add('rec');toast('🎤 מקשיב… לחץ שוב לסיום')}catch(e){rec=null;inp.focus();toast('🎤 השתמש במיקרופון במקלדת')}});
+    rec.start();$('#mic').classList.add('rec');let heard=false;const r0=rec;const _or=rec.onresult;rec.onresult=e=>{heard=true;_or(e)};setTimeout(()=>{if(rec===r0&&!heard){try{r0.abort()}catch(e){}rec=null;$('#mic').classList.remove('rec');inp.focus();toast('🎤 המיקרופון לא הגיב — השתמש במיקרופון במקלדת')}},6000);toast('🎤 מקשיב… לחץ שוב לסיום')}catch(e){rec=null;inp.focus();toast('🎤 השתמש במיקרופון במקלדת')}});
 $('#attach').addEventListener('click',()=>$('#file').click());
 $('#file').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(!f)return;S.pendingImg=f;const url=URL.createObjectURL(f);const th=$('#thumb');th.hidden=false;th.innerHTML=`<img src="${url}"><span>תמונה מצורפת</span><button class="cbtn" style="width:28px;height:28px" id="rmimg">${ic(I.x,14)}</button>`;$('#rmimg').onclick=()=>{S.pendingImg=null;th.hidden=true;syncSend()};syncSend()});
 
