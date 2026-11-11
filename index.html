@@ -410,7 +410,7 @@ async function del(kind,id){const col={client:'clients',project:'projects',task:
 async function saveSettings(u){S.settings={...S.settings,...JSON.parse(JSON.stringify(u))};persist()}
 
 /* ============ Google (Gmail + Calendar) ============ */
-const GOOGLE_CLIENT_ID='';
+const GOOGLE_CLIENT_ID='342331090392-elh8qtvektbcu4e9kpssn1fo8kk3m93b.apps.googleusercontent.com';
 const G_SCOPES='https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.compose https://www.googleapis.com/auth/calendar.events';
 const gClient=()=>cfg.googleClientId||GOOGLE_CLIENT_ID;
 const gOk=()=>!!(cfg.gToken&&cfg.gExp>now()+60000);
