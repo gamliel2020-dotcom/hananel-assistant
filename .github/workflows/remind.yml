@@ -3,6 +3,9 @@ on:
   schedule:
     - cron: '*/15 * * * *'
   workflow_dispatch:
+    inputs:
+      test:
+        default: '0'
 concurrency:
   group: reminders
   cancel-in-progress: false
@@ -24,3 +27,4 @@ jobs:
           VAPID_PUBLIC: BA7QflWhv1ZhbD_XXZ7vG9voMlILYIijcjXUk5A4MnGd3Z1Fr6jcAhVRHrYJscO_RsQBw10RCp7xORARMi_YAQ8
           VAPID_PRIVATE: ${{ secrets.VAPID_PRIVATE }}
           LOOP_MIN: '50'
+          TEST_PUSH: ${{ inputs.test }}
