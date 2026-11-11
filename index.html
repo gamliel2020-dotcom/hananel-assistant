@@ -414,10 +414,10 @@ const GOOGLE_CLIENT_ID='';
 const G_SCOPES='https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.compose https://www.googleapis.com/auth/calendar.events';
 const gClient=()=>cfg.googleClientId||GOOGLE_CLIENT_ID;
 const gOk=()=>!!(cfg.gToken&&cfg.gExp>now()+60000);
-function googleConnect(){if(!gClient()){toast('חסר Google Client ID — הדבק אותו בהגדרות');return}
-  const u='https://accounts.google.com/o/oauth2/v2/auth?'+new URLSearchParams({client_id:gClient(),redirect_uri:location.origin+location.pathname,response_type:'token',scope:G_SCOPES,include_granted_scopes:'true',state:'g'+now(),login_hint:cfg.gEmail||''});
+function googleConnect(silent){if(!gClient()){if(!silent)toast('חסר Google Client ID — הדבק אותו בהגדרות');return}
+  const u='https://accounts.google.com/o/oauth2/v2/auth?'+new URLSearchParams({client_id:gClient(),redirect_uri:location.origin+location.pathname,response_type:'token',scope:G_SCOPES,include_granted_scopes:'true',state:'g'+now(),...(silent?{prompt:'none'}:{})});
   location.href=u}
-function googleCatch(){if(!location.hash.includes('access_token'))return;const q=new URLSearchParams(location.hash.slice(1));if((q.get('state')||'')[0]!=='g')return;
+function googleCatch(){if(location.hash.includes('error=')&&location.hash.includes('state=g')){history.replaceState(null,'',location.pathname);return}if(!location.hash.includes('access_token'))return;const q=new URLSearchParams(location.hash.slice(1));if((q.get('state')||'')[0]!=='g')return;
   cfg.gToken=q.get('access_token');cfg.gExp=now()+(+q.get('expires_in')||3600)*1000;cfg.gConnected=true;saveCfg();history.replaceState(null,'',location.pathname);setTimeout(()=>toast('Google מחובר ✓'),600)}
 async function gapi(url,opt={}){if(!gOk())throw new Error('החיבור לגוגל פג — לחץ "התחבר לגוגל" בהגדרות או בראש המסך');
   const r=await fetch(url,{...opt,headers:{Authorization:'Bearer '+cfg.gToken,'Content-Type':'application/json',...(opt.headers||{})}});
@@ -442,7 +442,8 @@ async function gmailDraft(f){const raw=['To: '+f.to,'Subject: =?UTF-8?B?'+btoa(u
 
 /* ============ init ============ */
 async function init(){
-  googleCatch();loadLocal();renderNav();setupComposer();render();refreshGcal();setInterval(refreshGcal,5*60000);
+  googleCatch();if(cfg.gConnected&&!gOk()&&gClient()){let t=0;try{t=+sessionStorage.getItem('gTry')||0}catch(e){}if(now()-t>10*60000){try{sessionStorage.setItem('gTry',now())}catch(e){}googleConnect(true);return}}
+  loadLocal();renderNav();setupComposer();render();refreshGcal();setInterval(refreshGcal,5*60000);
   if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
   if(!cfg.apiKey||!cfg.ghToken){setTimeout(onboarding,400)}else{await startSync()}
   document.addEventListener('visibilitychange',()=>{if(!document.hidden&&cfg.ghToken)pullRemote().catch(()=>{})});
