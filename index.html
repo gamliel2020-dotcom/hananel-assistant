@@ -252,7 +252,7 @@ html,body,#app,main{overflow-x:hidden}
         <textarea id="input" rows="1" placeholder="כתוב לעוזרת…"></textarea>
       </div>
       <button class="cbtn" id="attach" aria-label="צרף תמונה" hidden></button>
-      <button class="cbtn" id="vmode" aria-label="שיחה קולית"></button>
+      <button class="cbtn" id="vmode" aria-label="שיחה קולית" hidden></button>
       <button class="cbtn" id="mic" aria-label="הקלטה" hidden></button>
       <button class="cbtn send" id="send" aria-label="שלח"></button>
     </div>
@@ -506,7 +506,7 @@ $('#vmMute').addEventListener('click',()=>{VM.muted=!VM.muted;$('#vmMute').inner
 $('#vmOrb').addEventListener('click',()=>{if(VM.state==='speaking'){try{VM.src&&VM.src.stop();VM.srcEnd&&VM.srcEnd()}catch(e){}try{speechSynthesis.cancel()}catch(e){}}else if(VM.state==='listening'&&VM.stopListen){VM.stopListen()}});
 
 /* ============ auto-update ============ */
-const APP_VERSION='9';
+const APP_VERSION='10';
 async function checkUpdate(){try{const r=await fetch('version.json?t='+now(),{cache:'no-store'});const j=await r.json();if(j.v&&j.v!==APP_VERSION&&!S.busy&&!VM.on){let k='';try{k=sessionStorage.getItem('upd')}catch(e){}if(k!==j.v){try{sessionStorage.setItem('upd',j.v)}catch(e){}location.reload()}}}catch(e){}}
 
 /* ============ init ============ */
@@ -521,10 +521,10 @@ async function init(){
 }
 async function startSync(){try{await ensureRepo();await pullRemote()}catch(e){S.syncErr=e.message;render()}}
 const isStandalone=()=>window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
-function onboarding(){S.sheetLive=false;window._save=async d=>{d.apiKey=(d.apiKey||'').trim();d.ghToken=(d.ghToken||'').trim();if(!d.apiKey.startsWith('sk-ant-'))throw new Error('מפתח Anthropic צריך להתחיל ב-sk-ant-');if(!/^(ghp_|github_pat_)/.test(d.ghToken))throw new Error('טוקן GitHub צריך להתחיל ב-ghp_');cfg.apiKey=d.apiKey.trim();cfg.ghToken=d.ghToken.trim();cfg.googleClientId=(d.googleClientId||'').trim();cfg.openaiKey=(d.openaiKey||'').trim();saveCfg();toast('מתחבר…');await startSync();toast('מוכן ✓ אפשר לדבר עם העוזרת')};
+function onboarding(){S.sheetLive=false;window._save=async d=>{d.apiKey=(d.apiKey||'').trim();d.ghToken=(d.ghToken||'').trim();if(!d.apiKey.startsWith('sk-ant-'))throw new Error('מפתח Anthropic צריך להתחיל ב-sk-ant-');if(!/^(ghp_|github_pat_)/.test(d.ghToken))throw new Error('טוקן GitHub צריך להתחיל ב-ghp_');cfg.apiKey=d.apiKey.trim();cfg.ghToken=d.ghToken.trim();cfg.googleClientId=(d.googleClientId||'').trim();saveCfg();toast('מתחבר…');await startSync();toast('מוכן ✓ אפשר לדבר עם העוזרת')};
   openSheet(()=>`<div class="sh-head"><div><h2>ברוך הבא, חננאל 👋</h2><div class="small muted">הגדרה חד־פעמית. המפתחות נשמרים רק בטלפון שלך.</div></div></div>
   ${isStandalone()?'':`<div class="card" style="background:var(--accent-soft);box-shadow:none"><b>📲 קודם כל — התקנה</b><div class="small" style="margin-top:6px;line-height:1.7">בספארי: כפתור שיתוף ⬆ ← "הוספה למסך הבית" ← הוסף. אחר כך תפתח מהאייקון ותמשיך כאן.</div></div>`}
-  <form id="frm">${F('apiKey','מפתח Anthropic (מ-platform.claude.com ← API Keys)','text',cfg.apiKey||'','required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore inputmode="text" dir="ltr" placeholder="sk-ant-…"')}${F('googleClientId','Google Client ID (לחיבור Gmail ויומן — לא חובה)','text',cfg.googleClientId||'','autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" dir="ltr" placeholder="….apps.googleusercontent.com"')}${F('openaiKey','מפתח OpenAI לשיחה קולית (לא חובה)','text',cfg.openaiKey||'','autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" dir="ltr" placeholder="sk-…"')}${F('ghToken','טוקן GitHub','text',cfg.ghToken||'','required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore inputmode="text" dir="ltr" placeholder="ghp_…"')}<button class="btn primary wide" type="submit">התחל</button></form>`);
+  <form id="frm">${F('apiKey','מפתח Anthropic (מ-platform.claude.com ← API Keys)','text',cfg.apiKey||'','required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore inputmode="text" dir="ltr" placeholder="sk-ant-…"')}${F('googleClientId','Google Client ID (לחיבור Gmail ויומן — לא חובה)','text',cfg.googleClientId||'','autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" dir="ltr" placeholder="….apps.googleusercontent.com"')}${F('ghToken','טוקן GitHub','text',cfg.ghToken||'','required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore inputmode="text" dir="ltr" placeholder="ghp_…"')}<button class="btn primary wide" type="submit">התחל</button></form>`);
   $('#frm').addEventListener('submit',async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target).entries());try{await window._save(d);closeSheet()}catch(err){toast(err.message||'שגיאה')}});}
 function urlB64(s){const p='='.repeat((4-s.length%4)%4);const b=atob((s+p).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from([...b].map(c=>c.charCodeAt(0)))}
 async function enablePush(){
