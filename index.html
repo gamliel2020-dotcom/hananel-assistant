@@ -216,6 +216,20 @@ nav button.orb.on{box-shadow:0 0 0 4px var(--accent-soft),0 10px 24px -6px rgba(
 .toast.show{transform:translate(-50%,0)}
 .sres .row{padding:10px 2px}
 .kind{font-size:11px;color:var(--muted);background:var(--soft);padding:2px 7px;border-radius:7px}
+#vm{position:fixed;inset:0;z-index:30;background:radial-gradient(120% 80% at 50% 30%,#2a1f6b 0%,#0b0b14 70%);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:calc(30px + env(safe-area-inset-top)) 24px calc(34px + env(safe-area-inset-bottom));opacity:0;pointer-events:none;transition:opacity .3s}
+#vm.show{opacity:1;pointer-events:auto}
+#vm .st{font-size:15px;opacity:.75;letter-spacing:.02em;min-height:22px}
+#vm .orbw{flex:1;display:grid;place-items:center;width:100%}
+#vm .vorb{width:190px;height:190px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#d6c8ff,#8b6cff 40%,#5a3be0 75%);box-shadow:0 0 80px rgba(139,108,255,.55),inset 0 -10px 40px rgba(0,0,0,.25);transition:transform .12s ease;border:0}
+#vm.listening .vorb{animation:breathe 2.4s ease-in-out infinite}
+#vm.thinking .vorb{animation:spin 1.6s linear infinite;background:conic-gradient(from 0deg,#8b6cff,#c17bff,#6a5af9,#8b6cff)}
+#vm.speaking .vorb{animation:talk .5s ease-in-out infinite alternate}
+@keyframes breathe{50%{transform:scale(1.07)}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes talk{from{transform:scale(.97)}to{transform:scale(1.1)}}
+#vm .said{font-size:15px;opacity:.6;text-align:center;max-width:520px;min-height:20px;margin-bottom:8px}
+#vm .reply{font-size:18px;line-height:1.5;text-align:center;max-width:520px;min-height:54px;max-height:30vh;overflow:auto}
+#vm .vbtns{display:flex;gap:18px;margin-top:22px}
+#vm .vbtns button{width:62px;height:62px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;backdrop-filter:blur(10px)}
+#vm .vbtns button.end{background:#E5484D}
 </style>
 </head>
 <body>
@@ -233,6 +247,7 @@ nav button.orb.on{box-shadow:0 0 0 4px var(--accent-soft),0 10px 24px -6px rgba(
         <textarea id="input" rows="1" placeholder="כתוב לעוזרת…"></textarea>
       </div>
       <button class="cbtn" id="attach" aria-label="צרף תמונה" hidden></button>
+      <button class="cbtn" id="vmode" aria-label="שיחה קולית"></button>
       <button class="cbtn" id="mic" aria-label="הקלטה" hidden></button>
       <button class="cbtn send" id="send" aria-label="שלח"></button>
     </div>
@@ -241,6 +256,7 @@ nav button.orb.on{box-shadow:0 0 0 4px var(--accent-soft),0 10px 24px -6px rgba(
   <button class="fab" id="fab" data-act="fab" aria-label="הוספה" hidden></button>
   <nav id="nav"></nav>
 </div>
+<div id="vm"><div class="st" id="vmSt">מתחברת…</div><div class="orbw"><button class="vorb" id="vmOrb" aria-label="דבר / עצור"></button></div><div style="width:100%;display:flex;flex-direction:column;align-items:center"><div class="said" id="vmSaid"></div><div class="reply" id="vmReply"></div><div class="vbtns"><button id="vmMute" aria-label="השתק"></button><button class="end" id="vmEnd" aria-label="סיום"></button></div></div></div>
 <div id="scrim" data-act="close"></div>
 <div id="sheet"></div>
 <div class="toast" id="toast"></div>
@@ -279,6 +295,9 @@ const I={
  x:'<path d="M18 6L6 18M6 6l12 12"/>',
  search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
  chev:'<path d="M15 6l-6 6 6 6"/>',
+ wave:'<path d="M4 10v4M8 7v10M12 4v16M16 7v10M20 10v4"/>',
+ phoneoff:'<path d="M18 6L6 18M6 6l12 12"/>',
+ micoff:'<path d="M2 2l20 20M9 9v2a3 3 0 0 0 5.1 2.1M15 9.3V5a3 3 0 0 0-5.9-.6M19 10v1a7 7 0 0 1-.6 2.9M5 10v1a7 7 0 0 0 11.7 5.2M12 18v4"/>',
  wa:'<path d="M3 21l1.6-4.8A8.5 8.5 0 1 1 8 19.5z"/>',
  spark:'<path d="M12 3l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4z"/>'
 };
@@ -440,6 +459,47 @@ async function gmailRead(id){const m=await gapi(`https://gmail.googleapis.com/gm
 async function gmailDraft(f){const raw=['To: '+f.to,'Subject: =?UTF-8?B?'+btoa(unescape(encodeURIComponent(f.subject||'')))+'?=','Content-Type: text/plain; charset=UTF-8','Content-Transfer-Encoding: base64','',btoa(unescape(encodeURIComponent(f.body||'')))].join('\r\n');
   const enc=btoa(raw).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');const j=await gapi('https://gmail.googleapis.com/gmail/v1/users/me/drafts',{method:'POST',body:JSON.stringify({message:{raw:enc}})});return j.id}
 
+/* ============ voice conversation ============ */
+const VM={on:false,stream:null,ctx:null,rec:null,audio:null,muted:false,state:''};
+function vmSet(st,txt){VM.state=st;const el=$('#vm');el.classList.remove('listening','thinking','speaking');if(st)el.classList.add(st);$('#vmSt').textContent=txt||''}
+const speakClean=t=>String(t||'').replace(/\*\*/g,'').replace(/[#*_`>]/g,'').replace(/^\s*[-•]\s*/gm,'').replace(/https?:\S+/g,'').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,'').replace(/\n+/g,'. ').trim();
+async function tts(text){text=speakClean(text);if(!text)return;
+  if(cfg.openaiKey){try{const r=await fetch('https://api.openai.com/v1/audio/speech',{method:'POST',headers:{Authorization:'Bearer '+cfg.openaiKey,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-4o-mini-tts',voice:'nova',input:text.slice(0,3500),instructions:'דברי בעברית ישראלית טבעית, חמה, קצבית ונעימה, כמו עוזרת אישית.',response_format:'mp3'})});
+      if(r.ok){const ab=await r.arrayBuffer();const buf=await VM.ctx.decodeAudioData(ab);await new Promise(res=>{const sn=VM.ctx.createBufferSource();sn.buffer=buf;sn.connect(VM.ctx.destination);sn.onended=res;VM.src=sn;VM.srcEnd=res;sn.start()});VM.src=null;return}}catch(e){}}
+  await new Promise(res=>{if(!('speechSynthesis' in window))return res();const u=new SpeechSynthesisUtterance(text);u.lang='he-IL';const v=speechSynthesis.getVoices().find(v=>(v.lang||'').startsWith('he'));if(v)u.voice=v;u.rate=1.05;u.onend=res;u.onerror=res;speechSynthesis.cancel();speechSynthesis.speak(u);setTimeout(res,Math.min(60000,text.length*120+3000))})}
+async function stt(blob){const fd=new FormData();const ext=(blob.type||'').includes('mp4')?'m4a':(blob.type||'').includes('webm')?'webm':'wav';fd.append('file',blob,'speech.'+ext);fd.append('model','gpt-4o-mini-transcribe');fd.append('language','he');
+  let r=await fetch('https://api.openai.com/v1/audio/transcriptions',{method:'POST',headers:{Authorization:'Bearer '+cfg.openaiKey},body:fd});
+  if(r.status===400||r.status===404){fd.set('model','whisper-1');r=await fetch('https://api.openai.com/v1/audio/transcriptions',{method:'POST',headers:{Authorization:'Bearer '+cfg.openaiKey},body:fd})}
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error((j.error&&j.error.message)||('תמלול נכשל '+r.status));return (j.text||'').trim()}
+function vmListen(){return new Promise(async resolve=>{
+  if(!VM.on)return resolve(null);vmSet('listening','מקשיבה… דבר');
+  const mime=['audio/mp4','audio/webm;codecs=opus','audio/webm'].find(m=>window.MediaRecorder&&MediaRecorder.isTypeSupported(m))||'';
+  const rec=new MediaRecorder(VM.stream,mime?{mimeType:mime}:undefined);VM.rec=rec;const chunks=[];rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+  const an=VM.ctx.createAnalyser();an.fftSize=1024;const src=VM.ctx.createMediaStreamSource(VM.stream);src.connect(an);const buf=new Uint8Array(an.fftSize);
+  let spoke=false,last=performance.now(),t0=performance.now(),noise=0,n=0,done=false;
+  const stop=()=>{if(done)return;done=true;try{src.disconnect()}catch(e){}if(rec.state!=='inactive')rec.stop()};VM.stopListen=()=>{spoke=true;stop()};
+  rec.onstop=()=>{VM.rec=null;resolve(spoke&&chunks.length?new Blob(chunks,{type:rec.mimeType||mime||'audio/mp4'}):null)};rec.start(200);
+  (function loop(){if(done)return;if(!VM.on){stop();return}an.getByteTimeDomainData(buf);let s=0;for(const v of buf){const d=(v-128)/128;s+=d*d}const rms=Math.sqrt(s/buf.length);const t=performance.now();
+    if(t-t0<400){noise+=rms;n++}else{const thr=Math.max(.025,(noise/Math.max(n,1))*2.8);if(rms>thr&&!VM.muted){spoke=true;last=t}
+      if(spoke&&t-last>1300)return stop();if(!spoke&&t-t0>15000){t0=t;noise=0;n=0}if(t-t0>60000)return stop()}
+    $('#vmOrb').style.transform=`scale(${1+Math.min(rms*4,.35)})`;requestAnimationFrame(loop)})()})}
+async function vmLoop(){while(VM.on){const blob=await vmListen();$('#vmOrb').style.transform='';if(!VM.on)break;if(!blob)continue;
+  vmSet('thinking','מתמללת…');let text='';try{text=await stt(blob)}catch(e){vmSet('','⚠ '+e.message);await new Promise(r=>setTimeout(r,2500));continue}
+  if(!text||text.length<2)continue;$('#vmSaid').textContent='“'+text+'”';$('#vmReply').textContent='';vmSet('thinking','חושבת…');
+  const reply=await sendChat(text);if(!VM.on)break;$('#vmReply').textContent=speakClean(reply);vmSet('speaking','מדברת… (גע בעיגול כדי לקטוע)');await tts(reply)}}
+async function startVoice(){
+  if(!cfg.openaiKey){toast('לשיחה קולית צריך מפתח OpenAI — ⚙ ← מפתחות');onboarding();return}
+  if(!navigator.mediaDevices||!window.MediaRecorder){toast('המכשיר לא תומך בהקלטה');return}
+  try{if('speechSynthesis' in window){speechSynthesis.speak(new SpeechSynthesisUtterance(' '))}}catch(e){}
+  try{VM.stream=VM.stream||await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}})}catch(e){toast('אין הרשאה למיקרופון — אשר בהגדרות הטלפון');return}
+  VM.ctx=VM.ctx||new (window.AudioContext||window.webkitAudioContext)();await VM.ctx.resume().catch(()=>{});
+  VM.on=true;VM.muted=false;$('#vmSaid').textContent='';$('#vmReply').textContent='היי '+owner()+', אני מקשיבה. מה תרצה?';$('#vm').classList.add('show');vmLoop()}
+function stopVoice(){VM.on=false;try{VM.rec&&VM.rec.state!=='inactive'&&VM.rec.stop()}catch(e){}try{VM.src&&VM.src.stop()}catch(e){}try{speechSynthesis.cancel()}catch(e){}
+  if(VM.stream){VM.stream.getTracks().forEach(t=>t.stop());VM.stream=null}$('#vm').classList.remove('show');vmSet('','')}
+$('#vmode').addEventListener('click',startVoice);$('#vmEnd').addEventListener('click',stopVoice);
+$('#vmMute').addEventListener('click',()=>{VM.muted=!VM.muted;$('#vmMute').innerHTML=ic(VM.muted?I.micoff:I.mic,24);$('#vmMute').style.background=VM.muted?'#fff':'';$('#vmMute').style.color=VM.muted?'#000':''});
+$('#vmOrb').addEventListener('click',()=>{if(VM.state==='speaking'){try{VM.src&&VM.src.stop();VM.srcEnd&&VM.srcEnd()}catch(e){}try{speechSynthesis.cancel()}catch(e){}}else if(VM.state==='listening'&&VM.stopListen){VM.stopListen()}});
+
 /* ============ init ============ */
 async function init(){
   googleCatch();if(cfg.gConnected&&!gOk()&&gClient()){let t=0;try{t=+sessionStorage.getItem('gTry')||0}catch(e){}if(now()-t>10*60000){try{sessionStorage.setItem('gTry',now())}catch(e){}googleConnect(true);return}}
@@ -452,10 +512,10 @@ async function init(){
 }
 async function startSync(){try{await ensureRepo();await pullRemote()}catch(e){S.syncErr=e.message;render()}}
 const isStandalone=()=>window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
-function onboarding(){S.sheetLive=false;window._save=async d=>{d.apiKey=(d.apiKey||'').trim();d.ghToken=(d.ghToken||'').trim();if(!d.apiKey.startsWith('sk-ant-'))throw new Error('מפתח Anthropic צריך להתחיל ב-sk-ant-');if(!/^(ghp_|github_pat_)/.test(d.ghToken))throw new Error('טוקן GitHub צריך להתחיל ב-ghp_');cfg.apiKey=d.apiKey.trim();cfg.ghToken=d.ghToken.trim();cfg.googleClientId=(d.googleClientId||'').trim();saveCfg();toast('מתחבר…');await startSync();toast('מוכן ✓ אפשר לדבר עם העוזרת')};
+function onboarding(){S.sheetLive=false;window._save=async d=>{d.apiKey=(d.apiKey||'').trim();d.ghToken=(d.ghToken||'').trim();if(!d.apiKey.startsWith('sk-ant-'))throw new Error('מפתח Anthropic צריך להתחיל ב-sk-ant-');if(!/^(ghp_|github_pat_)/.test(d.ghToken))throw new Error('טוקן GitHub צריך להתחיל ב-ghp_');cfg.apiKey=d.apiKey.trim();cfg.ghToken=d.ghToken.trim();cfg.googleClientId=(d.googleClientId||'').trim();cfg.openaiKey=(d.openaiKey||'').trim();saveCfg();toast('מתחבר…');await startSync();toast('מוכן ✓ אפשר לדבר עם העוזרת')};
   openSheet(()=>`<div class="sh-head"><div><h2>ברוך הבא, חננאל 👋</h2><div class="small muted">הגדרה חד־פעמית. המפתחות נשמרים רק בטלפון שלך.</div></div></div>
   ${isStandalone()?'':`<div class="card" style="background:var(--accent-soft);box-shadow:none"><b>📲 קודם כל — התקנה</b><div class="small" style="margin-top:6px;line-height:1.7">בספארי: כפתור שיתוף ⬆ ← "הוספה למסך הבית" ← הוסף. אחר כך תפתח מהאייקון ותמשיך כאן.</div></div>`}
-  <form id="frm">${F('apiKey','מפתח Anthropic (מ-platform.claude.com ← API Keys)','text',cfg.apiKey||'','required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore inputmode="text" dir="ltr" placeholder="sk-ant-…"')}${F('googleClientId','Google Client ID (לחיבור Gmail ויומן — לא חובה)','text',cfg.googleClientId||'','autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" dir="ltr" placeholder="….apps.googleusercontent.com"')}${F('ghToken','טוקן GitHub','text',cfg.ghToken||'','required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore inputmode="text" dir="ltr" placeholder="ghp_…"')}<button class="btn primary wide" type="submit">התחל</button></form>`);
+  <form id="frm">${F('apiKey','מפתח Anthropic (מ-platform.claude.com ← API Keys)','text',cfg.apiKey||'','required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore inputmode="text" dir="ltr" placeholder="sk-ant-…"')}${F('googleClientId','Google Client ID (לחיבור Gmail ויומן — לא חובה)','text',cfg.googleClientId||'','autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" dir="ltr" placeholder="….apps.googleusercontent.com"')}${F('openaiKey','מפתח OpenAI לשיחה קולית (לא חובה)','text',cfg.openaiKey||'','autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" dir="ltr" placeholder="sk-…"')}${F('ghToken','טוקן GitHub','text',cfg.ghToken||'','required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore inputmode="text" dir="ltr" placeholder="ghp_…"')}<button class="btn primary wide" type="submit">התחל</button></form>`);
   $('#frm').addEventListener('submit',async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target).entries());try{await window._save(d);closeSheet()}catch(err){toast(err.message||'שגיאה')}});}
 function urlB64(s){const p='='.repeat((4-s.length%4)%4);const b=atob((s+p).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from([...b].map(c=>c.charCodeAt(0)))}
 async function enablePush(){
@@ -636,6 +696,7 @@ function context(){
   return `את ${asst()}, העוזרת האישית של ${owner()} — בעל עסק "גל גרפיקס" (תוכן לרשתות, צילום ועריכת וידאו, רילס). את מנהלת לו את ה-CRM, הלקוחות והלידים, הפרויקטים, המשימות, היומן, ההכנסות וההוצאות, דרך הכלים שלך.
 עכשיו: ${wd(td)} ${td}, השעה ${hm(t)} (שעון ישראל). הימים הקרובים: ${days.join(' | ')}.
 כללים:
+- כשההודעה הגיעה בדיבור (שיחה קולית) — עני קצר מאוד (1–3 משפטים), בלי רשימות ובלי אימוג׳י, כי התשובה מוקראת בקול.
 - דברי בעברית, קצר, חם ולעניין, בגוף ראשון נקבה. בלי הקדמות. ${owner()} בדרך כלל כותב מהנייד.
 - כשמבקשים פעולה — בצעי אותה בכלים מיד, אל תשאלי "לבצע?". אם חסר פרט חיוני באמת (למשל סכום לבקשת תשלום) — שאלי שאלה אחת קצרה. פרטים לא חיוניים — השלימי בהיגיון.
 - לפני יצירת לקוח בדקי אם כבר קיים ברשימה (גם שם דומה) — ואז עדכני אותו במקום ליצור כפול. השתמשי תמיד ב-id מהנתונים.
@@ -647,7 +708,7 @@ function context(){
 - אחרי ביצוע — משפט אישור קצר אחד (הפעולות עצמן מוצגות לו כתגיות). לסיכום בוקר: היום ביומן, משימות להיום ובאיחור, לידים שמחכים (3+ ימים), כסף שממתין — בנקודות קצרות, ובסוף המלצה אחת מה לעשות קודם.
 - אוטומציות שרצות לבד במערכת (אל תכפילי אותן): ליד חדש → משימת מעקב למחר${auto('leadFollowup')?'':' (כבויה)'}; שלב תשלום שהושלם → בקשת תשלום${auto('paymentStage')?'':' (כבויה)'}; פרויקט שהסתיים → בקשת יתרה + משימת תודה${auto('projectDone')?'':' (כבויה)'}.
 - אין לך אפשרות לסלוק אשראי, להפיק חשבונית מס רשמית או לשלוח וואטסאפ בעצמך — בקשת תשלום נשמרת במערכת ו${owner()} שולח אותה בכפתור וואטסאפ. אמרי זאת בכנות אם מבקשים.
-צוות: ${(S.settings.team||[]).join(', ')||'רק '+owner()}.
+צוות: ${(S.settings.team||[]).join(', ')||'רק '+owner()}.${VM.on?'\n⚠ מצב שיחה קולית פעיל עכשיו: התשובה תוקרא בקול — 1–3 משפטים קצרים, בלי רשימות, בלי אימוג׳י.':''}
 נתונים עדכניים (JSON):
 ${JSON.stringify({clients,projects,open_tasks:tasks,done_last_7_days:doneRecent,events,google_calendar_next_14_days:gcal,payments,expenses_last_60_days:expenses})}
 ${gOk()?'Google מחובר: יש לך גישה ל-Gmail (חיפוש, קריאה, יצירת טיוטה — לא שליחה) וליומן Google. פגישה חדשה (add_event) נוספת אוטומטית גם ליומן Google. לסריקת קבלות: search_gmail עם newer_than:30d (קבלה OR חשבונית OR receipt OR invoice), read_gmail לרלוונטיים, והוסיפי הוצאות שלא קיימות (gmail_thread_id = id המייל).':'Google לא מחובר כרגע. אם מבקשים להתחבר לגוגל או משהו מהמייל/היומן של Google — הפעילי את הכלי connect_google, והסבירי בקצרה שייפתח מסך של גוגל (ללחוץ Continue אם מופיעה אזהרה). ההתחברות גם זמינה בהגדרות ⚙ ← "התחבר לגוגל".'}`;
@@ -733,6 +794,7 @@ async function sendChat(text,img){
   const actions=ACTLOG;ACTLOG=null;
   S.chat=[...S.chat,{role:'assistant',text:reply.trim()||(actions.length?'בוצע ✓':'…'),actions,at:now()}];
   S.busy=false;S.liveText='';render();saveChat();
+  return reply.trim();
 }
 let chatQ=Promise.resolve();
 function saveChat(){persist()}
@@ -742,6 +804,7 @@ function grow(){const t=$('#input');t.style.height='auto';t.style.height=Math.mi
 function syncSend(){$('#send').disabled=S.busy||(!$('#input').value.trim()&&!S.pendingImg)}
 function setupComposer(){
   $('#send').innerHTML=ic(I.send,20);$('#mic').innerHTML=ic(I.mic,20);$('#attach').innerHTML=ic(I.clip,20);
+  $('#vmode').innerHTML=ic(I.wave,20);$('#vmEnd').innerHTML=ic(I.phoneoff,26);$('#vmMute').innerHTML=ic(I.mic,24);
   $('#mic').hidden=false;$('#attach').hidden=!canImg;syncSend();
 }
 $('#input').addEventListener('input',()=>{grow();syncSend()});
