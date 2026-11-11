@@ -506,7 +506,7 @@ $('#vmMute').addEventListener('click',()=>{VM.muted=!VM.muted;$('#vmMute').inner
 $('#vmOrb').addEventListener('click',()=>{if(VM.state==='speaking'){try{VM.src&&VM.src.stop();VM.srcEnd&&VM.srcEnd()}catch(e){}try{speechSynthesis.cancel()}catch(e){}}else if(VM.state==='listening'&&VM.stopListen){VM.stopListen()}});
 
 /* ============ auto-update ============ */
-const APP_VERSION='10';
+const APP_VERSION='11';
 async function checkUpdate(){try{const r=await fetch('version.json?t='+now(),{cache:'no-store'});const j=await r.json();if(j.v&&j.v!==APP_VERSION&&!S.busy&&!VM.on){let k='';try{k=sessionStorage.getItem('upd')}catch(e){}if(k!==j.v){try{sessionStorage.setItem('upd',j.v)}catch(e){}location.reload()}}}catch(e){}}
 
 /* ============ init ============ */
@@ -521,10 +521,10 @@ async function init(){
 }
 async function startSync(){try{await ensureRepo();await pullRemote()}catch(e){S.syncErr=e.message;render()}}
 const isStandalone=()=>window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
-function onboarding(){S.sheetLive=false;window._save=async d=>{d.apiKey=(d.apiKey||'').trim();d.ghToken=(d.ghToken||'').trim();if(!d.apiKey.startsWith('sk-ant-'))throw new Error('מפתח Anthropic צריך להתחיל ב-sk-ant-');if(!/^(ghp_|github_pat_)/.test(d.ghToken))throw new Error('טוקן GitHub צריך להתחיל ב-ghp_');cfg.apiKey=d.apiKey.trim();cfg.ghToken=d.ghToken.trim();cfg.googleClientId=(d.googleClientId||'').trim();saveCfg();toast('מתחבר…');await startSync();toast('מוכן ✓ אפשר לדבר עם העוזרת')};
+function onboarding(){S.sheetLive=false;window._save=async d=>{d.apiKey=(d.apiKey||'').trim();d.ghToken=(d.ghToken||'').trim();if(!d.apiKey.startsWith('sk-ant-'))throw new Error('מפתח Anthropic צריך להתחיל ב-sk-ant-');if(!/^(ghp_|github_pat_)/.test(d.ghToken))throw new Error('טוקן GitHub צריך להתחיל ב-ghp_');cfg.apiKey=d.apiKey.trim();cfg.ghToken=d.ghToken.trim();cfg.googleClientId=(d.googleClientId||'').trim();cfg.geminiKey=(d.geminiKey||'').trim();saveCfg();toast('מתחבר…');await startSync();toast('מוכן ✓ אפשר לדבר עם העוזרת')};
   openSheet(()=>`<div class="sh-head"><div><h2>ברוך הבא, חננאל 👋</h2><div class="small muted">הגדרה חד־פעמית. המפתחות נשמרים רק בטלפון שלך.</div></div></div>
   ${isStandalone()?'':`<div class="card" style="background:var(--accent-soft);box-shadow:none"><b>📲 קודם כל — התקנה</b><div class="small" style="margin-top:6px;line-height:1.7">בספארי: כפתור שיתוף ⬆ ← "הוספה למסך הבית" ← הוסף. אחר כך תפתח מהאייקון ותמשיך כאן.</div></div>`}
-  <form id="frm">${F('apiKey','מפתח Anthropic (מ-platform.claude.com ← API Keys)','text',cfg.apiKey||'','required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore inputmode="text" dir="ltr" placeholder="sk-ant-…"')}${F('googleClientId','Google Client ID (לחיבור Gmail ויומן — לא חובה)','text',cfg.googleClientId||'','autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" dir="ltr" placeholder="….apps.googleusercontent.com"')}${F('ghToken','טוקן GitHub','text',cfg.ghToken||'','required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore inputmode="text" dir="ltr" placeholder="ghp_…"')}<button class="btn primary wide" type="submit">התחל</button></form>`);
+  <form id="frm">${F('apiKey','מפתח Anthropic (מ-platform.claude.com ← API Keys)','text',cfg.apiKey||'','required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore inputmode="text" dir="ltr" placeholder="sk-ant-…"')}${F('googleClientId','Google Client ID (לחיבור Gmail ויומן — לא חובה)','text',cfg.googleClientId||'','autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" dir="ltr" placeholder="….apps.googleusercontent.com"')}${F('geminiKey','מפתח Gemini להקלטה קולית (מ-aistudio.google.com/apikey)','text',cfg.geminiKey||'','autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" dir="ltr" placeholder="AIza…"')}${F('ghToken','טוקן GitHub','text',cfg.ghToken||'','required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore inputmode="text" dir="ltr" placeholder="ghp_…"')}<button class="btn primary wide" type="submit">התחל</button></form>`);
   $('#frm').addEventListener('submit',async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target).entries());try{await window._save(d);closeSheet()}catch(err){toast(err.message||'שגיאה')}});}
 function urlB64(s){const p='='.repeat((4-s.length%4)%4);const b=atob((s+p).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from([...b].map(c=>c.charCodeAt(0)))}
 async function enablePush(){
@@ -819,15 +819,31 @@ function setupComposer(){
 $('#input').addEventListener('input',()=>{grow();syncSend()});
 $('#input').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!/Mobi|Android|iPhone/.test(navigator.userAgent)){e.preventDefault();doSend()}});
 function doSend(){const v=$('#input').value;const img=S.pendingImg;if(!v.trim()&&!img)return;$('#input').value='';grow();S.pendingImg=null;$('#thumb').hidden=true;syncSend();sendChat(v,img)}
-$('#send').addEventListener('click',()=>{if(rec){try{rec.stop()}catch(e){}setTimeout(doSend,300)}else doSend()});
-$('#mic').addEventListener('click',()=>{const inp=$('#input');
-  if(!SR||IOS){inp.focus();toast('🎤 לחץ על המיקרופון 🎙 במקלדת (למטה) ודבר — ואז שלח');return}
-  if(rec){try{rec.stop()}catch(e){}return}
-  try{rec=new SR();rec.lang='he-IL';rec.interimResults=true;rec.continuous=true;const base=inp.value.trim();
-    rec.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;inp.value=(base?base+' ':'')+t.trim();grow();syncSend()};
-    rec.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed')toast('אין הרשאה למיקרופון — אפשר להשתמש במיקרופון של המקלדת');};
-    rec.onend=()=>{rec=null;$('#mic').classList.remove('rec')};
-    rec.start();$('#mic').classList.add('rec');let heard=false;const r0=rec;const _or=rec.onresult;rec.onresult=e=>{heard=true;_or(e)};setTimeout(()=>{if(rec===r0&&!heard){try{r0.abort()}catch(e){}rec=null;$('#mic').classList.remove('rec');inp.focus();toast('🎤 המיקרופון לא הגיב — השתמש במיקרופון במקלדת')}},6000);toast('🎤 מקשיב… לחץ שוב לסיום')}catch(e){rec=null;inp.focus();toast('🎤 השתמש במיקרופון במקלדת')}});
+$('#send').addEventListener('click',()=>{if(REC.on)recStop();else doSend()});
+/* ---- in-app voice recording → Gemini transcription ---- */
+const REC={on:false};
+function wavB64(chunks,inRate){let len=0;chunks.forEach(c=>len+=c.length);const all=new Float32Array(len);let o=0;chunks.forEach(c=>{all.set(c,o);o+=c.length});
+  const rate=16000,ratio=inRate/rate,n=Math.floor(all.length/ratio),pcm=new Int16Array(n);for(let i=0;i<n;i++){let s=0,c=0;const a=Math.floor(i*ratio),b=Math.min(all.length,Math.floor((i+1)*ratio));for(let j=a;j<b;j++){s+=all[j];c++}const v=Math.max(-1,Math.min(1,c?s/c:0));pcm[i]=v<0?v*0x8000:v*0x7FFF}
+  const buf=new ArrayBuffer(44+pcm.length*2),dv=new DataView(buf);const w=(p,s)=>{for(let i=0;i<s.length;i++)dv.setUint8(p+i,s.charCodeAt(i))};
+  w(0,'RIFF');dv.setUint32(4,36+pcm.length*2,true);w(8,'WAVE');w(12,'fmt ');dv.setUint32(16,16,true);dv.setUint16(20,1,true);dv.setUint16(22,1,true);dv.setUint32(24,rate,true);dv.setUint32(28,rate*2,true);dv.setUint16(32,2,true);dv.setUint16(34,16,true);w(36,'data');dv.setUint32(40,pcm.length*2,true);
+  new Int16Array(buf,44).set(pcm);const u8=new Uint8Array(buf);let bin='';for(let i=0;i<u8.length;i+=0x8000)bin+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));return btoa(bin)}
+async function geminiTranscribe(b64){const body={contents:[{parts:[{text:'תמלל את ההקלטה מילה במילה בעברית (מילים באנגלית השאר באנגלית). החזר רק את הטקסט המתומלל, בלי שום הקדמה. אם אין דיבור — החזר מחרוזת ריקה.'},{inline_data:{mime_type:'audio/wav',data:b64}}]}]};
+  let last='';for(const m of ['gemini-flash-latest','gemini-2.5-flash','gemini-2.0-flash']){const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(cfg.geminiKey)}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const j=await r.json().catch(()=>({}));if(r.ok){return ((((j.candidates||[])[0]||{}).content||{}).parts||[]).map(p=>p.text||'').join('').trim()}last=(j.error&&j.error.message)||('שגיאה '+r.status);if(r.status!==404&&r.status!==400)break}
+  throw new Error('התמלול נכשל: '+last)}
+function recUI(){const m=$('#mic'),i=$('#input');m.classList.toggle('rec',REC.on);if(REC.on){const s=Math.floor((now()-REC.t0)/1000);i.placeholder='🔴 מקליט '+Math.floor(s/60)+':'+String(s%60).padStart(2,'0')+' — לחץ 🎤 לשליחה';}else i.placeholder='כתוב לעוזרת…'}
+async function recStart(){
+  try{REC.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}})}catch(e){toast('אין גישה למיקרופון — אשר בהגדרות הטלפון');return}
+  REC.ctx=new (window.AudioContext||window.webkitAudioContext)();await REC.ctx.resume().catch(()=>{});REC.src=REC.ctx.createMediaStreamSource(REC.stream);REC.proc=REC.ctx.createScriptProcessor(4096,1,1);REC.chunks=[];
+  REC.proc.onaudioprocess=e=>{if(REC.on)REC.chunks.push(new Float32Array(e.inputBuffer.getChannelData(0)))};REC.src.connect(REC.proc);REC.proc.connect(REC.ctx.destination);
+  REC.on=true;REC.t0=now();recUI();REC.tick=setInterval(()=>{recUI();if(now()-REC.t0>180000)recStop()},500)}
+async function recStop(cancel){if(!REC.on)return;REC.on=false;clearInterval(REC.tick);try{REC.src.disconnect();REC.proc.disconnect()}catch(e){}REC.stream.getTracks().forEach(t=>t.stop());const rate=REC.ctx.sampleRate;REC.ctx.close().catch(()=>{});recUI();
+  if(cancel||now()-REC.t0<700||!REC.chunks.length)return;const inp=$('#input');inp.placeholder='⏳ מתמללת…';$('#mic').disabled=true;
+  try{const text=await geminiTranscribe(wavB64(REC.chunks,rate));if(!text){toast('לא נשמע דיבור — נסה שוב');return}inp.value=(inp.value.trim()?inp.value.trim()+' ':'')+text;grow();syncSend();doSend()}
+  catch(e){toast(e.message||'התמלול נכשל')}finally{$('#mic').disabled=false;inp.placeholder='כתוב לעוזרת…'}}
+$('#mic').addEventListener('click',()=>{
+  if(!cfg.geminiKey){$('#input').focus();toast('להקלטה בתוך האפליקציה: ⚙ ← מפתחות ← מפתח Gemini. בינתיים — המיקרופון במקלדת 🎙');return}
+  if(REC.on)recStop();else recStart()});
 $('#attach').addEventListener('click',()=>$('#file').click());
 $('#file').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(!f)return;S.pendingImg=f;const url=URL.createObjectURL(f);const th=$('#thumb');th.hidden=false;th.innerHTML=`<img src="${url}"><span>תמונה מצורפת</span><button class="cbtn" style="width:28px;height:28px" id="rmimg">${ic(I.x,14)}</button>`;$('#rmimg').onclick=()=>{S.pendingImg=null;th.hidden=true;syncSend()};syncSend()});
 
