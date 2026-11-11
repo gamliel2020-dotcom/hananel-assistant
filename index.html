@@ -230,6 +230,11 @@ nav button.orb.on{box-shadow:0 0 0 4px var(--accent-soft),0 10px 24px -6px rgba(
 #vm .vbtns{display:flex;gap:18px;margin-top:22px}
 #vm .vbtns button{width:62px;height:62px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;backdrop-filter:blur(10px)}
 #vm .vbtns button.end{background:#E5484D}
+html,body,#app,main{overflow-x:hidden}
+.msgs,.amsg{min-width:0;max-width:100%}
+.amsg .msg{min-width:0;flex:1 1 auto}
+.msg{overflow-wrap:anywhere;word-break:break-word;min-width:0}
+.msg ul{padding-right:16px;padding-left:0}
 </style>
 </head>
 <body>
@@ -500,13 +505,17 @@ $('#vmode').addEventListener('click',startVoice);$('#vmEnd').addEventListener('c
 $('#vmMute').addEventListener('click',()=>{VM.muted=!VM.muted;$('#vmMute').innerHTML=ic(VM.muted?I.micoff:I.mic,24);$('#vmMute').style.background=VM.muted?'#fff':'';$('#vmMute').style.color=VM.muted?'#000':''});
 $('#vmOrb').addEventListener('click',()=>{if(VM.state==='speaking'){try{VM.src&&VM.src.stop();VM.srcEnd&&VM.srcEnd()}catch(e){}try{speechSynthesis.cancel()}catch(e){}}else if(VM.state==='listening'&&VM.stopListen){VM.stopListen()}});
 
+/* ============ auto-update ============ */
+const APP_VERSION='9';
+async function checkUpdate(){try{const r=await fetch('version.json?t='+now(),{cache:'no-store'});const j=await r.json();if(j.v&&j.v!==APP_VERSION&&!S.busy&&!VM.on){let k='';try{k=sessionStorage.getItem('upd')}catch(e){}if(k!==j.v){try{sessionStorage.setItem('upd',j.v)}catch(e){}location.reload()}}}catch(e){}}
+
 /* ============ init ============ */
 async function init(){
   googleCatch();if(cfg.gConnected&&!gOk()&&gClient()){let t=0;try{t=+sessionStorage.getItem('gTry')||0}catch(e){}if(now()-t>10*60000){try{sessionStorage.setItem('gTry',now())}catch(e){}googleConnect(true);return}}
   loadLocal();renderNav();setupComposer();render();refreshGcal();setInterval(refreshGcal,5*60000);
   if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
   if(!cfg.apiKey||!cfg.ghToken){setTimeout(onboarding,400)}else{await startSync()}
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&cfg.ghToken)pullRemote().catch(()=>{})});
+  checkUpdate();document.addEventListener('visibilitychange',()=>{if(!document.hidden){checkUpdate();if(cfg.ghToken)pullRemote().catch(()=>{})}});
   setInterval(()=>{if(!document.hidden&&cfg.ghToken)pullRemote().catch(()=>{})},60000);
   setInterval(()=>{if(S.tasks.some(t=>t.running)&&['today','work','money'].includes(S.view))render()},30000);
 }
