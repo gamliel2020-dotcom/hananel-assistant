@@ -399,7 +399,8 @@ async function updateTask(id,f){const t=find('tasks',id);if(!t)throw new Error('
 async function timer(id,start){const t=find('tasks',id);if(!t)throw new Error('משימה לא נמצאה');
   if(start){for(const o of S.tasks.filter(x=>x.running&&x.id!==id))await timer(o.id,false);if(!t.running){await patch('tasks',id,{running:now()});act('⏱ טיימר: '+t.title)}}
   else if(t.running){const m=(now()-t.running)/60000;await patch('tasks',id,{running:0,timeLog:[...(t.timeLog||[]),{m,at:now()}]});act('⏱ נעצר: '+t.title+' ('+mins(m)+')')}}
-async function addEvent(f){const id=await create('events',{title:f.title,date:f.date,time:f.time||'',endTime:f.end_time||'',clientId:f.client_id||'',location:f.location||'',notes:f.notes||''});act('📅 '+f.title+' · '+fmtDay(f.date)+(f.time?' '+f.time:''));return id}
+async function addEvent(f){let gid='';if(gOk()&&auto('gcalSync')){try{gid=await gcalCreate(f);act('נוסף גם ליומן Google')}catch(e){act('⚠ לא נוסף ליומן Google')}}
+  const id=await create('events',{title:f.title,date:f.date,time:f.time||'',endTime:f.end_time||'',clientId:f.client_id||'',location:f.location||'',notes:f.notes||'',gid});act('📅 '+f.title+' · '+fmtDay(f.date)+(f.time?' '+f.time:''));if(gid)setTimeout(refreshGcal,1500);return id}
 async function updateEvent(id,f){const e=find('events',id);if(!e)throw new Error('אירוע לא נמצא');const u={};['title','date','time','location','notes'].forEach(k=>{if(f[k]!==undefined)u[k]=f[k]});if(f.end_time!==undefined)u.endTime=f.end_time;if(f.client_id!==undefined)u.clientId=f.client_id;await patch('events',id,u);act('עודכן ביומן: '+(u.title||e.title))}
 async function addPayment(f){const id=await create('payments',{clientId:f.client_id||'',projectId:f.project_id||'',amount:Number(f.amount)||0,description:f.description||'',status:'pending',due:f.due||today()});act('בקשת תשלום: '+money(f.amount)+(f.client_id?' · '+clientName(f.client_id):''));return id}
 async function markPaid(id,paid=true){const p=find('payments',id);if(!p)throw new Error('תשלום לא נמצא');await patch('payments',id,{status:paid?'paid':'pending',paidAt:paid?now():0});act((paid?'💰 שולם: ':'בוטל תשלום: ')+money(p.amount))}
@@ -408,9 +409,40 @@ async function addExpense(f){if(f.gmail_thread_id&&S.expenses.some(e=>e.gmailThr
 async function del(kind,id){const col={client:'clients',project:'projects',task:'tasks',event:'events',payment:'payments',expense:'expenses'}[kind];if(!col||!find(col,id))throw new Error('לא נמצא');await remove(col,id);act('נמחק')}
 async function saveSettings(u){S.settings={...S.settings,...JSON.parse(JSON.stringify(u))};persist()}
 
+/* ============ Google (Gmail + Calendar) ============ */
+const GOOGLE_CLIENT_ID='';
+const G_SCOPES='https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.compose https://www.googleapis.com/auth/calendar.events';
+const gClient=()=>cfg.googleClientId||GOOGLE_CLIENT_ID;
+const gOk=()=>!!(cfg.gToken&&cfg.gExp>now()+60000);
+function googleConnect(){if(!gClient()){toast('חסר Google Client ID — הדבק אותו בהגדרות');return}
+  const u='https://accounts.google.com/o/oauth2/v2/auth?'+new URLSearchParams({client_id:gClient(),redirect_uri:location.origin+location.pathname,response_type:'token',scope:G_SCOPES,include_granted_scopes:'true',state:'g'+now(),login_hint:cfg.gEmail||''});
+  location.href=u}
+function googleCatch(){if(!location.hash.includes('access_token'))return;const q=new URLSearchParams(location.hash.slice(1));if((q.get('state')||'')[0]!=='g')return;
+  cfg.gToken=q.get('access_token');cfg.gExp=now()+(+q.get('expires_in')||3600)*1000;cfg.gConnected=true;saveCfg();history.replaceState(null,'',location.pathname);setTimeout(()=>toast('Google מחובר ✓'),600)}
+async function gapi(url,opt={}){if(!gOk())throw new Error('החיבור לגוגל פג — לחץ "התחבר לגוגל" בהגדרות או בראש המסך');
+  const r=await fetch(url,{...opt,headers:{Authorization:'Bearer '+cfg.gToken,'Content-Type':'application/json',...(opt.headers||{})}});
+  if(r.status===401){cfg.gExp=0;saveCfg();render();throw new Error('החיבור לגוגל פג — צריך להתחבר מחדש')}
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error('Google '+r.status+': '+((j.error&&j.error.message)||''));return j}
+const ilIso=(date,time)=>{const t=time||'09:00';const off=new Intl.DateTimeFormat('en',{timeZone:TZ,timeZoneName:'longOffset'}).formatToParts(new Date(date+'T12:00:00Z')).find(p=>p.type==='timeZoneName').value.replace('GMT','')||'+00:00';return `${date}T${t}:00${off}`};
+async function gcalList(fromDate,toDate){const j=await gapi('https://www.googleapis.com/calendar/v3/calendars/primary/events?'+new URLSearchParams({timeMin:ilIso(fromDate,'00:00'),timeMax:ilIso(toDate,'23:59'),singleEvents:'true',orderBy:'startTime',maxResults:'100'}));
+  return (j.items||[]).map(e=>{const s=e.start.dateTime||e.start.date;const en=(e.end&&(e.end.dateTime||e.end.date))||'';return{gid:e.id,title:e.summary||'(ללא כותרת)',date:e.start.dateTime?ymd(new Date(s)):s,time:e.start.dateTime?hm(new Date(s)):'',endTime:e.end&&e.end.dateTime?hm(new Date(en)):'',location:e.location||'',allDay:!e.start.dateTime}})}
+async function gcalCreate(f){const start=ilIso(f.date,f.time||'09:00');let endT=f.end_time;if(!endT){const[a,b]=(f.time||'09:00').split(':').map(Number);const m=a*60+b+60;endT=String(Math.floor(m/60)%24).padStart(2,'0')+':'+String(m%60).padStart(2,'0')}
+  const body=f.time?{summary:f.title,location:f.location||undefined,description:f.notes||undefined,start:{dateTime:start,timeZone:TZ},end:{dateTime:ilIso(f.date,endT),timeZone:TZ}}:{summary:f.title,start:{date:f.date},end:{date:addDays(f.date,1)}};
+  const j=await gapi('https://www.googleapis.com/calendar/v3/calendars/primary/events',{method:'POST',body:JSON.stringify(body)});return j.id}
+async function refreshGcal(){if(!gOk())return;try{const td=today();S.gcal=await gcalList(addDays(td,-1),addDays(td,14));S.gcalAt=now();render()}catch(e){}}
+const b64url=s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');try{return decodeURIComponent(escape(atob(s)))}catch(e){return atob(s)}};
+function mailText(part){if(!part)return'';if(part.mimeType==='text/plain'&&part.body&&part.body.data)return b64url(part.body.data);if(part.parts){for(const p of part.parts){const t=mailText(p);if(t)return t}}if(part.mimeType==='text/html'&&part.body&&part.body.data)return b64url(part.body.data).replace(/<style[\s\S]*?<\/style>/gi,'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ');return''}
+const hdr=(m,n)=>((m.payload&&m.payload.headers)||[]).find(x=>x.name.toLowerCase()===n.toLowerCase())?.value||'';
+async function gmailSearch(q){const j=await gapi('https://gmail.googleapis.com/gmail/v1/users/me/messages?'+new URLSearchParams({q,maxResults:'15'}));const ids=(j.messages||[]).map(m=>m.id);
+  const out=[];for(const id of ids){const m=await gapi(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${id}?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date`);out.push({id,subject:hdr(m,'Subject'),from:hdr(m,'From'),date:hdr(m,'Date'),snippet:(m.snippet||'').slice(0,200)})}return out}
+async function gmailRead(id){const m=await gapi(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${id}?format=full`);const att=[];(function walk(p){if(!p)return;if(p.filename)att.push(p.filename);(p.parts||[]).forEach(walk)})(m.payload);
+  return{subject:hdr(m,'Subject'),from:hdr(m,'From'),to:hdr(m,'To'),date:hdr(m,'Date'),body:mailText(m.payload).slice(0,3500),attachments:att.slice(0,6)}}
+async function gmailDraft(f){const raw=['To: '+f.to,'Subject: =?UTF-8?B?'+btoa(unescape(encodeURIComponent(f.subject||'')))+'?=','Content-Type: text/plain; charset=UTF-8','Content-Transfer-Encoding: base64','',btoa(unescape(encodeURIComponent(f.body||'')))].join('\r\n');
+  const enc=btoa(raw).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');const j=await gapi('https://gmail.googleapis.com/gmail/v1/users/me/drafts',{method:'POST',body:JSON.stringify({message:{raw:enc}})});return j.id}
+
 /* ============ init ============ */
 async function init(){
-  loadLocal();renderNav();setupComposer();render();
+  googleCatch();loadLocal();renderNav();setupComposer();render();refreshGcal();setInterval(refreshGcal,5*60000);
   if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
   if(!cfg.apiKey||!cfg.ghToken){setTimeout(onboarding,400)}else{await startSync()}
   document.addEventListener('visibilitychange',()=>{if(!document.hidden&&cfg.ghToken)pullRemote().catch(()=>{})});
@@ -419,10 +451,10 @@ async function init(){
 }
 async function startSync(){try{await ensureRepo();await pullRemote()}catch(e){S.syncErr=e.message;render()}}
 const isStandalone=()=>window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
-function onboarding(){S.sheetLive=false;window._save=async d=>{d.apiKey=(d.apiKey||'').trim();d.ghToken=(d.ghToken||'').trim();if(!d.apiKey.startsWith('sk-ant-'))throw new Error('מפתח Anthropic צריך להתחיל ב-sk-ant-');if(!/^(ghp_|github_pat_)/.test(d.ghToken))throw new Error('טוקן GitHub צריך להתחיל ב-ghp_');cfg.apiKey=d.apiKey.trim();cfg.ghToken=d.ghToken.trim();saveCfg();toast('מתחבר…');await startSync();toast('מוכן ✓ אפשר לדבר עם העוזרת')};
+function onboarding(){S.sheetLive=false;window._save=async d=>{d.apiKey=(d.apiKey||'').trim();d.ghToken=(d.ghToken||'').trim();if(!d.apiKey.startsWith('sk-ant-'))throw new Error('מפתח Anthropic צריך להתחיל ב-sk-ant-');if(!/^(ghp_|github_pat_)/.test(d.ghToken))throw new Error('טוקן GitHub צריך להתחיל ב-ghp_');cfg.apiKey=d.apiKey.trim();cfg.ghToken=d.ghToken.trim();cfg.googleClientId=(d.googleClientId||'').trim();saveCfg();toast('מתחבר…');await startSync();toast('מוכן ✓ אפשר לדבר עם העוזרת')};
   openSheet(()=>`<div class="sh-head"><div><h2>ברוך הבא, חננאל 👋</h2><div class="small muted">הגדרה חד־פעמית. המפתחות נשמרים רק בטלפון שלך.</div></div></div>
   ${isStandalone()?'':`<div class="card" style="background:var(--accent-soft);box-shadow:none"><b>📲 קודם כל — התקנה</b><div class="small" style="margin-top:6px;line-height:1.7">בספארי: כפתור שיתוף ⬆ ← "הוספה למסך הבית" ← הוסף. אחר כך תפתח מהאייקון ותמשיך כאן.</div></div>`}
-  <form id="frm">${F('apiKey','מפתח Anthropic (מ-platform.claude.com ← API Keys)','text',cfg.apiKey||'','required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore inputmode="text" dir="ltr" placeholder="sk-ant-…"')}${F('ghToken','טוקן GitHub','text',cfg.ghToken||'','required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore inputmode="text" dir="ltr" placeholder="ghp_…"')}<button class="btn primary wide" type="submit">התחל</button></form>`);
+  <form id="frm">${F('apiKey','מפתח Anthropic (מ-platform.claude.com ← API Keys)','text',cfg.apiKey||'','required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore inputmode="text" dir="ltr" placeholder="sk-ant-…"')}${F('googleClientId','Google Client ID (לחיבור Gmail ויומן — לא חובה)','text',cfg.googleClientId||'','autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" dir="ltr" placeholder="….apps.googleusercontent.com"')}${F('ghToken','טוקן GitHub','text',cfg.ghToken||'','required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore inputmode="text" dir="ltr" placeholder="ghp_…"')}<button class="btn primary wide" type="submit">התחל</button></form>`);
   $('#frm').addEventListener('submit',async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target).entries());try{await window._save(d);closeSheet()}catch(err){toast(err.message||'שגיאה')}});}
 function urlB64(s){const p='='.repeat((4-s.length%4)%4);const b=atob((s+p).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from([...b].map(c=>c.charCodeAt(0)))}
 async function enablePush(){
@@ -465,7 +497,7 @@ function taskRow(t){
   <div class="main tap" data-act="task" data-id="${t.id}"><div class="t" style="${t.done?'text-decoration:line-through;opacity:.55':''}">${esc(t.title)}</div>${meta.length?`<div class="m">${meta.map(x=>`<span>${x}</span>`).join('')}</div>`:''}</div>
   ${t.done?'':`<button class="timer ${t.running?'run':''}" data-act="timer" data-id="${t.id}">${ic(t.running?I.stop:I.play,11)}${tm>=1?mins(tm):''}</button>`}</div>`;
 }
-function eventRow(e,showDate){return `<div class="row tap" data-act="event" data-id="${e.id}"><div class="timecol"><b>${esc(e.time||'—')}</b>${showDate?`<span>${fmtDay(e.date)}</span>`:e.endTime?`<span>עד ${esc(e.endTime)}</span>`:''}</div><div class="evline"></div><div class="main"><div class="t">${esc(e.title)}</div><div class="m">${e.clientId?`<span>${esc(clientName(e.clientId))}</span>`:''}${e.location?`<span>📍 ${esc(e.location)}</span>`:''}</div></div></div>`}
+function eventRow(e,showDate){return `<div class="row ${e.fromG?'':'tap'}" ${e.fromG?'':`data-act="event" data-id="${e.id}"`}><div class="timecol"><b>${esc(e.time||'—')}</b>${showDate?`<span>${fmtDay(e.date)}</span>`:e.endTime?`<span>עד ${esc(e.endTime)}</span>`:''}</div><div class="evline"></div><div class="main"><div class="t">${esc(e.title)}${e.fromG?' <span class="kind">Google</span>':''}</div><div class="m">${e.clientId?`<span>${esc(clientName(e.clientId))}</span>`:''}${e.location?`<span>📍 ${esc(e.location)}</span>`:''}</div></div></div>`}
 function clientRow(c){const ln=(c.notes||[]).slice(-1)[0];const days=Math.floor((now()-(c.updatedAt||c.createdAt||now()))/864e5);
   return `<div class="row tap" data-act="client" data-id="${c.id}">${av(c.name)}<div class="main"><div class="t">${esc(c.name)}${c.company?` <span class="muted small">· ${esc(c.company)}</span>`:''}</div><div class="m">${c.phone?`<span>${esc(c.phone)}</span>`:''}${c.value?`<span>${money(c.value)}</span>`:''}${c.source?`<span>מקור: ${esc(c.source)}</span>`:''}${ln?`<span>${esc(ln.text.slice(0,50))}</span>`:''}${['lead','talking','quote'].includes(c.status)&&days>=3?`<span style="color:var(--warn)">${days} ימים בלי עדכון</span>`:''}</div></div><span class="pill p-${c.status}">${STATUS_L[c.status]||''}</span></div>`}
 function payRow(p){return `<div class="row tap" data-act="payment" data-id="${p.id}"><div class="main"><div class="t">${esc(p.description||'תשלום')}</div><div class="m">${p.clientId?`<span>${esc(clientName(p.clientId))}</span>`:''}<span>${p.status==='paid'?'שולם '+fmtDay(ymd(new Date(p.paidAt||now()))):'לתשלום עד '+fmtDay(p.due)}</span></div></div><span class="amount">${money(p.amount)}</span><span class="pill p-${p.status}">${p.status==='paid'?'שולם':'ממתין'}</span></div>`}
@@ -478,13 +510,15 @@ function projRow(p){const st=p.stages||[];const dn=st.filter(s=>s.done).length;c
 function vToday(){
   const td=today();const open=S.tasks.filter(t=>!t.done);
   const overdue=open.filter(t=>t.due&&t.due<td);const tdy=open.filter(t=>t.due===td||(!t.due&&t.priority==='today'));
-  const evs=S.events.filter(e=>e.date===td).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
-  const tomorrow=S.events.filter(e=>e.date===addDays(td,1)).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+  const gx=g=>({...g,id:'',fromG:true});const gExtra=d=>(S.gcal||[]).filter(g=>g.date===d&&!S.events.some(e=>e.gid&&e.gid===g.gid)).map(gx);
+  const evs=[...S.events.filter(e=>e.date===td),...gExtra(td)].sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+  const tomorrow=[...S.events.filter(e=>e.date===addDays(td,1)),...gExtra(addDays(td,1))].sort((a,b)=>(a.time||'').localeCompare(b.time||''));
   const leads=S.clients.filter(c=>['lead','talking','quote'].includes(c.status)).sort((a,b)=>(a.updatedAt||0)-(b.updatedAt||0));
   const pend=S.payments.filter(p=>p.status==='pending');const late=pend.filter(p=>p.due&&p.due<td);
   const empty=!S.clients.length&&!S.tasks.length&&!S.events.length;
   const doneT=S.tasks.filter(t=>t.done&&t.doneAt&&ymd(new Date(t.doneAt))===td).length;const tot=doneT+tdy.length+overdue.length;const pct=tot?doneT/tot:0;const CC=2*Math.PI*27;const pendSum=pend.reduce((a,p)=>a+(+p.amount||0),0);
   let h=`<div class="hero"><div class="top"><div class="ring"><svg width="64" height="64"><circle cx="32" cy="32" r="27" stroke="rgba(255,255,255,.25)" stroke-width="6" fill="none"/><circle cx="32" cy="32" r="27" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="${CC}" stroke-dashoffset="${CC*(1-pct)}" style="transition:stroke-dashoffset .8s"/></svg><b>${doneT}/${tot}</b></div><div><h2>${tot?(tot-doneT?'נשארו '+(tot-doneT)+' משימות להיום':'סגרת הכל להיום 🎉'):'יום פתוח לגמרי'}</h2><p>${evs.length} פגישות · ${leads.length} לידים פתוחים${pendSum?' · '+money(pendSum)+' ממתינים':''}</p></div></div><button class="go" data-act="brief">${ic(I.spark,20)}<span>סיכום בוקר מ${esc(asst())}</span>${ic(I.chev,18)}</button></div>`;
+  if(cfg.gConnected&&!gOk())h+=`<button class="btn ghost wide" style="margin-bottom:12px" data-act="gconnect">🔗 חבר מחדש את Google (יומן + מייל)</button>`;
   if(empty)h+=`<div class="card"><h3>בוא נתחיל</h3><div class="small muted" style="line-height:1.6">פשוט תכתוב או תקליט ל${asst()} בצ׳אט, למשל:<br>"ליד חדש — דני כהן, 050-1234567, הגיע מאינסטגרם, רוצה 4 רילס בחודש"<br>"תזכירי לי מחר ב-10 להתקשר לרוני"<br>"פגישה ביום חמישי ב-14:00 עם מסעדת יפו"</div><div style="margin-top:12px"><button class="btn primary sm" data-act="view" data-v="chat">לדבר עם העוזרת</button></div></div>`;
   h+=`<div class="card"><h3>היום ביומן <small>${evs.length?'':''}</small></h3>${evs.length?evs.map(eventRow).join(''):'<div class="empty">אין פגישות היום</div>'}${tomorrow.length?`<div class="grp">מחר</div>${tomorrow.map(eventRow).join('')}`:''}</div>`;
   h+=`<div class="card"><h3>משימות</h3>${overdue.length?`<div class="grp red" style="margin-top:0">באיחור</div>${overdue.map(taskRow).join('')}`:''}${tdy.length?(overdue.length?'<div class="grp">להיום</div>':'')+tdy.map(taskRow).join(''):overdue.length?'':'<div class="empty">אין משימות להיום 🎉</div>'}</div>`;
@@ -521,7 +555,7 @@ function vWork(){
     const order={active:0,paused:1,done:2};const ps=[...S.projects].sort((a,b)=>order[a.status]-order[b.status]||(b.updatedAt||0)-(a.updatedAt||0));
     h+=ps.length?ps.map(projRow).join(''):`<div class="card"><div class="empty">אין פרויקטים. לחץ + כדי להקים פרויקט עם מודל תמחור ושלבים.</div></div>`;
   }else{
-    const td=today();const up=S.events.filter(e=>e.date>=td).sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
+    const td=today();const up=[...S.events.filter(e=>e.date>=td),...(S.gcal||[]).filter(g=>g.date>=td&&!S.events.some(e=>e.gid&&e.gid===g.gid)).map(g=>({...g,id:'',fromG:true}))].sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
     const by={};up.forEach(e=>(by[e.date]=by[e.date]||[]).push(e));
     const days=Object.keys(by);
     h+=days.length?days.map(d=>`<div class="grp">${fmtDay(d)}${d!==td&&d!==addDays(td,1)?'':' · '+wd(d)}</div><div class="card" style="padding:4px 14px">${by[d].map(eventRow).join('')}</div>`).join(''):`<div class="card"><div class="empty">היומן ריק. לחץ + להוספת פגישה.</div></div>`;
@@ -596,6 +630,7 @@ function context(){
   const events=S.events.filter(e=>e.date>=addDays(td,-7)&&e.date<=addDays(td,45)).sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||''))).map(e=>({id:e.id,title:e.title,date:e.date,time:e.time||undefined,end:e.endTime||undefined,client:clientName(e.clientId)||undefined,location:e.location||undefined}));
   const payments=S.payments.filter(p=>p.status==='pending'||(p.paidAt||0)>now()-60*864e5).map(p=>({id:p.id,amount:p.amount,client:clientName(p.clientId)||undefined,project:projectName(p.projectId)||undefined,description:p.description,status:p.status,due:p.due}));
   const expenses=S.expenses.filter(e=>e.date>=addDays(td,-60)).map(e=>({id:e.id,amount:e.amount,supplier:e.supplier,category:e.category,date:e.date,gmail_thread_id:e.gmailThreadId||undefined}));
+  const gcal=(S.gcal||[]).filter(g=>!S.events.some(e=>e.gid===g.gid)).map(g=>({title:g.title,date:g.date,time:g.time||undefined,location:g.location||undefined}));
   const days=[];for(let i=0;i<8;i++){const d=addDays(td,i);days.push(d+' = '+wd(d))}
   return `את ${asst()}, העוזרת האישית של ${owner()} — בעל עסק "גל גרפיקס" (תוכן לרשתות, צילום ועריכת וידאו, רילס). את מנהלת לו את ה-CRM, הלקוחות והלידים, הפרויקטים, המשימות, היומן, ההכנסות וההוצאות, דרך הכלים שלך.
 עכשיו: ${wd(td)} ${td}, השעה ${hm(t)} (שעון ישראל). הימים הקרובים: ${days.join(' | ')}.
@@ -613,7 +648,8 @@ function context(){
 - אין לך אפשרות לסלוק אשראי, להפיק חשבונית מס רשמית או לשלוח וואטסאפ בעצמך — בקשת תשלום נשמרת במערכת ו${owner()} שולח אותה בכפתור וואטסאפ. אמרי זאת בכנות אם מבקשים.
 צוות: ${(S.settings.team||[]).join(', ')||'רק '+owner()}.
 נתונים עדכניים (JSON):
-${JSON.stringify({clients,projects,open_tasks:tasks,done_last_7_days:doneRecent,events,payments,expenses_last_60_days:expenses})}`;
+${JSON.stringify({clients,projects,open_tasks:tasks,done_last_7_days:doneRecent,events,google_calendar_next_14_days:gcal,payments,expenses_last_60_days:expenses})}
+${gOk()?'Google מחובר: יש לך גישה ל-Gmail (חיפוש, קריאה, יצירת טיוטה — לא שליחה) וליומן Google. פגישה חדשה (add_event) נוספת אוטומטית גם ליומן Google. לסריקת קבלות: search_gmail עם newer_than:30d (קבלה OR חשבונית OR receipt OR invoice), read_gmail לרלוונטיים, והוסיפי הוצאות שלא קיימות (gmail_thread_id = id המייל).':'Google לא מחובר כרגע — אם מבקשים מייל או יומן Google, בקשי ממנו ללחוץ "התחבר לגוגל" בהגדרות.'}`;
 }
 const sch=(props,req=[])=>({type:'object',properties:props,required:req});
 const STR={type:'string'},NUM={type:'number'};
@@ -636,9 +672,11 @@ function tools(){
   {name:'delete_item',description:'מחיקת פריט (רק כשמבקשים במפורש)',inputSchema:sch({kind:{type:'string',enum:['client','project','task','event','payment','expense']},id:STR},['kind','id']),execute:async i=>{await del(i.kind,i.id);return{ok:true}}},
   {name:'update_settings',description:'עדכון הגדרות: רשימת צוות, שם העוזרת, פרטי תשלום',inputSchema:sch({team:{type:'array',items:STR},assistant_name:STR,payment_details:STR}),execute:async i=>{const u={};if(i.team)u.team=i.team;if(i.assistant_name)u.assistantName=i.assistant_name;if(i.payment_details)u.paymentDetails=i.payment_details;await saveSettings(u);act('הגדרות עודכנו');return{ok:true}}}
   ];
-  if(mcp){
-    T.push({name:'search_gmail',description:'חיפוש ב-Gmail של המשתמש (תחביר Gmail, למשל: newer_than:30d (קבלה OR חשבונית OR receipt OR invoice))',inputSchema:sch({query:STR},['query']),execute:async i=>{const r=await mcp.callTool('Gmail','search_threads',{query:i.query,pageSize:25});act('🔎 חיפוש במייל');return compactThreads(r.payload)}});
-    T.push({name:'read_gmail_thread',description:'קריאת שרשור מייל מלא לפי threadId',inputSchema:sch({thread_id:STR},['thread_id']),execute:async i=>{const r=await mcp.callTool('Gmail','get_thread',{threadId:i.thread_id,messageFormat:'PLAIN_TEXT'});return compactThread(r.payload)}});
+  if(gOk()){
+    T.push({name:'google_calendar_list',description:'רשימת אירועים מיומן Google של המשתמש בטווח תאריכים',inputSchema:sch({from:{type:'string',description:'YYYY-MM-DD'},to:{type:'string',description:'YYYY-MM-DD'}},['from','to']),execute:async i=>({events:await gcalList(i.from,i.to)})});
+    T.push({name:'search_gmail',description:'חיפוש מיילים ב-Gmail (תחביר Gmail: from:, subject:, newer_than:7d, is:unread, has:attachment, OR...)',inputSchema:sch({query:STR},['query']),execute:async i=>{act('🔎 חיפוש במייל');return{messages:await gmailSearch(i.query)}}});
+    T.push({name:'read_gmail',description:'קריאת מייל מלא לפי id',inputSchema:sch({id:STR},['id']),execute:async i=>gmailRead(i.id)});
+    T.push({name:'create_gmail_draft',description:'יצירת טיוטת מייל ב-Gmail (לא נשלחת — המשתמש שולח בעצמו)',inputSchema:sch({to:STR,subject:STR,body:STR},['to','body']),execute:async i=>{const id=await gmailDraft(i);act('✉️ טיוטה ל'+i.to);return{draft_id:id}}});
   }
   return T;
 }
@@ -817,16 +855,17 @@ function searchSheet(){S.sheetLive=false;openSheet(()=>`<div class="sh-head" sty
     S.events.filter(e=>hit(e.title)).slice(0,5).forEach(e=>r.push(`<div class="row tap" data-act="event" data-id="${e.id}"><div class="main"><div class="t">${esc(e.title)}</div><div class="m">${fmtDay(e.date)} ${esc(e.time||'')}</div></div><span class="kind">פגישה</span></div>`));
     $('#qres').innerHTML=r.join('')||'<div class="empty">לא נמצא</div>'})}
 function settingsSheet(){S.sheetLive=false;const a=S.settings.automations||{};
-  formSheet('הגדרות',`<button type="button" class="btn primary wide" data-act="push" style="margin-bottom:8px">🔔 הפעל התראות לטלפון</button><button type="button" class="btn ghost wide" data-act="keys" style="margin-bottom:14px">🔑 מפתחות וחיבורים</button>${S.syncErr?`<div class="banner err">${esc(S.syncErr)}</div>`:`<div class="small muted" style="margin-bottom:12px">☁️ מסונכרן לענן (GitHub · ${esc(cfg.dataRepo||'—')})</div>`}`+F('ownerName','השם שלך','text',S.settings.ownerName||'חננאל')+F('assistantName','שם העוזרת','text',S.settings.assistantName||'העוזרת')+F('team','חברי צוות (מופרדים בפסיק)','text',(S.settings.team||[]).join(', '))+
+  formSheet('הגדרות',`<button type="button" class="btn primary wide" data-act="push" style="margin-bottom:8px">🔔 הפעל התראות לטלפון</button><button type="button" class="btn ghost wide" data-act="gconnect" style="margin-bottom:8px">${gOk()?'✅ Google מחובר (Gmail + יומן) — רענן חיבור':'🔗 התחבר לגוגל (Gmail + יומן)'}</button><button type="button" class="btn ghost wide" data-act="keys" style="margin-bottom:14px">🔑 מפתחות וחיבורים</button>${S.syncErr?`<div class="banner err">${esc(S.syncErr)}</div>`:`<div class="small muted" style="margin-bottom:12px">☁️ מסונכרן לענן (GitHub · ${esc(cfg.dataRepo||'—')})</div>`}`+F('ownerName','השם שלך','text',S.settings.ownerName||'חננאל')+F('assistantName','שם העוזרת','text',S.settings.assistantName||'העוזרת')+F('team','חברי צוות (מופרדים בפסיק)','text',(S.settings.team||[]).join(', '))+
     F('paymentDetails','פרטי תשלום שיצורפו לבקשות (ביט / העברה)','textarea',S.settings.paymentDetails||'','placeholder="ביט: 050-0000000&#10;בנק לאומי, סניף…, חשבון…"')+
-    `<div class="grp">אוטומציות</div>${[['leadFollowup','ליד חדש ← משימת מעקב למחר'],['paymentStage','שלב תשלום הושלם ← בקשת תשלום'],['projectDone','פרויקט הסתיים ← בקשת יתרה + משימת תודה']].map(([k,l])=>`<label class="toggle"><span>${l}</span><input type="checkbox" name="auto_${k}" ${a[k]===false?'':'checked'}></label>`).join('')}<div style="height:12px"></div>`,
-    async d=>{await saveSettings({ownerName:d.ownerName||'חננאל',assistantName:d.assistantName||'העוזרת',team:(d.team||'').split(',').map(s=>s.trim()).filter(Boolean),paymentDetails:d.paymentDetails||'',automations:{leadFollowup:!!d.auto_leadFollowup,paymentStage:!!d.auto_paymentStage,projectDone:!!d.auto_projectDone}});toast('נשמר')})}
+    `<div class="grp">אוטומציות</div>${[['gcalSync','פגישה חדשה ← גם ליומן Google'],['leadFollowup','ליד חדש ← משימת מעקב למחר'],['paymentStage','שלב תשלום הושלם ← בקשת תשלום'],['projectDone','פרויקט הסתיים ← בקשת יתרה + משימת תודה']].map(([k,l])=>`<label class="toggle"><span>${l}</span><input type="checkbox" name="auto_${k}" ${a[k]===false?'':'checked'}></label>`).join('')}<div style="height:12px"></div>`,
+    async d=>{await saveSettings({ownerName:d.ownerName||'חננאל',assistantName:d.assistantName||'העוזרת',team:(d.team||'').split(',').map(s=>s.trim()).filter(Boolean),paymentDetails:d.paymentDetails||'',automations:{gcalSync:!!d.auto_gcalSync,leadFollowup:!!d.auto_leadFollowup,paymentStage:!!d.auto_paymentStage,projectDone:!!d.auto_projectDone}});toast('נשמר')})}
 
 /* ============ actions ============ */
 function go(v){S.view=v;renderNav();render();$('#main').scrollTop=v==='chat'?$('#main').scrollHeight:0}
 const run=f=>Promise.resolve().then(f).catch(e=>toast(e.message||'שגיאה'));
 const A={
   view:(id,v)=>go(v), cf:(id,v)=>{S.clientFilter=v;render()}, work:(id,v)=>{S.work=v;render()}, mt:(id,v)=>{S.moneyTab=v;render()},
+  gconnect:()=>googleConnect(),
   push:()=>enablePush().catch(e=>toast(e.message||'שגיאה')), keys:()=>onboarding(),
   showdone:()=>{S.showDone=!S.showDone;render()}, close:closeSheet, settings:settingsSheet, search:searchSheet, cmode:(id,v)=>{S.clientMode=v;render()},
   ask:(id,v)=>sendChat(v),
