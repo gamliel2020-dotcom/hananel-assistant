@@ -235,6 +235,24 @@ html,body,#app,main{overflow-x:hidden}
 .amsg .msg{min-width:0;flex:1 1 auto}
 .msg{overflow-wrap:anywhere;word-break:break-word;min-width:0}
 .msg ul{padding-right:16px;padding-left:0}
+.calc{padding:12px}
+.calh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.calh b{font-size:17px}
+.linkbtn{background:none;border:0;color:var(--accent);font-size:12.5px;font-weight:600;padding:2px}
+.cgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cdh{text-align:center;font-size:11.5px;color:var(--muted);font-weight:600;padding:2px 0 6px}
+.cd{aspect-ratio:1/1.05;border:0;background:none;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:14.5px;font-weight:500;color:var(--ink);padding:0}
+.cd.empty{pointer-events:none}
+.cd.past span{opacity:.45}
+.cd.today span{color:var(--accent);font-weight:800}
+.cd.sel{background:var(--ink)}.cd.sel span{color:var(--bg);opacity:1}
+.cd i{display:flex;gap:2px;height:5px}
+.de,.dt{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+.dt{background:var(--warn)}
+.cd.sel .de{background:#B9A8FF}
+.legend .de,.legend .dt{margin-left:5px}
+.trash{border:0;background:none;color:var(--muted);width:32px;height:32px;border-radius:10px;display:grid;place-items:center;flex:none;opacity:.7}
+.trash:active{background:var(--danger-soft);color:var(--danger)}
 </style>
 </head>
 <body>
@@ -300,6 +318,8 @@ const I={
  x:'<path d="M18 6L6 18M6 6l12 12"/>',
  search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
  chev:'<path d="M15 6l-6 6 6 6"/>',
+ cal:'<rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+ trash:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/>',
  wave:'<path d="M4 10v4M8 7v10M12 4v16M16 7v10M20 10v4"/>',
  phoneoff:'<path d="M18 6L6 18M6 6l12 12"/>',
  micoff:'<path d="M2 2l20 20M9 9v2a3 3 0 0 0 5.1 2.1M15 9.3V5a3 3 0 0 0-5.9-.6M19 10v1a7 7 0 0 1-.6 2.9M5 10v1a7 7 0 0 0 11.7 5.2M12 18v4"/>',
@@ -320,7 +340,7 @@ const COLS=['clients','projects','tasks','events','payments','expenses'];
 
 /* ============ state ============ */
 const S={clients:[],projects:[],tasks:[],events:[],payments:[],expenses:[],chat:[],settings:{},
-  ready:{},view:'today',work:'tasks',moneyTab:'overview',clientFilter:'all',showDone:false,
+  ready:{},view:'today',work:'calendar',moneyTab:'overview',clientFilter:'all',showDone:false,
   busy:false,liveText:'',offline:false,slow:false,err:'',sheet:null,pendingImg:null};
 let mcp=null,canImg=true;
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null;
@@ -506,7 +526,7 @@ $('#vmMute').addEventListener('click',()=>{VM.muted=!VM.muted;$('#vmMute').inner
 $('#vmOrb').addEventListener('click',()=>{if(VM.state==='speaking'){try{VM.src&&VM.src.stop();VM.srcEnd&&VM.srcEnd()}catch(e){}try{speechSynthesis.cancel()}catch(e){}}else if(VM.state==='listening'&&VM.stopListen){VM.stopListen()}});
 
 /* ============ auto-update ============ */
-const APP_VERSION='13';
+const APP_VERSION='14';
 async function checkUpdate(){try{const r=await fetch('version.json?t='+now(),{cache:'no-store'});const j=await r.json();if(j.v&&j.v!==APP_VERSION&&!S.busy&&!VM.on){let k='';try{k=sessionStorage.getItem('upd')}catch(e){}if(k!==j.v){try{sessionStorage.setItem('upd',j.v)}catch(e){}location.reload()}}}catch(e){}}
 
 /* ============ init ============ */
@@ -536,13 +556,13 @@ async function enablePush(){
   reg.showNotification('העוזרת של חננאל',{body:'התראות הופעלו ✓ אזכיר לך משימות ופגישות בזמן',icon:'icon-192.png'});toast('התראות הופעלו ✓')}
 
 /* ============ nav & render ============ */
-const VIEWS=[['today','היום',I.today],['clients','לקוחות',I.clients],['chat','',I.spark],['work','עבודה',I.work],['money','כספים',I.money]];
+const VIEWS=[['today','היום',I.today],['clients','לקוחות',I.clients],['chat','',I.spark],['work','יומן',I.cal],['money','כספים',I.money]];
 function renderNav(){$('#nav').innerHTML=VIEWS.map(([k,l,p])=>k==='chat'?`<button data-act="view" data-v="chat" aria-label="צ׳אט עם העוזרת" class="orb ${S.view===k?'on':''}">${ic(p,26)}</button>`:`<button data-act="view" data-v="${k}" class="${S.view===k?'on':''}">${ic(p)}<span>${l}</span></button>`).join('');$('#gear').innerHTML=ic(I.gear,20);$('#srch').innerHTML=ic(I.search,20)}
 const AVC=['#6A5AF9','#E5484D','#12A26B','#D97706','#2F6FED','#8E4EC6','#0EA5A4','#DB2777'];
 function av(name,cls=''){const s=String(name||'?').trim()||'?';let x=0;for(const ch of s)x=(x*31+ch.charCodeAt(0))>>>0;const pr=s.split(/\s+/);const ini=(pr[0][0]||'')+(pr[1]?pr[1][0]:'');return `<div class="av ${cls}" style="background:${AVC[x%AVC.length]}">${esc(ini)}</div>`}
 function render(){
   const v=S.view;const m=$('#main');
-  const titles={chat:asst(),today:greet(),clients:'לקוחות ולידים',work:'עבודה',money:'כספים'};
+  const titles={chat:asst(),today:greet(),clients:'לקוחות ולידים',work:'יומן ומשימות',money:'כספים'};
   $('#title').textContent=titles[v];
   $('#subtitle').textContent=v==='today'?wd(today())+', '+(+today().slice(8))+' ב'+MONTHS[+today().slice(5,7)-1].replace('׳',''):v==='chat'?'מחוברת ל-CRM, למשימות, ליומן ולכספים':'';
   m.classList.toggle('chatmode',v==='chat');
@@ -566,9 +586,9 @@ function taskRow(t){
   const tm=taskMinutes(t);
   return `<div class="row"><button class="check ${t.done?'on':''}" data-act="tdone" data-id="${t.id}">${ic(I.check,14)}</button>
   <div class="main tap" data-act="task" data-id="${t.id}"><div class="t" style="${t.done?'text-decoration:line-through;opacity:.55':''}">${esc(t.title)}</div>${meta.length?`<div class="m">${meta.map(x=>`<span>${x}</span>`).join('')}</div>`:''}</div>
-  ${t.done?'':`<button class="timer ${t.running?'run':''}" data-act="timer" data-id="${t.id}">${ic(t.running?I.stop:I.play,11)}${tm>=1?mins(tm):''}</button>`}</div>`;
+  ${t.done?'':`<button class="timer ${t.running?'run':''}" data-act="timer" data-id="${t.id}">${ic(t.running?I.stop:I.play,11)}${tm>=1?mins(tm):''}</button>`}<button class="trash" data-act="qdel" data-id="${t.id}" data-v="tasks" aria-label="מחק">${ic(I.trash,17)}</button></div>`;
 }
-function eventRow(e,showDate){return `<div class="row ${e.fromG?'':'tap'}" ${e.fromG?'':`data-act="event" data-id="${e.id}"`}><div class="timecol"><b>${esc(e.time||'—')}</b>${showDate?`<span>${fmtDay(e.date)}</span>`:e.endTime?`<span>עד ${esc(e.endTime)}</span>`:''}</div><div class="evline"></div><div class="main"><div class="t">${esc(e.title)}${e.fromG?' <span class="kind">Google</span>':''}</div><div class="m">${e.clientId?`<span>${esc(clientName(e.clientId))}</span>`:''}${e.location?`<span>📍 ${esc(e.location)}</span>`:''}</div></div></div>`}
+function eventRow(e,showDate){return `<div class="row ${e.fromG?'':'tap'}" ${e.fromG?'':`data-act="event" data-id="${e.id}"`}><div class="timecol"><b>${esc(e.time||'—')}</b>${showDate?`<span>${fmtDay(e.date)}</span>`:e.endTime?`<span>עד ${esc(e.endTime)}</span>`:''}</div><div class="evline"></div><div class="main"><div class="t">${esc(e.title)}${e.fromG?' <span class="kind">Google</span>':''}</div><div class="m">${e.clientId?`<span>${esc(clientName(e.clientId))}</span>`:''}${e.location?`<span>📍 ${esc(e.location)}</span>`:''}</div></div>${e.fromG?'':`<button class="trash" data-act="qdel" data-id="${e.id}" data-v="events" aria-label="מחק">${ic(I.trash,17)}</button>`}</div>`}
 function clientRow(c){const ln=(c.notes||[]).slice(-1)[0];const days=Math.floor((now()-(c.updatedAt||c.createdAt||now()))/864e5);
   return `<div class="row tap" data-act="client" data-id="${c.id}">${av(c.name)}<div class="main"><div class="t">${esc(c.name)}${c.company?` <span class="muted small">· ${esc(c.company)}</span>`:''}</div><div class="m">${c.phone?`<span>${esc(c.phone)}</span>`:''}${c.value?`<span>${money(c.value)}</span>`:''}${c.source?`<span>מקור: ${esc(c.source)}</span>`:''}${ln?`<span>${esc(ln.text.slice(0,50))}</span>`:''}${['lead','talking','quote'].includes(c.status)&&days>=3?`<span style="color:var(--warn)">${days} ימים בלי עדכון</span>`:''}</div></div><span class="pill p-${c.status}">${STATUS_L[c.status]||''}</span></div>`}
 function payRow(p){return `<div class="row tap" data-act="payment" data-id="${p.id}"><div class="main"><div class="t">${esc(p.description||'תשלום')}</div><div class="m">${p.clientId?`<span>${esc(clientName(p.clientId))}</span>`:''}<span>${p.status==='paid'?'שולם '+fmtDay(ymd(new Date(p.paidAt||now()))):'לתשלום עד '+fmtDay(p.due)}</span></div></div><span class="amount">${money(p.amount)}</span><span class="pill p-${p.status}">${p.status==='paid'?'שולם':'ממתין'}</span></div>`}
@@ -610,7 +630,7 @@ function vClients(){
 }
 function vWork(){
   const tab=S.work;
-  let h=`<div class="seg">${[['tasks','משימות'],['projects','פרויקטים'],['calendar','יומן']].map(([k,l])=>`<button class="${tab===k?'on':''}" data-act="work" data-v="${k}">${l}</button>`).join('')}</div>`;
+  let h=`<div class="seg">${[['calendar','יומן'],['tasks','משימות'],['projects','פרויקטים']].map(([k,l])=>`<button class="${tab===k?'on':''}" data-act="work" data-v="${k}">${l}</button>`).join('')}</div>`;
   if(tab==='tasks'){
     const open=S.tasks.filter(t=>!t.done);const td=today();
     const g={overdue:[],today:[],week:[],later:[],someday:[]};
@@ -626,11 +646,7 @@ function vWork(){
     const order={active:0,paused:1,done:2};const ps=[...S.projects].sort((a,b)=>order[a.status]-order[b.status]||(b.updatedAt||0)-(a.updatedAt||0));
     h+=ps.length?ps.map(projRow).join(''):`<div class="card"><div class="empty">אין פרויקטים. לחץ + כדי להקים פרויקט עם מודל תמחור ושלבים.</div></div>`;
   }else{
-    const td=today();const up=[...S.events.filter(e=>e.date>=td),...(S.gcal||[]).filter(g=>g.date>=td&&!S.events.some(e=>e.gid&&e.gid===g.gid)).map(g=>({...g,id:'',fromG:true}))].sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
-    const by={};up.forEach(e=>(by[e.date]=by[e.date]||[]).push(e));
-    const days=Object.keys(by);
-    h+=days.length?days.map(d=>`<div class="grp">${fmtDay(d)}${d!==td&&d!==addDays(td,1)?'':' · '+wd(d)}</div><div class="card" style="padding:4px 14px">${by[d].map(eventRow).join('')}</div>`).join(''):`<div class="card"><div class="empty">היומן ריק. לחץ + להוספת פגישה.</div></div>`;
-    const past=S.events.filter(e=>e.date<td).length;if(past)h+=`<div class="small muted" style="margin-top:8px">${past} פגישות קודמות שמורות בכרטיסי הלקוחות</div>`;
+    h+=vCalendar();
   }
   return h;
 }
@@ -672,6 +688,24 @@ function vMoney(){
   }
   return h;
 }
+
+/* ---- month calendar ---- */
+const HMONTH=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+function vCalendar(){const td=today();const mo=S.calMonth||td.slice(0,7);const sel=S.calDay||td;const[y,m]=mo.split('-').map(Number);
+  const first=new Date(Date.UTC(y,m-1,1));const startDow=first.getUTCDay();const dim=new Date(Date.UTC(y,m,0)).getUTCDate();
+  const evBy={},tkBy={};S.events.forEach(e=>{(evBy[e.date]=evBy[e.date]||[]).push(e)});S.tasks.forEach(t=>{if(t.due)(tkBy[t.due]=tkBy[t.due]||[]).push(t)});
+  let cells='';for(let i=0;i<startDow;i++)cells+='<div class="cd empty"></div>';
+  for(let d=1;d<=dim;d++){const ds=`${mo}-${String(d).padStart(2,'0')}`;const ne=(evBy[ds]||[]).length,nt=(tkBy[ds]||[]).filter(t=>!t.done).length;
+    cells+=`<button class="cd ${ds===td?'today':''} ${ds===sel?'sel':''} ${ds<td?'past':''}" data-act="calday" data-v="${ds}"><span>${d}</span><i>${ne?'<b class="de"></b>'.repeat(Math.min(ne,3)):''}${nt?'<b class="dt"></b>'.repeat(Math.min(nt,3)):''}</i></button>`}
+  const evs=(evBy[sel]||[]).sort((a,b)=>(a.time||'99').localeCompare(b.time||'99'));const tks=(tkBy[sel]||[]).sort((a,b)=>(a.time||'99').localeCompare(b.time||'99'));
+  const prev=new Date(Date.UTC(y,m-2,1)).toISOString().slice(0,7),next=new Date(Date.UTC(y,m,1)).toISOString().slice(0,7);
+  return `<div class="card calc"><div class="calh"><button class="iconbtn" data-act="calmo" data-v="${prev}">${ic('<path d="M9 6l6 6-6 6"/>',18)}</button><div style="text-align:center"><b>${HMONTH[m-1]} ${y}</b>${mo!==td.slice(0,7)||sel!==td?`<div><button class="linkbtn" data-act="calday" data-v="${td}">חזרה להיום</button></div>`:''}</div><button class="iconbtn" data-act="calmo" data-v="${next}">${ic('<path d="M15 6l-6 6 6 6"/>',18)}</button></div>
+  <div class="cgrid">${['א','ב','ג','ד','ה','ו','ש'].map(x=>`<div class="cdh">${x}</div>`).join('')}${cells}</div>
+  <div class="legend" style="justify-content:center;margin-top:6px"><span><b class="de"></b> פגישה</span><span><b class="dt"></b> משימה</span></div></div>
+  <div class="grp" style="justify-content:space-between"><span>${fmtDay(sel)}${sel===td||sel===addDays(td,1)?' · '+wd(sel):''} · ${(+sel.slice(8))}.${(+sel.slice(5,7))}</span><span class="btnrow"><button class="btn sm ghost" data-act="dayevent" data-v="${sel}">+ פגישה</button><button class="btn sm ghost" data-act="daytask" data-v="${sel}">+ משימה</button></span></div>
+  <div class="card" style="padding:4px 14px">${evs.length||tks.length?evs.map(e=>eventRow(e)).join('')+tks.map(taskRow).join(''):'<div class="empty">אין כלום ביום הזה</div>'}</div>`}
+async function quickDel(col,id){const item=find(col,id);if(!item)return;await remove(col,id);undoToast('נמחק ✓',()=>{if(!find(col,id)){S[col]=[...S[col],item];persist()}})}
+function undoToast(t,fn){const el=$('#toast');el.innerHTML=esc(t)+' <button id="undoBtn" style="margin-right:12px;background:none;border:0;color:#B9A8FF;font-weight:800;font-size:14px">ביטול</button>';el.classList.add('show');$('#undoBtn').onclick=()=>{fn();el.classList.remove('show')};clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove('show'),5000)}
 
 /* ---- chat view ---- */
 function md(t){
@@ -971,11 +1005,15 @@ const A={
   view:(id,v)=>go(v), cf:(id,v)=>{S.clientFilter=v;render()}, work:(id,v)=>{S.work=v;render()}, mt:(id,v)=>{S.moneyTab=v;render()},
   gconnect:()=>googleConnect(),
   push:()=>enablePush().catch(e=>toast(e.message||'שגיאה')), keys:()=>onboarding(),
+  calmo:(id,v)=>{S.calMonth=v;S.calDay=v===today().slice(0,7)?today():v+'-01';render()},
+  calday:(id,v)=>{S.calDay=v;S.calMonth=v.slice(0,7);render()},
+  dayevent:(id,v)=>eventForm({},{date:v}), daytask:(id,v)=>taskForm({},{due:v}),
+  qdel:(id,v,el,e)=>{e.stopPropagation&&e.stopPropagation();run(()=>quickDel(v,id))},
   showdone:()=>{S.showDone=!S.showDone;render()}, close:closeSheet, settings:settingsSheet, search:searchSheet, cmode:(id,v)=>{S.clientMode=v;render()},
   ask:(id,v)=>sendChat(v),
   brief:()=>sendChat('תני לי סיכום בוקר'),
   scanmail:()=>{if(!mcp){toast('צריך לאשר גישה ל-Gmail — נסה שוב אחרי האישור');}sendChat('סרקי את ה-Gmail שלי מ-30 הימים האחרונים, מצאי קבלות וחשבוניות על הוצאות עסקיות ותוסיפי את מה שחסר להוצאות')},
-  fab:()=>{const v=S.view;if(v==='clients')clientForm();else if(v==='work')(S.work==='tasks'?taskForm():S.work==='projects'?projectForm():eventForm());else if(v==='money')(S.moneyTab==='expenses'?expenseForm():paymentForm())},
+  fab:()=>{const v=S.view;if(v==='clients')clientForm();else if(v==='work')(S.work==='tasks'?taskForm():S.work==='projects'?projectForm():eventForm({},{date:S.calDay||today()}));else if(v==='money')(S.moneyTab==='expenses'?expenseForm():paymentForm())},
   client:id=>clientSheet(id), project:id=>projectSheet(id), payment:id=>paymentSheet(id),
   task:id=>taskForm(find('tasks',id)), event:id=>eventForm(find('events',id)), expense:id=>expenseForm(find('expenses',id)),
   tdone:id=>run(()=>{const t=find('tasks',id);return updateTask(id,{done:!t.done})}),
