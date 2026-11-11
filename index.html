@@ -434,9 +434,9 @@ async function del(kind,id){const col={client:'clients',project:'projects',task:
 async function saveSettings(u){S.settings={...S.settings,...JSON.parse(JSON.stringify(u))};persist()}
 
 /* ============ Google (Gmail + Calendar) ============ */
-const GOOGLE_CLIENT_ID='342331090392-elh8qtvektbcu4e9kpssn1fo8kk3m93b.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID='';
 const G_SCOPES='https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.compose https://www.googleapis.com/auth/calendar.events';
-const gClient=()=>cfg.googleClientId||GOOGLE_CLIENT_ID;
+const gClient=()=>'';
 const gOk=()=>!!(cfg.gToken&&cfg.gExp>now()+60000);
 function googleConnect(silent){if(!gClient()){if(!silent)toast('חסר Google Client ID — הדבק אותו בהגדרות');return}
   const u='https://accounts.google.com/o/oauth2/v2/auth?'+new URLSearchParams({client_id:gClient(),redirect_uri:location.origin+location.pathname,response_type:'token',scope:G_SCOPES,include_granted_scopes:'true',state:'g'+now(),...(silent?{prompt:'none'}:{})});
@@ -506,11 +506,12 @@ $('#vmMute').addEventListener('click',()=>{VM.muted=!VM.muted;$('#vmMute').inner
 $('#vmOrb').addEventListener('click',()=>{if(VM.state==='speaking'){try{VM.src&&VM.src.stop();VM.srcEnd&&VM.srcEnd()}catch(e){}try{speechSynthesis.cancel()}catch(e){}}else if(VM.state==='listening'&&VM.stopListen){VM.stopListen()}});
 
 /* ============ auto-update ============ */
-const APP_VERSION='12';
+const APP_VERSION='13';
 async function checkUpdate(){try{const r=await fetch('version.json?t='+now(),{cache:'no-store'});const j=await r.json();if(j.v&&j.v!==APP_VERSION&&!S.busy&&!VM.on){let k='';try{k=sessionStorage.getItem('upd')}catch(e){}if(k!==j.v){try{sessionStorage.setItem('upd',j.v)}catch(e){}location.reload()}}}catch(e){}}
 
 /* ============ init ============ */
 async function init(){
+  if(cfg.gToken||cfg.gConnected||cfg.googleClientId){const t=cfg.gToken;delete cfg.gToken;delete cfg.gExp;delete cfg.gConnected;delete cfg.googleClientId;saveCfg();if(t)fetch('https://oauth2.googleapis.com/revoke?token='+encodeURIComponent(t),{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'}}).catch(()=>{})}
   googleCatch();if(cfg.gConnected&&!gOk()&&gClient()){let t=0;try{t=+sessionStorage.getItem('gTry')||0}catch(e){}if(now()-t>10*60000){try{sessionStorage.setItem('gTry',now())}catch(e){}googleConnect(true);return}}
   loadLocal();renderNav();setupComposer();render();refreshGcal();setInterval(refreshGcal,5*60000);
   if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
@@ -521,10 +522,10 @@ async function init(){
 }
 async function startSync(){try{await ensureRepo();await pullRemote()}catch(e){S.syncErr=e.message;render()}}
 const isStandalone=()=>window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
-function onboarding(){S.sheetLive=false;window._save=async d=>{d.apiKey=(d.apiKey||'').trim();d.ghToken=(d.ghToken||'').trim();if(!d.apiKey.startsWith('sk-ant-'))throw new Error('מפתח Anthropic צריך להתחיל ב-sk-ant-');if(!/^(ghp_|github_pat_)/.test(d.ghToken))throw new Error('טוקן GitHub צריך להתחיל ב-ghp_');cfg.apiKey=d.apiKey.trim();cfg.ghToken=d.ghToken.trim();cfg.googleClientId=(d.googleClientId||'').trim();cfg.geminiKey=(d.geminiKey||'').trim();saveCfg();toast('מתחבר…');await startSync();toast('מוכן ✓ אפשר לדבר עם העוזרת')};
+function onboarding(){S.sheetLive=false;window._save=async d=>{d.apiKey=(d.apiKey||'').trim();d.ghToken=(d.ghToken||'').trim();if(!d.apiKey.startsWith('sk-ant-'))throw new Error('מפתח Anthropic צריך להתחיל ב-sk-ant-');if(!/^(ghp_|github_pat_)/.test(d.ghToken))throw new Error('טוקן GitHub צריך להתחיל ב-ghp_');cfg.apiKey=d.apiKey.trim();cfg.ghToken=d.ghToken.trim();cfg.geminiKey=(d.geminiKey||'').trim();saveCfg();toast('מתחבר…');await startSync();toast('מוכן ✓ אפשר לדבר עם העוזרת')};
   openSheet(()=>`<div class="sh-head"><div><h2>ברוך הבא, חננאל 👋</h2><div class="small muted">הגדרה חד־פעמית. המפתחות נשמרים רק בטלפון שלך.</div></div></div>
   ${isStandalone()?'':`<div class="card" style="background:var(--accent-soft);box-shadow:none"><b>📲 קודם כל — התקנה</b><div class="small" style="margin-top:6px;line-height:1.7">בספארי: כפתור שיתוף ⬆ ← "הוספה למסך הבית" ← הוסף. אחר כך תפתח מהאייקון ותמשיך כאן.</div></div>`}
-  <form id="frm">${F('apiKey','מפתח Anthropic (מ-platform.claude.com ← API Keys)','text',cfg.apiKey||'','required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore inputmode="text" dir="ltr" placeholder="sk-ant-…"')}${F('googleClientId','Google Client ID (לחיבור Gmail ויומן — לא חובה)','text',cfg.googleClientId||'','autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" dir="ltr" placeholder="….apps.googleusercontent.com"')}${F('geminiKey','מפתח Gemini להקלטה קולית (מ-aistudio.google.com/apikey)','text',cfg.geminiKey||'','autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" dir="ltr" placeholder="AIza…"')}${F('ghToken','טוקן GitHub','text',cfg.ghToken||'','required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore inputmode="text" dir="ltr" placeholder="ghp_…"')}<button class="btn primary wide" type="submit">התחל</button></form>`);
+  <form id="frm">${F('apiKey','מפתח Anthropic (מ-platform.claude.com ← API Keys)','text',cfg.apiKey||'','required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore inputmode="text" dir="ltr" placeholder="sk-ant-…"')}${F('geminiKey','מפתח Gemini להקלטה קולית (מ-aistudio.google.com/apikey)','text',cfg.geminiKey||'','autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" dir="ltr" placeholder="AIza…"')}${F('ghToken','טוקן GitHub','text',cfg.ghToken||'','required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore inputmode="text" dir="ltr" placeholder="ghp_…"')}<button class="btn primary wide" type="submit">התחל</button></form>`);
   $('#frm').addEventListener('submit',async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target).entries());try{await window._save(d);closeSheet()}catch(err){toast(err.message||'שגיאה')}});}
 function urlB64(s){const p='='.repeat((4-s.length%4)%4);const b=atob((s+p).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from([...b].map(c=>c.charCodeAt(0)))}
 async function enablePush(){
@@ -720,7 +721,7 @@ function context(){
 צוות: ${(S.settings.team||[]).join(', ')||'רק '+owner()}.${VM.on?'\n⚠ מצב שיחה קולית פעיל עכשיו: התשובה תוקרא בקול — 1–3 משפטים קצרים, בלי רשימות, בלי אימוג׳י.':''}
 נתונים עדכניים (JSON):
 ${JSON.stringify({clients,projects,open_tasks:tasks,done_last_7_days:doneRecent,events,google_calendar_next_14_days:gcal,payments,expenses_last_60_days:expenses})}
-${gOk()?'Google מחובר: יש לך גישה ל-Gmail (חיפוש, קריאה, יצירת טיוטה — לא שליחה) וליומן Google. פגישה חדשה (add_event) נוספת אוטומטית גם ליומן Google. לסריקת קבלות: search_gmail עם newer_than:30d (קבלה OR חשבונית OR receipt OR invoice), read_gmail לרלוונטיים, והוסיפי הוצאות שלא קיימות (gmail_thread_id = id המייל).':'Google לא מחובר כרגע. אם מבקשים להתחבר לגוגל או משהו מהמייל/היומן של Google — הפעילי את הכלי connect_google, והסבירי בקצרה שייפתח מסך של גוגל (ללחוץ Continue אם מופיעה אזהרה). ההתחברות גם זמינה בהגדרות ⚙ ← "התחבר לגוגל".'}`;
+${gOk()?'Google מחובר: יש לך גישה ל-Gmail (חיפוש, קריאה, יצירת טיוטה — לא שליחה) וליומן Google. פגישה חדשה (add_event) נוספת אוטומטית גם ליומן Google. לסריקת קבלות: search_gmail עם newer_than:30d (קבלה OR חשבונית OR receipt OR invoice), read_gmail לרלוונטיים, והוסיפי הוצאות שלא קיימות (gmail_thread_id = id המייל).':'אין חיבור ליומן Google או ל-Gmail — לפי בקשת המשתמש עובדים רק עם היומן של המערכת. תזכורות נשלחות לטלפון אוטומטית לפגישות ומשימות עם שעה.'}`;
 }
 const sch=(props,req=[])=>({type:'object',properties:props,required:req});
 const STR={type:'string'},NUM={type:'number'};
@@ -958,9 +959,9 @@ function searchSheet(){S.sheetLive=false;openSheet(()=>`<div class="sh-head" sty
     S.events.filter(e=>hit(e.title)).slice(0,5).forEach(e=>r.push(`<div class="row tap" data-act="event" data-id="${e.id}"><div class="main"><div class="t">${esc(e.title)}</div><div class="m">${fmtDay(e.date)} ${esc(e.time||'')}</div></div><span class="kind">פגישה</span></div>`));
     $('#qres').innerHTML=r.join('')||'<div class="empty">לא נמצא</div>'})}
 function settingsSheet(){S.sheetLive=false;const a=S.settings.automations||{};
-  formSheet('הגדרות',`<button type="button" class="btn primary wide" data-act="push" style="margin-bottom:8px">🔔 הפעל התראות לטלפון</button><button type="button" class="btn ghost wide" data-act="gconnect" style="margin-bottom:8px">${gOk()?'✅ Google מחובר (Gmail + יומן) — רענן חיבור':'🔗 התחבר לגוגל (Gmail + יומן)'}</button><button type="button" class="btn ghost wide" data-act="keys" style="margin-bottom:14px">🔑 מפתחות וחיבורים</button>${S.syncErr?`<div class="banner err">${esc(S.syncErr)}</div>`:`<div class="small muted" style="margin-bottom:12px">☁️ מסונכרן לענן (GitHub · ${esc(cfg.dataRepo||'—')})</div>`}`+F('ownerName','השם שלך','text',S.settings.ownerName||'חננאל')+F('assistantName','שם העוזרת','text',S.settings.assistantName||'העוזרת')+F('team','חברי צוות (מופרדים בפסיק)','text',(S.settings.team||[]).join(', '))+
+  formSheet('הגדרות',`<button type="button" class="btn primary wide" data-act="push" style="margin-bottom:8px">🔔 הפעל התראות לטלפון</button><button type="button" class="btn ghost wide" data-act="keys" style="margin-bottom:14px">🔑 מפתחות וחיבורים</button>${S.syncErr?`<div class="banner err">${esc(S.syncErr)}</div>`:`<div class="small muted" style="margin-bottom:12px">☁️ מסונכרן לענן (GitHub · ${esc(cfg.dataRepo||'—')})</div>`}`+F('ownerName','השם שלך','text',S.settings.ownerName||'חננאל')+F('assistantName','שם העוזרת','text',S.settings.assistantName||'העוזרת')+F('team','חברי צוות (מופרדים בפסיק)','text',(S.settings.team||[]).join(', '))+
     F('paymentDetails','פרטי תשלום שיצורפו לבקשות (ביט / העברה)','textarea',S.settings.paymentDetails||'','placeholder="ביט: 050-0000000&#10;בנק לאומי, סניף…, חשבון…"')+
-    `<div class="grp">אוטומציות</div>${[['gcalSync','פגישה חדשה ← גם ליומן Google'],['leadFollowup','ליד חדש ← משימת מעקב למחר'],['paymentStage','שלב תשלום הושלם ← בקשת תשלום'],['projectDone','פרויקט הסתיים ← בקשת יתרה + משימת תודה']].map(([k,l])=>`<label class="toggle"><span>${l}</span><input type="checkbox" name="auto_${k}" ${a[k]===false?'':'checked'}></label>`).join('')}<div style="height:12px"></div>`,
+    `<div class="grp">אוטומציות</div>${[['leadFollowup','ליד חדש ← משימת מעקב למחר'],['paymentStage','שלב תשלום הושלם ← בקשת תשלום'],['projectDone','פרויקט הסתיים ← בקשת יתרה + משימת תודה']].map(([k,l])=>`<label class="toggle"><span>${l}</span><input type="checkbox" name="auto_${k}" ${a[k]===false?'':'checked'}></label>`).join('')}<div style="height:12px"></div>`,
     async d=>{await saveSettings({ownerName:d.ownerName||'חננאל',assistantName:d.assistantName||'העוזרת',team:(d.team||'').split(',').map(s=>s.trim()).filter(Boolean),paymentDetails:d.paymentDetails||'',automations:{gcalSync:!!d.auto_gcalSync,leadFollowup:!!d.auto_leadFollowup,paymentStage:!!d.auto_paymentStage,projectDone:!!d.auto_projectDone}});toast('נשמר')})}
 
 /* ============ actions ============ */
