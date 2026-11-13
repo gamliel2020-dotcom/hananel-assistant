@@ -533,7 +533,7 @@ $('#vmMute').addEventListener('click',()=>{VM.muted=!VM.muted;$('#vmMute').inner
 $('#vmOrb').addEventListener('click',()=>{if(VM.state==='speaking'){try{VM.src&&VM.src.stop();VM.srcEnd&&VM.srcEnd()}catch(e){}try{speechSynthesis.cancel()}catch(e){}}else if(VM.state==='listening'&&VM.stopListen){VM.stopListen()}});
 
 /* ============ auto-update ============ */
-const APP_VERSION='21';
+const APP_VERSION='22';
 async function checkUpdate(){try{const r=await fetch('version.json?t='+now(),{cache:'no-store'});const j=await r.json();if(j.v&&j.v!==APP_VERSION&&!S.busy&&!VM.on){let k='';try{k=sessionStorage.getItem('upd')}catch(e){}if(k!==j.v){try{sessionStorage.setItem('upd',j.v)}catch(e){}await fetch('index.html?fresh=1',{cache:'no-store'}).catch(()=>{});location.reload()}}}catch(e){}}
 
 function priceList(){if(!Array.isArray(S.settings.priceList))return [{item:'שעתיים צילום',price:850},  {item:'רילס (צילום עד שעתיים)',price:850,note:'רילס ערוך + חומרי גלם'},  {item:'2 רילסים (צילום עד 3 שעות)',price:1200,note:'2 רילסים ערוכים + חומרי גלם'},  {item:'סרטון AI מושן גרפיקס',price:850,note:'בלי צילום, עד 45–50 שניות'},  {item:'סרטון AI עם AI B-roll',price:1200,note:'מושן גרפיקס + צילומי AI, עד 45–50 שניות'},  {item:'סרטון AI עם קריינות AI',price:1300,note:'מושן + AI B-roll + קריינות AI, עד 45–50 שניות'},  {item:'יום הפקה ועיצוב אירוע עד 8 שעות',price:2200,note:'6–8 סטוריז לייב + רילס מאחורי הקלעים + רילס עיצוב סופי + גלם באיירדרופ'},  {item:'יום הפקה ועיצוב אירוע עד 10 שעות',price:2500,note:'כמו עד 8 שעות'},  {item:'שירה (Event Design) — יום אירוע 8–10 שעות',price:1300,note:'לקוחה קבועה, מינימום 1,200, תשלום בסוף האירוע בלי מקדמה'}];return S.settings.priceList}
@@ -753,7 +753,13 @@ function context(){
 עכשיו: ${wd(td)} ${td}, השעה ${hm(t)} (שעון ישראל). הימים הקרובים: ${days.join(' | ')}.
 כללים:
 - כשההודעה הגיעה בדיבור (שיחה קולית) — עני קצר מאוד (1–3 משפטים), בלי רשימות ובלי אימוג׳י, כי התשובה מוקראת בקול.
-- דברי בעברית, קצר, חם ולעניין, בגוף ראשון נקבה. בלי הקדמות. ${owner()} בדרך כלל כותב מהנייד.
+- ${owner()} כותב מהנייד ורוצה תשובות קצרות ונקיות. ברירת מחדל: 1–3 משפטים. בלי הקדמות, בלי הסברים טכניים, בלי לחזור על מה שהוא אמר.
+- ברכה ("היי", "בוקר טוב", "מה קורה") → ברכה קצרה + "במה לעזור?" בלבד. לא לצרף סיכומים או המלצות שלא ביקש.
+- עני רק על ההודעה האחרונה. אל תחזרי להודעות קודמות, אל תתקני ואל תתנצלי על תשובות קודמות — אלא אם הוא שואל על זה במפורש.
+- ההודעות הקודמות שלו מסומנות בתאריך ושעה. "היום"/"מחר" בתוכן ישן מתייחסים לתאריך שלו — לא לעכשיו. התאריך הנכון תמיד הוא "עכשיו" למטה.
+- אל תמציאי מידע. אין לך גישה ליומן Google, ל-Gmail, לוואטסאפ או לאינטרנט. אם משהו לא קיים בנתונים — אמרי במשפט אחד שאין.
+- רשימות רק כשהוא מבקש סיכום, רשימה או הצעת מחיר.
+- דברי בעברית, חם ולעניין, בגוף ראשון נקבה.
 - כשמבקשים פעולה — בצעי אותה בכלים מיד, אל תשאלי "לבצע?". אם חסר פרט חיוני באמת (למשל סכום לבקשת תשלום) — שאלי שאלה אחת קצרה. פרטים לא חיוניים — השלימי בהיגיון.
 - לפני יצירת לקוח בדקי אם כבר קיים ברשימה (גם שם דומה) — ואז עדכני אותו במקום ליצור כפול. השתמשי תמיד ב-id מהנתונים.
 - "תזכירי לי X" = משימה עם due ו-time. "פגישה/שיחה עם" בתאריך ושעה = add_event. תאריכים בפורמט YYYY-MM-DD, שעות HH:MM. "מחר", "ביום חמישי" — חשבי לפי רשימת הימים למעלה.
@@ -832,28 +838,29 @@ async function sendChat(text,img){
   text=(text||'').trim();if((!text&&!img)||S.busy)return;
   if(!cfg.apiKey){onboarding();return}
   if(S.view!=='chat')go('chat');
-  const hist=S.chat.slice(-14);
+  const hist=S.chat.filter(m=>!m.err&&!/^משהו השתבש/.test(m.text||'')).slice(-10);
   S.chat=[...S.chat,{role:'user',text:text||'(תמונה)',img:!!img,at:now()}];
   S.busy=true;S.liveText='';render();
-  const msgs=[];for(const m of hist){const c=m.role==='user'?m.text:(m.text+(m.actions&&m.actions.length?'\n[בוצע: '+m.actions.join(' · ')+']':''));const r=m.role==='user'?'user':'assistant';if(msgs.length&&msgs[msgs.length-1].role===r)msgs[msgs.length-1].content+='\n'+c;else msgs.push({role:r,content:c})}
+  const stamp=m=>m.at?'['+fmtDay(ymd(new Date(m.at)))+' '+(+ymd(new Date(m.at)).slice(8))+'.'+(+ymd(new Date(m.at)).slice(5,7))+' '+hm(new Date(m.at))+'] ':'';
+  const msgs=[];for(const m of hist){const c=m.role==='user'?stamp(m)+m.text:(m.text+(m.actions&&m.actions.length?'\n[בוצע: '+m.actions.join(' · ')+']':''));const r=m.role==='user'?'user':'assistant';if(msgs.length&&msgs[msgs.length-1].role===r)msgs[msgs.length-1].content+='\n'+c;else msgs.push({role:r,content:c})}
   while(msgs.length&&msgs[0].role!=='user')msgs.shift();
   const utext=text||'(שלח תמונה — כנראה קבלה או חשבונית)';let ucontent=utext;
   if(img){try{const im=await imgToB64(img);ucontent=[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:im}},{type:'text',text:utext}]}catch(e){}}
   if(msgs.length&&msgs[msgs.length-1].role==='user')msgs.pop();
   msgs.push({role:'user',content:ucontent});
   ACTLOG=[];abortCtl=new AbortController();
-  let reply='';
+  let reply='',isErr=false;
   try{
     reply=await runAgent(msgs,tools(),t=>{S.liveText=t;const el=$('#live');if(el){el.innerHTML=md(t);$('#main').scrollTop=$('#main').scrollHeight}});
   }catch(e){
-    reply=(e&&e.text)||'';const code=e&&e.code;
+    console.warn('assistant error',e);isErr=true;reply=(e&&e.text)||'';const code=e&&e.code;
     if(code==='auth')reply+='\n\nמפתח ה-API לא תקין — עדכן אותו בהגדרות ⚙.';
     else if(code==='credit')reply+='\n\nנגמרה היתרה בחשבון Anthropic — צריך לטעון קרדיט ב-platform.claude.com ← Billing.';
     else if(code==='rate_limited')reply+='\n\nיותר מדי בקשות ברצף — נסה שוב בעוד דקה.';
-    else if(!reply)reply='משהו השתבש: '+((e&&e.message)||code||'שגיאה')+'. נסה שוב.';
+    else if(!reply)reply=ACTLOG&&ACTLOG.length?'בוצע ✓':'לא הצלחתי לענות הפעם, נסה שוב 🙏';
   }
   const actions=ACTLOG;ACTLOG=null;
-  S.chat=[...S.chat,{role:'assistant',text:reply.trim()||(actions.length?'בוצע ✓':'…'),actions,at:now()}];
+  S.chat=[...S.chat,{role:'assistant',text:reply.trim()||(actions.length?'בוצע ✓':'…'),actions,at:now(),...(isErr?{err:true}:{})}];
   S.busy=false;S.liveText='';render();saveChat();
   return reply.trim();
 }
