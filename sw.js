@@ -1,8 +1,9 @@
-const C='hananel-v3';
+const C='hananel-v4';
 const SHELL=['index.html','manifest.json','icon-192.png','icon-512.png','icon-180.png'];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(C).then(c=>c.addAll(SHELL)).catch(()=>{}))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(e.request.method!=='GET'||u.origin!==location.origin)return;
+  if(u.pathname.includes('/lookup'))return; // Look Up is a separate app: never serve the assistant for it
   if(u.pathname.endsWith('version.json')){e.respondWith(fetch(e.request,{cache:'no-store'}));return}
   const isPage=e.request.mode==='navigate'||u.pathname.endsWith('/')||u.pathname.endsWith('index.html');
   const key=isPage?'index.html':u.pathname;
