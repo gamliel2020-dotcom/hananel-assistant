@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#FBF6EE">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Look Up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FBF6EE; --card:#FFFFFF; --ink:#2B2723; --soft:#8A7E73; --line:#EDE4D8;
+  --peach:#E8987A; --peach2:#F6CDB8; --green:#3F6B57; --green2:#E3EDE6;
+  --r:22px; --ease:cubic-bezier(.22,.8,.26,1);
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#1C1915;--card:#26221D;--ink:#F3ECE3;--soft:#A89B8D;--line:#36302A;--green2:#24332B;--peach2:#4A3329}
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--ink);font-family:Rubik,-apple-system,"SF Pro Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+input{font:inherit;color:inherit}
+.screen{position:fixed;inset:0;display:none;flex-direction:column;padding:calc(env(safe-area-inset-top) + 20px) 24px calc(env(safe-area-inset-bottom) + 24px);overflow-y:auto}
+.screen.on{display:flex;animation:fade .45s var(--ease)}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h1{font-size:32px;line-height:1.15;font-weight:700;letter-spacing:-.4px}
+h2{font-size:22px;font-weight:600;margin-bottom:6px}
+p{color:var(--soft);font-size:17px;line-height:1.5}
+.grow{flex:1}
+.btn{display:block;width:100%;height:58px;border-radius:18px;font-size:18px;font-weight:600;transition:transform .15s var(--ease),opacity .2s}
+.btn:active{transform:scale(.97)}
+.btn.main{background:var(--green);color:#fff}
+.btn.soft{background:transparent;color:var(--soft);font-weight:500;height:48px}
+.btn.peach{background:var(--peach);color:#fff}
+.btn[disabled]{opacity:.35}
+.dots{display:flex;gap:6px;justify-content:center;margin-bottom:22px}
+.dots i{width:6px;height:6px;border-radius:3px;background:var(--line);transition:all .3s}
+.dots i.on{width:22px;background:var(--peach)}
+.logo{width:64px;height:64px;border-radius:20px;background:linear-gradient(140deg,var(--peach),var(--peach2));display:grid;place-items:center;margin-bottom:28px;box-shadow:0 10px 30px -10px rgba(232,152,122,.6)}
+.logo span{width:22px;height:22px;border-radius:50%;border:3px solid #fff;transform:translateY(-4px)}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.chip{padding:12px 16px;border-radius:14px;background:var(--card);border:1.5px solid var(--line);font-size:16px;font-weight:500;transition:all .2s}
+.chip.on{background:var(--green2);border-color:var(--green);color:var(--green)}
+@media (prefers-color-scheme:dark){.chip.on{color:#9CC7AF}}
+.field{width:100%;height:54px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);padding:0 16px;font-size:17px;outline:none}
+.field:focus{border-color:var(--peach)}
+.list{margin-top:18px;display:flex;flex-direction:column;gap:12px}
+.person{background:var(--card);border-radius:var(--r);padding:14px;display:flex;gap:12px;align-items:center;border:1.5px solid var(--line)}
+.person .ph{width:54px;height:54px;border-radius:16px;background:var(--line) center/cover;flex-shrink:0}
+.person b{font-weight:600;font-size:17px}
+.person small{color:var(--soft);display:block}
+.person .x{margin-inline-start:auto;color:var(--soft);font-size:22px;padding:6px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:14px}
+.grid div{aspect-ratio:1;border-radius:12px;background:var(--line) center/cover}
+.add{border:1.5px dashed var(--soft);border-radius:var(--r);padding:16px;text-align:center;color:var(--soft);font-weight:500;display:block;width:100%}
+.row{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--line);font-size:17px}
+.row:last-child{border:0}
+.row input[type=time]{border:0;background:var(--green2);color:var(--green);padding:8px 12px;border-radius:10px;font-weight:600;font-size:16px}
+.switch{width:52px;height:32px;border-radius:16px;background:var(--line);position:relative;transition:.25s}
+.switch::after{content:"";position:absolute;top:3px;right:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:.25s var(--ease)}
+.switch.on{background:var(--green)}
+.switch.on::after{right:23px}
+.card{background:var(--card);border-radius:var(--r);padding:20px;border:1.5px solid var(--line)}
+.sheet{position:fixed;inset:0;background:rgba(20,16,12,.45);display:none;align-items:flex-end;z-index:20}
+.sheet.on{display:flex;animation:fade .3s}
+.sheet>div{background:var(--bg);width:100%;border-radius:28px 28px 0 0;padding:24px 24px calc(env(safe-area-inset-bottom) + 24px);max-height:88vh;overflow-y:auto}
+
+/* ===== PAUSE ===== */
+#pause{padding:0;overflow:hidden;background:#1a1612}
+#pause .bg{position:absolute;inset:-40px;background:center/cover;filter:blur(28px) saturate(1.1) brightness(.62);transform:scale(1.1);transition:opacity 1.2s}
+#pause .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.05) 40%,rgba(0,0,0,.55))}
+#pause .wrap{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;padding:calc(env(safe-area-inset-top) + 28px) 26px calc(env(safe-area-inset-bottom) + 22px);color:#fff;text-align:center}
+#pause .greet{font-size:15px;letter-spacing:.3px;opacity:.85;font-weight:500}
+.breath{position:relative;width:240px;height:240px;margin:34px 0 26px;display:grid;place-items:center}
+.breath .photo{width:200px;height:200px;border-radius:50%;background:center/cover;box-shadow:0 20px 60px rgba(0,0,0,.45);transform:scale(.82);transition:transform 3s cubic-bezier(.45,0,.35,1)}
+.breath .ring{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(255,255,255,.55);transform:scale(.78);opacity:.0;transition:transform 3s cubic-bezier(.45,0,.35,1),opacity 1s}
+.breath.in .photo{transform:scale(1)}
+.breath.in .ring{transform:scale(1.08);opacity:1}
+.breath.out .photo{transform:scale(.88)}
+.breath.out .ring{transform:scale(.9);opacity:.5}
+#pause .cue{font-size:19px;font-weight:500;height:26px;opacity:.95;transition:opacity .5s}
+#pause .msg{opacity:0;transform:translateY(10px);transition:all .8s var(--ease);margin-top:6px}
+#pause .msg.on{opacity:1;transform:none}
+#pause .title{font-size:30px;font-weight:700;line-height:1.2;letter-spacing:-.3px}
+#pause .idea{margin-top:16px;display:inline-flex;gap:10px;align-items:center;background:rgba(255,255,255,.16);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:14px 18px;border-radius:18px;font-size:17px;font-weight:500;line-height:1.35;text-align:right}
+#pause .acts{width:100%;margin-top:auto;opacity:0;transform:translateY(14px);transition:all .7s var(--ease);pointer-events:none}
+#pause .acts.on{opacity:1;transform:none;pointer-events:auto}
+#pause .here{background:#fff;color:#2B2723}
+#pause .anyway{color:rgba(255,255,255,.75);height:50px;margin-top:6px;font-weight:500;font-size:16px}
+#done{align-items:center;justify-content:center;text-align:center}
+.leaf{font-size:64px;animation:pop .7s var(--ease)}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+
+/* ===== HOME ===== */
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px}
+.top .gear{width:42px;height:42px;border-radius:14px;background:var(--card);border:1.5px solid var(--line);display:grid;place-items:center;font-size:19px}
+.big{font-size:56px;font-weight:700;color:var(--green);line-height:1}
+@media (prefers-color-scheme:dark){.big{color:#9CC7AF}}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.stats .card{padding:16px}
+.stats b{font-size:28px;font-weight:700;display:block}
+.stats span{color:var(--soft);font-size:14px}
+.week{display:flex;gap:8px;align-items:flex-end;height:90px;margin-top:16px}
+.week div{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.week i{width:100%;border-radius:8px;background:var(--green2);min-height:6px;position:relative;overflow:hidden}
+.week i::after{content:"";position:absolute;inset:auto 0 0;height:var(--h);background:var(--green);border-radius:8px}
+.week span{font-size:12px;color:var(--soft)}
+.ppl{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+.ppl .person{padding:12px}
+.ppl .n{margin-inline-start:auto;font-weight:700;font-size:20px;color:var(--peach)}
+.sec{font-size:14px;font-weight:600;color:var(--soft);margin:28px 0 4px;letter-spacing:.3px}
+.step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.step:last-child{border:0}
+.step .k{width:30px;height:30px;border-radius:10px;background:var(--peach2);color:var(--ink);font-weight:700;display:grid;place-items:center;flex-shrink:0}
+.step p{color:var(--ink);font-size:16px}
+.step code{display:block;margin-top:8px;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:10px;font-size:13px;direction:ltr;text-align:left;word-break:break-all;color:var(--soft)}
+.copy{margin-top:8px;font-size:14px;font-weight:600;color:var(--green)}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 30px);transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:14px;font-size:15px;opacity:0;transition:.3s;z-index:40;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+<!-- ============ ONBOARDING ============ -->
+<section class="screen" id="ob1">
+  <div class="dots"><i class="on"></i><i></i><i></i><i></i></div>
+  <div class="grow">
+    <div class="logo"><span></span></div>
+    <h1>הטלפון שלך<br>יחזיר אותך<br>לאנשים שלך.</h1>
+    <p style="margin-top:16px">כשאת/ה פותח/ת אינסטגרם או טיקטוק, Look Up תעצור לרגע: נשימה אחת, תמונה שאת/ה אוהב/ת, ודבר קטן לעשות במקום.</p>
+    <p style="margin-top:12px">תמיד אפשר להמשיך. בלי אשמה, בלי נעילות.</p>
+  </div>
+  <button class="btn main" onclick="go('ob2')">בואו נתחיל</button>
+  <p style="text-align:center;font-size:14px;margin-top:14px">פחות מדקה. בלי הרשמה. הכול נשאר בטלפון.</p>
+</section>
+
+<section class="screen" id="ob2">
+  <div class="dots"><i></i><i class="on"></i><i></i><i></i></div>
+  <h1>בשביל מי את/ה רוצה להיות יותר כאן?</h1>
+  <p style="margin-top:10px">שם ותמונה או שתיים. ככה הם יופיעו ברגעים הנכונים.</p>
+  <div class="list" id="peopleList"></div>
+  <button class="add" style="margin-top:12px" onclick="openPerson()">+ להוסיף אדם</button>
+  <div class="grow"></div>
+  <button class="btn main" style="margin-top:20px" onclick="go('ob3')">המשך</button>
+  <button class="btn soft" onclick="go('ob3')">רק בשבילי, אדלג</button>
+</section>
+
+<section class="screen" id="ob3">
+  <div class="dots"><i></i><i></i><i class="on"></i><i></i></div>
+  <h1>עוד כמה תמונות שעושות לך טוב</h1>
+  <p style="margin-top:10px">ים, טיול, רגע עם חברים. הן יופיעו בהפסקה, לא נשמרות בשום מקום חוץ מכאן.</p>
+  <div class="grid" id="genGrid"></div>
+  <label class="add" style="margin-top:14px">+ לבחור תמונות<input type="file" accept="image/*" multiple hidden onchange="addGeneral(this)"></label>
+  <h2 style="margin-top:28px">מה מתאים לך במקום לגלול?</h2>
+  <div class="chips" id="catChips"></div>
+  <div class="grow"></div>
+  <button class="btn main" style="margin-top:22px" onclick="go('ob4')">המשך</button>
+</section>
+
+<section class="screen" id="ob4">
+  <div class="dots"><i></i><i></i><i></i><i class="on"></i></div>
+  <h1>מתי הכי חשוב לך להיות נוכח/ת?</h1>
+  <div class="card" style="margin-top:20px;padding:4px 18px">
+    <div class="row"><span>☀️ בוקר שקט עד</span><input type="time" id="mEnd" value="08:00"></div>
+    <div class="row"><span>🏡 שעות משפחה</span><span><input type="time" id="fStart" value="17:00"> – <input type="time" id="fEnd" value="21:00"></span></div>
+    <div class="row"><span>🕯️ שבת כולה שעות משפחה</span><div class="switch on" id="shabbat" onclick="this.classList.toggle('on')"></div></div>
+    <div class="row"><span>🌙 לילה מ-</span><input type="time" id="nStart" value="22:30"></div>
+  </div>
+  <p style="margin-top:14px;font-size:15px">בשעות משפחה תופיע תמונה של האנשים שלך ורעיון קטן איתם. בשאר היום, משהו קטן בשבילך.</p>
+  <div class="grow"></div>
+  <button class="btn main" style="margin-top:22px" onclick="finishSetup()">סיימתי</button>
+</section>
+
+<!-- ============ HOME ============ -->
+<section class="screen" id="home">
+  <div class="top">
+    <div><p style="font-size:15px" id="hDate"></p><h1 style="font-size:28px">Look Up</h1></div>
+    <button class="gear" onclick="openSettings()">⚙︎</button>
+  </div>
+  <div class="card">
+    <p style="font-size:15px">היום בחרת להיות כאן</p>
+    <div style="display:flex;align-items:baseline;gap:10px;margin-top:6px"><span class="big" id="tHere">0</span><span style="color:var(--soft)">פעמים</span></div>
+    <div class="week" id="week"></div>
+  </div>
+  <div class="stats">
+    <div class="card"><b id="wHere">0</b><span>השבוע: "אני כאן"</span></div>
+    <div class="card"><b id="wOpen">0</b><span>השבוע: פתחת בכל זאת</span></div>
+  </div>
+  <div class="sec" id="pplTitle">השבוע בחרת ב...</div>
+  <div class="ppl" id="pplStats"></div>
+  <div class="sec">להגדיר את ההפסקה</div>
+  <div class="card" style="padding:6px 18px" id="guideCard"></div>
+  <div style="height:18px"></div>
+  <button class="btn peach" onclick="startPause('instagram',true)">לנסות את ההפסקה עכשיו</button>
+</section>
+
+<!-- ============ PAUSE ============ -->
+<section class="screen" id="pause">
+  <div class="bg" id="pBg"></div><div class="veil"></div>
+  <div class="wrap">
+    <div class="greet" id="pGreet"></div>
+    <div class="breath" id="breath"><div class="ring"></div><div class="photo" id="pPhoto"></div></div>
+    <div class="cue" id="cue">נשימה פנימה</div>
+    <div class="msg" id="pMsg">
+      <div class="title" id="pTitle"></div>
+      <div class="idea" id="pIdea"></div>
+    </div>
+    <div class="acts" id="acts">
+      <button class="btn here" onclick="choose('here')">אני כאן 🌿</button>
+      <button class="btn anyway" id="anyway" onclick="choose('open')">לפתוח בכל זאת</button>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="done">
+  <div class="leaf">🌿</div>
+  <h1 style="margin-top:20px" id="dTitle">יפה.</h1>
+  <p style="margin-top:10px" id="dSub"></p>
+  <p style="margin-top:30px;font-size:15px">אפשר לסגור את המסך הזה.</p>
+</section>
+
+<!-- person sheet -->
+<div class="sheet" id="pSheet" onclick="if(event.target===this)closeSheet()"><div>
+  <h2>מי זה?</h2>
+  <input class="field" id="pName" placeholder="שם, למשל נועה" style="margin-top:12px">
+  <div class="chips" id="relChips"></div>
+  <label class="add" style="margin-top:16px" id="pPicLbl">+ תמונה אחת או כמה<input type="file" accept="image/*" multiple hidden onchange="pickPersonPics(this)"></label>
+  <div class="grid" id="pPicGrid"></div>
+  <button class="btn main" style="margin-top:20px" onclick="savePerson()">שמירה</button>
+</div></div>
+
+<!-- settings sheet -->
+<div class="sheet" id="sSheet" onclick="if(event.target===this)closeSheet()"><div>
+  <h2>הגדרות</h2>
+  <button class="btn main" style="margin-top:16px" onclick="closeSheet();go('ob2')">עריכת אנשים, תמונות ושעות</button>
+  <div class="sec">רעיון משלך</div>
+  <input class="field" id="customIdea" placeholder="למשל: לנגן 5 דקות בגיטרה">
+  <button class="btn soft" onclick="addCustom()">להוסיף</button>
+  <div id="customList"></div>
+  <button class="btn soft" style="color:#C0533A;margin-top:16px" onclick="resetAll()">מחיקת כל הנתונים</button>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- storage (IndexedDB for photos, localStorage for the rest) ---------- */
+const DB=(()=>{let db;const open=()=>new Promise((r,j)=>{if(db)return r(db);const q=indexedDB.open('lookup',1);q.onupgradeneeded=()=>q.result.createObjectStore('p');q.onsuccess=()=>{db=q.result;r(db)};q.onerror=j});
+ const tx=async(m,f)=>{const d=await open();return new Promise((r,j)=>{const t=d.transaction('p',m);const s=t.objectStore('p');const q=f(s);t.oncomplete=()=>r(q&&q.result);t.onerror=j})};
+ return{put:(k,v)=>tx('readwrite',s=>s.put(v,k)),get:k=>tx('readonly',s=>s.get(k)),del:k=>tx('readwrite',s=>s.delete(k)),clear:()=>tx('readwrite',s=>s.clear())}})();
+const S={get(){try{return JSON.parse(localStorage.lu||'{}')}catch(e){return{}}},set(o){localStorage.lu=JSON.stringify(o)}};
+let st=Object.assign({people:[],general:[],cats:['body','breath','life','rest'],custom:[],log:[],times:{mEnd:'08:00',fStart:'17:00',fEnd:'21:00',nStart:'22:30',shabbat:true},setup:false},S.get());
+const save=()=>S.set(st);
+const uid=()=>Math.random().toString(36).slice(2,9);
+
+/* ---------- photos: resize to keep storage small ---------- */
+function resize(file,max=1000){return new Promise(r=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height,k=Math.min(1,max/Math.max(w,h));const c=document.createElement('canvas');c.width=w*k;c.height=h*k;c.getContext('2d').drawImage(img,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',.78));URL.revokeObjectURL(img.src)};img.src=URL.createObjectURL(file)})}
+const urlCache={};async function photo(id){if(!id)return'';if(urlCache[id])return urlCache[id];const v=await DB.get(id);urlCache[id]=v||'';return urlCache[id]}
+
+/* ---------- content ---------- */
+const REL={son:{l:'בן',g:'m',k:'kid'},daughter:{l:'בת',g:'f',k:'kid'},partnerM:{l:'בן זוג',g:'m',k:'partner'},partnerF:{l:'בת זוג',g:'f',k:'partner'},dad:{l:'אבא',g:'m',k:'parent'},mom:{l:'אמא',g:'f',k:'parent'},friendM:{l:'חבר',g:'m',k:'friend'},friendF:{l:'חברה',g:'f',k:'friend'}};
+const CATS={body:'💪 גוף',breath:'🌬️ נשימה',life:'📝 סידורים',rest:'☁️ מנוחה'};
+const P=(g,m,f)=>g==='f'?f:m;
+const PEOPLE_IDEAS={
+ kid:[(n,g)=>`לשאול את ${n} מה הכי ${P(g,'הצחיק אותו','הצחיק אותה')} היום`,(n,g)=>`לשחק עם ${n} משהו קטן, רק שניכם`,(n,g)=>`לחבק את ${n}, סתם ככה`,(n,g)=>`לשבת ליד ${n} ולראות מה ${P(g,'הוא עושה','היא עושה')}`],
+ partner:[(n,g)=>`להכין ל${n} משהו לשתות, בלי סיבה`,(n,g)=>`לשבת ליד ${n} חמש דקות, בלי טלפונים`,(n,g)=>`להגיד ל${n} משהו טוב ${P(g,'עליו','עליה')}`,(n,g)=>`לשאול את ${n} איך היה ${P(g,'לו','לה')} היום, באמת`],
+ parent:[(n,g)=>`להתקשר ל${n} לשתי דקות`,(n,g)=>`לשלוח ל${n} תמונה מהיום`,(n,g)=>`לשאול את ${n} מה שלומ${P(g,'ו','ה')}`],
+ friend:[(n,g)=>`להתקשר ל${n}, סתם להגיד היי`,(n,g)=>`לקבוע עם ${n} קפה השבוע`,(n,g)=>`לשלוח ל${n} הודעה טובה`]};
+const PEOPLE_TITLES={kid:(n,g)=>`${n} ${P(g,'כאן','כאן')}.`,partner:(n,g)=>`${n} ממש פה.`,parent:(n,g)=>`${n} ${P(g,'ישמח','תשמח')} לשמוע ממך.`,friend:(n,g)=>`${n} ${P(g,'ישמח','תשמח')} לשמוע ממך.`};
+const IDEAS={body:['5 שכיבות סמיכה','לקום ולמתוח את הגב','כוס מים, עכשיו','10 סקוואטים'],breath:['שלוש נשימות איטיות','לצאת למרפסת לדקה','לפתוח חלון ולהרגיש את האוויר'],life:['לבדוק מה יש לארוחת ערב','לסגור את הסידור הקטן שדחית','לענות להודעה האחת החשובה','לסדר דבר אחד בחדר'],rest:['להסתכל מהחלון דקה','לעצום עיניים ל-30 שניות','לשתות משהו חם, לאט']};
+const MORNING=['כוס מים לפני הכול','למתוח את הגוף דקה','להגיד בוקר טוב למישהו','לפתוח את התריס ולתת לאור להיכנס'];
+const DAY_TITLES=['רגע לעצמך.','מה קורה סביבך עכשיו?','נשימה אחת, ואז מחליטים.','הפיד יחכה. את/ה פה.'];
+const NIGHT=[['עשית מספיק היום.','המיטה מחכה. הפיד יחכה למחר.'],['לילה טוב.','מחר בבוקר תודה/י לעצמך.']];
+const APPS={instagram:{n:'אינסטגרם',u:'instagram://'},tiktok:{n:'טיקטוק',u:'snssdk1233://'},youtube:{n:'יוטיוב',u:'youtube://'},facebook:{n:'פייסבוק',u:'fb://'},x:{n:'X',u:'twitter://'}};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+
+/* ---------- time logic ---------- */
+const mins=t=>{const[h,m]=t.split(':').map(Number);return h*60+m};
+function mode(d=new Date()){const T=st.times,now=d.getHours()*60+d.getMinutes(),day=d.getDay();
+ if(now>=mins(T.nStart)||now<240)return'night';
+ if(now<mins(T.mEnd))return'morning';
+ const shab=T.shabbat&&((day===5&&now>=mins('17:00'))||day===6);
+ if((now>=mins(T.fStart)&&now<mins(T.fEnd))||shab)return st.people.length?'family':'day';
+ return'day'}
+
+/* ---------- navigation ---------- */
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');
+ if(id==='ob2')renderPeople();if(id==='ob3')renderGeneral();if(id==='ob4')loadTimes();if(id==='home')renderHome()}
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),1800)}
+function closeSheet(){document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('on'))}
+
+/* ---------- people ---------- */
+let draft=null;
+function openPerson(){draft={id:uid(),name:'',rel:'daughter',pics:[]};document.getElementById('pName').value='';renderRel();renderDraftPics();document.getElementById('pSheet').classList.add('on')}
+function renderRel(){document.getElementById('relChips').innerHTML=Object.entries(REL).map(([k,v])=>`<button class="chip ${draft.rel===k?'on':''}" onclick="draft.rel='${k}';renderRel()">${v.l}</button>`).join('')}
+async function pickPersonPics(inp){for(const f of inp.files){const id='ph_'+uid();await DB.put(id,await resize(f));draft.pics.push(id)}inp.value='';renderDraftPics()}
+async function renderDraftPics(){const g=document.getElementById('pPicGrid');g.innerHTML='';for(const id of draft.pics){const d=document.createElement('div');d.style.backgroundImage=`url(${await photo(id)})`;g.appendChild(d)}}
+function savePerson(){draft.name=document.getElementById('pName').value.trim();if(!draft.name){toast('צריך שם');return}st.people.push(draft);save();closeSheet();renderPeople()}
+function delPerson(id){st.people=st.people.filter(p=>p.id!==id);save();renderPeople()}
+async function renderPeople(){const L=document.getElementById('peopleList');L.innerHTML='';for(const p of st.people){const el=document.createElement('div');el.className='person';el.innerHTML=`<div class="ph" style="background-image:url(${await photo(p.pics[0])})"></div><div><b>${esc(p.name)}</b><small>${REL[p.rel].l} · ${p.pics.length} תמונות</small></div><button class="x" onclick="delPerson('${p.id}')">×</button>`;L.appendChild(el)}}
+const esc=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------- general photos & categories ---------- */
+async function addGeneral(inp){for(const f of inp.files){const id='ph_'+uid();await DB.put(id,await resize(f));st.general.push(id)}inp.value='';save();renderGeneral()}
+async function renderGeneral(){const g=document.getElementById('genGrid');g.innerHTML='';for(const id of st.general){const d=document.createElement('div');d.style.backgroundImage=`url(${await photo(id)})`;d.onclick=()=>{st.general=st.general.filter(x=>x!==id);DB.del(id);save();renderGeneral()};g.appendChild(d)}
+ document.getElementById('catChips').innerHTML=Object.entries(CATS).map(([k,v])=>`<button class="chip ${st.cats.includes(k)?'on':''}" onclick="toggleCat('${k}')">${v}</button>`).join('')}
+function toggleCat(k){st.cats=st.cats.includes(k)?st.cats.filter(x=>x!==k):[...st.cats,k];save();renderGeneral()}
+function loadTimes(){const T=st.times;['mEnd','fStart','fEnd','nStart'].forEach(k=>document.getElementById(k).value=T[k]);document.getElementById('shabbat').classList.toggle('on',T.shabbat)}
+function finishSetup(){const T=st.times;['mEnd','fStart','fEnd','nStart'].forEach(k=>T[k]=document.getElementById(k).value);T.shabbat=document.getElementById('shabbat').classList.contains('on');st.setup=true;save();
+ if(pendingApp){startPause(pendingApp)}else go('home')}
+
+/* ---------- pause ---------- */
+let curApp='instagram',curPerson=null,pendingApp=null,isTest=false;
+async function startPause(app,test){curApp=APPS[app]?app:'instagram';isTest=!!test;curPerson=null;
+ const m=mode();let title,idea,pic,greet;
+ if(m==='family'){const p=pick(st.people);curPerson=p.id;const r=REL[p.rel];title=PEOPLE_TITLES[r.k](p.name,r.g);idea=pick(PEOPLE_IDEAS[r.k])(p.name,r.g);pic=pick(p.pics)||pick(st.general);greet='שעות משפחה'}
+ else if(m==='morning'){title='בוקר טוב.';idea=pick(MORNING);pic=pick(st.general)||pick(st.people.flatMap(p=>p.pics));greet='היום מתחיל ממך, לא מהפיד'}
+ else if(m==='night'){const n=pick(NIGHT);title=n[0];idea=n[1];pic=pick(st.general)||pick(st.people.flatMap(p=>p.pics));greet='לילה'}
+ else{title=pick(DAY_TITLES);const pool=[...st.cats.flatMap(c=>IDEAS[c]||[]),...st.custom,...st.custom];idea=pick(pool.length?pool:IDEAS.breath);pic=pick([...st.general,...st.people.flatMap(p=>p.pics)]);greet=`לפני ${APPS[curApp].n}`}
+ const src=await photo(pic)||'';
+ document.getElementById('pBg').style.backgroundImage=src?`url(${src})`:'linear-gradient(160deg,#E8987A,#3F6B57)';
+ document.getElementById('pPhoto').style.backgroundImage=src?`url(${src})`:'linear-gradient(160deg,#F6CDB8,#E8987A)';
+ document.getElementById('pGreet').textContent=greet;document.getElementById('pTitle').textContent=title;
+ document.getElementById('pIdea').innerHTML=`<span>✦</span><span>${esc(idea)}</span>`;
+ document.getElementById('anyway').textContent=`לפתוח את ${APPS[curApp].n} בכל זאת`;
+ ['pMsg','acts'].forEach(i=>document.getElementById(i).classList.remove('on'));
+ go('pause');runBreath()}
+function runBreath(){const b=document.getElementById('breath'),c=document.getElementById('cue');b.className='breath';c.style.opacity=1;c.textContent='נשימה פנימה';
+ if(navigator.vibrate)navigator.vibrate(20);
+ requestAnimationFrame(()=>requestAnimationFrame(()=>b.classList.add('in')));
+ setTimeout(()=>{b.className='breath out';c.textContent='ועכשיו החוצה'},3000);
+ setTimeout(()=>{c.style.opacity=0;document.getElementById('pMsg').classList.add('on')},6000);
+ setTimeout(()=>document.getElementById('acts').classList.add('on'),7200)}
+function choose(kind){if(!isTest){st.log.push({t:Date.now(),k:kind,app:curApp,p:curPerson});st.log=st.log.slice(-2000);save()}
+ if(kind==='here'){const today=countDay(new Date());document.getElementById('dTitle').textContent='יפה. בחרת להיות כאן.';
+  const p=st.people.find(x=>x.id===curPerson);document.getElementById('dSub').textContent=p?`${p.name} ${REL[p.rel].g==='f'?'שמחה':'שמח'} שאת/ה פה.`:`זו הפעם ה-${today.here||1} היום.`;go('done');if(isTest)setTimeout(()=>go('home'),2200);return}
+ if(isTest){go('home');return}
+ // open anyway: run the "pass" shortcut so the automation doesn't fire again, then it opens the app
+ location.href='shortcuts://run-shortcut?name='+encodeURIComponent('Look Up Pass')+'&input=text&text='+encodeURIComponent(APPS[curApp].u)}
+
+/* ---------- stats ---------- */
+const dayKey=d=>d.toDateString();
+function countDay(d){const k=dayKey(d),r={here:0,open:0};st.log.forEach(e=>{if(dayKey(new Date(e.t))===k)r[e.k]++});return r}
+async function renderHome(){const now=new Date();document.getElementById('hDate').textContent=now.toLocaleDateString('he-IL',{weekday:'long',day:'numeric',month:'long'});
+ document.getElementById('tHere').textContent=countDay(now).here;
+ const days=[...Array(7)].map((_,i)=>{const d=new Date(now);d.setDate(now.getDate()-6+i);return{d,c:countDay(d)}});const max=Math.max(1,...days.map(x=>x.c.here));
+ document.getElementById('week').innerHTML=days.map(x=>`<div><i style="height:100%;--h:${x.c.here/max*100}%"></i><span>${x.d.toLocaleDateString('he-IL',{weekday:'narrow'})}</span></div>`).join('');
+ const wk=st.log.filter(e=>e.t>now-7*864e5);document.getElementById('wHere').textContent=wk.filter(e=>e.k==='here').length;document.getElementById('wOpen').textContent=wk.filter(e=>e.k==='open').length;
+ const box=document.getElementById('pplStats');box.innerHTML='';document.getElementById('pplTitle').style.display=st.people.length?'':'none';
+ for(const p of st.people){const n=wk.filter(e=>e.k==='here'&&e.p===p.id).length;const el=document.createElement('div');el.className='person';el.innerHTML=`<div class="ph" style="background-image:url(${await photo(p.pics[0])})"></div><div><b>${esc(p.name)}</b><small>${n===1?'פעם אחת':n+' פעמים'} השבוע</small></div><span class="n">${n}</span>`;box.appendChild(el)}
+ renderGuide()}
+function renderGuide(){const base=location.origin+location.pathname;const u=a=>`${base}#pause&app=${a}`;
+ document.getElementById('guideCard').innerHTML=`
+ <div class="step"><span class="k">1</span><div><p>באפליקציית <b>קיצורים</b>, צרו קיצור בשם <b>Look Up Pass</b> עם 3 פעולות:<br>• "תאריך נוכחי"<br>• "שמירת קובץ" (בתיקיית Shortcuts, שם: <b>lookup.txt</b>, החלפה: מופעל)<br>• "פתיחת כתובות URL" עם <b>קלט הקיצור</b></p></div></div>
+ <div class="step"><span class="k">2</span><div><p>בלשונית <b>אוטומציה</b> ← "אפליקציה" ← בחרו <b>Instagram</b> ← "נפתחת" ← <b>הפעלה מיידית</b>.</p></div></div>
+ <div class="step"><span class="k">3</span><div><p>פעולות האוטומציה:<br>• "קבלת קובץ" lookup.txt מתיקיית Shortcuts (לכבות "הצג שגיאה")<br>• "קבלת זמן בין תאריכים" מהקובץ ועד התאריך הנוכחי, ב<b>שניות</b><br>• "אם" התוצאה <b>קטנה מ-60</b> ← "עצירת קיצור זה"<br>• "פתיחת כתובות URL":</p><code id="u1">${u('instagram')}</code><button class="copy" onclick="cp('${u('instagram')}')">העתקה</button></div></div>
+ <div class="step"><span class="k">4</span><div><p>לטיקטוק: לשכפל את האוטומציה, לבחור TikTok ולהחליף את הכתובת:</p><code>${u('tiktok')}</code><button class="copy" onclick="cp('${u('tiktok')}')">העתקה</button></div></div>`}
+function cp(t){navigator.clipboard.writeText(t).then(()=>toast('הועתק'))}
+
+/* ---------- settings ---------- */
+function openSettings(){renderCustom();document.getElementById('sSheet').classList.add('on')}
+function addCustom(){const i=document.getElementById('customIdea');const v=i.value.trim();if(!v)return;st.custom.push(v);save();i.value='';renderCustom();toast('נוסף')}
+function renderCustom(){document.getElementById('customList').innerHTML=st.custom.map((c,i)=>`<div class="row"><span>${esc(c)}</span><button onclick="st.custom.splice(${i},1);save();renderCustom()" style="color:var(--soft)">×</button></div>`).join('')}
+async function resetAll(){if(!confirm('למחוק הכול?'))return;await DB.clear();localStorage.removeItem('lu');location.hash='';location.reload()}
+
+/* ---------- boot ---------- */
+function boot(){const h=location.hash.slice(1),q=new URLSearchParams(h.replace(/^pause&?/,''));
+ if(h.startsWith('pause')){const app=q.get('app')||'instagram';history.replaceState(null,'',location.pathname);
+  if(!st.setup){pendingApp=app;go('ob1');return}startPause(app);return}
+ go(st.setup?'home':'ob1')}
+boot();
+</script>
+</body>
+</html>
