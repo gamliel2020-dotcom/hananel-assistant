@@ -3,25 +3,36 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#F5F1EB">
+<meta name="theme-color" content="#C9773F">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Look Up</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&display=swap" rel="stylesheet">
 <style>
-/* Look Up v4 — visual direction from "Biova" by Nixtio (Dribbble): warm photo moments + orb CTA.
-   Utility screens are light and high-contrast so everything is easy to read. */
+/* Look Up v5 — direction: "Passion Finder" (warm gradient, bubbles, photo-in-circle, glass score rows)
+   + "Stress" premium glass (big thin numerals, glass/white tiles, arc gauge). Built for readability. */
 :root{
-  --amber:#FFB547; --amber2:#E9760F; --amberInk:#B85A07;
-  --bg:#F5F1EB; --card:#FFFFFF; --ink:#1E1A16; --soft:#5E554C; --faint:#958A7E; --line:#E7E0D6;
-  --night:#120D09; --ease:cubic-bezier(.22,.8,.26,1);
-  --photo:url("https://images.unsplash.com/photo-1788094667065-2ffdca7a66fc?w=1200&q=80");
-  --photoNight:url("https://images.unsplash.com/photo-1581491608595-6dadce30433a?w=1200&q=80");
+  --ink:#231A14; --white:#FFFFFF; --w90:rgba(255,255,255,.92); --w70:rgba(255,255,255,.78);
+  --glass:rgba(255,255,255,.17); --glass2:rgba(255,255,255,.26); --gline:rgba(255,255,255,.32);
+  --amber:#FFC979; --ease:cubic-bezier(.22,.8,.26,1);
+  --photo:url("https://images.unsplash.com/photo-1788094667065-2ffdca7a66fc?w=900&q=80");
+  --photoNight:url("https://images.unsplash.com/photo-1581491608595-6dadce30433a?w=900&q=80");
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
-html,body{height:100%;background:var(--bg);color:var(--ink);font-family:Heebo,-apple-system,system-ui,sans-serif;font-weight:400;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+html,body{height:100%;color:#fff;font-family:Heebo,-apple-system,system-ui,sans-serif;font-weight:400;-webkit-font-smoothing:antialiased;overscroll-behavior:none;background:#B9683A}
+/* warm mesh gradient + faint petal lines (Passion Finder) */
+.mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+   radial-gradient(70% 40% at 90% 0%,#A7A3B4 0%,rgba(167,163,180,0) 70%),
+   radial-gradient(60% 35% at 0% 18%,#7A5546 0%,rgba(122,85,70,0) 70%),
+   radial-gradient(75% 45% at 40% 62%,#F09A3E 0%,rgba(240,154,62,0) 70%),
+   radial-gradient(55% 35% at 100% 80%,#E27A33 0%,rgba(226,122,51,0) 70%),
+   radial-gradient(70% 35% at 0% 100%,#8A6E8C 0%,rgba(138,110,140,0) 70%),
+   linear-gradient(175deg,#8E6A5E 0%,#B9764A 35%,#D9802F 62%,#A4705F 100%)}
+.mesh::after{content:"";position:absolute;inset:0;opacity:.2;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 800' preserveAspectRatio='xMidYMid slice'><g fill='none' stroke='white' stroke-width='.8'><ellipse cx='200' cy='420' rx='150' ry='330'/><ellipse cx='200' cy='420' rx='150' ry='330' transform='rotate(40 200 420)'/><ellipse cx='200' cy='420' rx='150' ry='330' transform='rotate(-40 200 420)'/><circle cx='200' cy='420' r='360'/></g></svg>") center/cover}
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 input{font:inherit;color:inherit}
 svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
@@ -32,298 +43,311 @@ svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stro
 .screen>.grow{flex:1;flex-shrink:1}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 
-/* ---------- photo moments (welcome, pause, done) ---------- */
-.photo{background:var(--night);color:#fff}
-.ph-bg{position:fixed!important;inset:0;background:var(--photo) center/cover;z-index:0}
-.ph-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,7,4,.55) 0%,rgba(10,7,4,.35) 25%,rgba(10,7,4,.55) 50%,rgba(10,7,4,.9) 100%)}
-.photo>.ph-bg~*{z-index:2}
-.hero{text-align:center;margin-top:6vh;text-shadow:0 2px 18px rgba(0,0,0,.45)}
-.kicker{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:500;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);padding:7px 14px;border-radius:999px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);text-shadow:none}
-.kicker svg{width:16px;height:16px;stroke-width:2.2}
-.mega{font-size:42px;line-height:1.1;font-weight:600;letter-spacing:-1px;margin-top:4.5vh}
-.mega .a{color:var(--amber)}
-.lede{font-size:17px;line-height:1.5;font-weight:400;max-width:310px;margin:18px auto 0;color:rgba(255,255,255,.92)}
-.orbwrap{width:164px;height:164px;margin:0 auto;border-radius:50%;display:grid;place-items:center;background:rgba(40,25,12,.35);border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-.orb{width:138px;height:138px;border-radius:50%;display:grid;place-items:center;text-align:center;color:#fff;font-size:19px;line-height:1.15;font-weight:600;text-shadow:0 1px 6px rgba(120,50,0,.4);
-  background:radial-gradient(circle at 50% 22%,#FFD08A 0%,var(--amber) 38%,var(--amber2) 100%);
-  box-shadow:inset 0 2px 1px rgba(255,255,255,.45),inset 0 -14px 24px rgba(150,60,0,.35),0 18px 40px -12px rgba(233,118,15,.7);transition:transform 3s cubic-bezier(.45,0,.35,1)}
-.foot{text-align:center;font-size:14.5px;margin-top:14px;color:rgba(255,255,255,.8)}
+/* type */
+.brand{font-family:Unbounded,Heebo,sans-serif;font-weight:600;font-size:26px;line-height:1;letter-spacing:.5px;text-align:center;direction:ltr;text-transform:uppercase}
+.brand.sm{font-size:16px;letter-spacing:1px}
+h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-align:center;margin-top:18px;text-shadow:0 1px 14px rgba(80,30,0,.25)}
+.d{font-size:16.5px;line-height:1.5;text-align:center;color:var(--w90);margin:10px auto 0;max-width:320px}
+.lbl{font-size:15px;font-weight:600;margin:24px 0 10px;color:#fff}
+.lbl small{font-weight:400;color:var(--w70);font-size:14px;margin-inline-start:6px}
+.num{font-weight:300;letter-spacing:-2px;line-height:.95}
+.num small{font-size:.32em;letter-spacing:0;font-weight:400;opacity:.8;margin-inline-start:4px}
 
-/* ---------- light utility screens ---------- */
-.top{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px}
-.back{display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 14px 0 10px;border-radius:999px;background:var(--card);font-size:16px;font-weight:500;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.05)}
-.back svg{width:18px;height:18px}
-.stepof{font-size:14px;color:var(--soft);font-weight:500}
-.prog{display:flex;gap:4px;margin-top:12px}
-.prog i{flex:1;height:4px;border-radius:2px;background:var(--line)}
-.prog i.on{background:var(--amber2)}
-.word{font-size:24px;font-weight:700;letter-spacing:-.6px;direction:ltr}
-.icon-btn{width:44px;height:44px;border-radius:50%;background:var(--card);display:grid;place-items:center;box-shadow:0 1px 2px rgba(0,0,0,.05)}
-h1.t{font-size:32px;line-height:1.15;font-weight:700;letter-spacing:-.6px;margin-top:22px}
-h1.t .a{color:var(--amberInk)}
-.d{font-size:17px;line-height:1.5;color:var(--soft);margin-top:8px}
-.lbl{font-size:15px;font-weight:600;color:var(--ink);margin:26px 0 10px}
-.lbl small{font-weight:400;color:var(--faint);font-size:14px;margin-inline-start:6px}
-.card{background:var(--card);border-radius:22px;padding:4px 16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-.row{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);min-height:60px}
-.row:last-child{border:0}
-.row .ic{width:38px;height:38px;border-radius:12px;background:#FFF1E2;color:var(--amberInk);display:grid;place-items:center;flex-shrink:0}
-.row .ic svg{width:20px;height:20px}
-.row .tx{flex:1;min-width:0}
-.row .tx b{display:block;font-size:17px;font-weight:500}
-.row .tx small{display:block;font-size:14px;color:var(--soft);margin-top:1px;line-height:1.35}
-.row .end{margin-inline-start:auto;display:flex;align-items:center;gap:6px;color:var(--faint)}
-.row .end svg{width:18px;height:18px}
-.av{width:46px;height:46px;border-radius:50%;background:var(--line) center/cover;flex-shrink:0;display:grid;place-items:center;font-weight:600;color:var(--soft);font-size:18px}
-.del{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--faint)}
-.del svg{width:18px;height:18px}
-.empty{background:var(--card);border-radius:22px;padding:20px;text-align:center;color:var(--soft);font-size:15.5px;line-height:1.5}
-.empty b{display:block;color:var(--ink);font-size:17px;font-weight:500;margin-bottom:4px}
-.add{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:54px;border-radius:16px;border:1.5px dashed #CFC5B8;color:var(--ink);font-weight:500;font-size:16.5px;margin-top:10px;background:transparent}
-.add svg{width:20px;height:20px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.grid .tile{aspect-ratio:1;border-radius:16px;background:var(--line) center/cover;position:relative}
-.grid .tile button{position:absolute;top:6px;left:6px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center}
-.grid .tile button svg{width:14px;height:14px;stroke-width:2.4}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 16px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);font-size:16px;font-weight:500;transition:all .15s}
-.chip svg.i{width:18px;height:18px}
-.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
-.chip .ok{display:none}
-.chip.on .ok{display:block}
-.field{width:100%;height:54px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);padding:0 16px;font-size:17px;outline:none}
-.field:focus{border-color:var(--ink)}
-.time{border:0;background:#F3EEE7;color:var(--ink);padding:8px 10px;border-radius:10px;font-weight:600;font-size:16px;min-width:76px;text-align:center}
-.tgl{width:52px;height:32px;border-radius:16px;background:#D9D1C5;position:relative;transition:.25s;flex-shrink:0}
+/* top bar: glass circle buttons */
+.top{display:grid;grid-template-columns:48px 1fr 48px;align-items:center;min-height:48px}
+.gbtn{width:46px;height:46px;border-radius:50%;background:var(--glass);border:1px solid var(--gline);display:grid;place-items:center;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.gbtn svg{width:20px;height:20px}
+.stepof{text-align:center;font-size:14px;font-weight:500;color:var(--w90)}
+.prog{display:flex;gap:5px;justify-content:center;margin-top:10px}
+.prog i{width:22px;height:4px;border-radius:2px;background:rgba(255,255,255,.3)}
+.prog i.on{background:#fff}
+
+/* glass surfaces */
+.glass{background:var(--glass);border:1px solid var(--gline);border-radius:26px;backdrop-filter:blur(24px) saturate(1.2);-webkit-backdrop-filter:blur(24px) saturate(1.2)}
+.solid{background:#FFF;color:var(--ink);border-radius:26px}
+.rowg{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:22px;background:var(--glass);border:1px solid var(--gline);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);margin-bottom:8px;min-height:64px}
+.rowg .tx{flex:1;min-width:0}
+.rowg .tx b{display:block;font-size:17px;font-weight:500}
+.rowg .tx small{display:block;font-size:14px;color:var(--w90);margin-top:1px;line-height:1.35}
+.rowg .ic{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;flex-shrink:0}
+.rowg .ic svg{width:19px;height:19px}
+.bar{height:6px;border-radius:3px;background:rgba(255,255,255,.3);overflow:hidden;margin-top:9px}
+.bar b{display:block;height:100%;width:var(--w);background:#fff;border-radius:3px}
+.time{border:0;background:#fff;color:var(--ink);padding:8px 10px;border-radius:12px;font-weight:600;font-size:16px;min-width:78px;text-align:center}
+.tgl{width:52px;height:32px;border-radius:16px;background:rgba(255,255,255,.3);position:relative;transition:.25s;flex-shrink:0}
 .tgl::after{content:"";position:absolute;top:3px;right:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:.25s var(--ease)}
-.tgl.on{background:#34A853}
+.tgl.on{background:#3E9B5F}
 .tgl.on::after{right:23px}
-.pill{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:58px;border-radius:999px;font-size:17.5px;font-weight:600;transition:transform .15s var(--ease),opacity .2s}
-.pill:active{transform:scale(.98)}
-.pill.ink{background:var(--ink);color:#fff}
-.pill.amber{background:var(--amber2);color:#fff}
-.pill.white{background:#fff;color:var(--ink)}
-.pill.ghost{height:48px;color:var(--soft);font-weight:500;font-size:16px}
-.pill[disabled]{opacity:.35}
-.pill svg{width:20px;height:20px}
-.bottom{padding-top:16px}
 
-/* home */
-.hcard{border-radius:26px;overflow:hidden;position:relative;color:#fff;padding:20px;min-height:220px;display:flex;flex-direction:column;justify-content:flex-end;background:var(--photo) center 30%/cover;margin-top:14px}
-.hcard::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,7,4,.1),rgba(10,7,4,.75))}
-.hcard>*{position:relative}
-.hcard .n{font-size:64px;font-weight:700;line-height:1;letter-spacing:-2px}
-.hcard .l{font-size:18px;font-weight:500;margin-top:4px}
-.hcard .s{font-size:14.5px;opacity:.85;margin-top:2px}
-.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-.kpi{background:var(--card);border-radius:20px;padding:14px 16px}
-.kpi b{font-size:28px;font-weight:700;display:block;line-height:1.1}
-.kpi span{font-size:14px;color:var(--soft)}
-.week{display:flex;gap:8px;align-items:flex-end;height:110px;padding:14px 0 10px}
-.week div{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
-.week em{font-style:normal;font-size:12.5px;font-weight:600;color:var(--ink);min-height:16px}
-.week i{width:100%;max-width:28px;border-radius:8px;background:#F1ECE4;flex:1;position:relative;overflow:hidden}
-.week i::after{content:"";position:absolute;inset:auto 0 0;height:var(--h);background:var(--amber2);border-radius:8px}
-.week div.today span{color:var(--ink);font-weight:700}
-.week span{font-size:13px;color:var(--soft)}
-.bar{height:8px;border-radius:4px;background:#F1ECE4;overflow:hidden;margin-top:8px}
-.bar b{display:block;height:100%;width:var(--w);background:var(--amber2);border-radius:4px}
-.status{display:flex;align-items:center;gap:12px;background:#FFF4E6;border:1px solid #F6D9B5;border-radius:20px;padding:14px 16px;margin-top:12px}
-.status.ok{background:#EAF6EC;border-color:#CBE8D0}
-.status .tx{flex:1}
-.status b{display:block;font-size:16px;font-weight:600}
-.status small{font-size:14px;color:var(--soft)}
-.status .go{height:38px;padding:0 14px;border-radius:999px;background:var(--ink);color:#fff;font-size:14.5px;font-weight:600;white-space:nowrap}
+/* bubbles (Passion Finder) */
+.bubbles{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:0;padding:6px 0}
+.bub{--s:96px;width:var(--s);height:var(--s);border-radius:50%;margin:-4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:16px;font-weight:500;line-height:1.15;padding:8px;
+  background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:transform .2s var(--ease),background .2s}
+.bub:active{transform:scale(.95)}
+.bub.on{background:#FFF8F1;color:var(--ink);border-color:#fff;box-shadow:0 10px 24px -12px rgba(80,30,0,.45);z-index:1}
+.bub.photo{background:center/cover;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.6);border:3px solid #fff;justify-content:flex-end;padding-bottom:12px}
+.bub .x{position:absolute;top:2px;left:2px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.5);display:grid;place-items:center;color:#fff}
+.bub .x svg{width:13px;height:13px;stroke-width:2.6}
+.bub.add{border:1.5px dashed rgba(255,255,255,.7);background:transparent}
+.bub small{font-size:12.5px;font-weight:400;opacity:.85;margin-top:2px}
+.bub svg.i{width:22px;height:22px;margin-bottom:4px}
+
+/* buttons */
+.pill{display:flex;align-items:center;justify-content:center;gap:10px;flex:1;width:100%;height:58px;border-radius:18px;font-size:17.5px;font-weight:600;transition:transform .15s var(--ease)}
+.pill:active{transform:scale(.98)}
+.pill.white{background:#fff;color:var(--ink)}
+.pill.glassb{background:rgba(255,255,255,.22);border:1px solid var(--gline);color:#fff;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.pill.ink{background:var(--ink);color:#fff}
+.pill.link{height:46px;color:var(--w90);font-weight:500;font-size:16px}
+.pill[disabled]{opacity:.4}
+.pill svg{width:20px;height:20px}
+.duo{display:flex;gap:10px;padding-top:16px}
+.foot{text-align:center;font-size:14.5px;margin-top:12px;color:var(--w90)}
+
+/* photo circle with arc (Passion Finder middle screen) */
+.circ{position:relative;width:min(72vw,280px);aspect-ratio:1;margin:0 auto}
+.circ .ph{position:absolute;inset:14px;border-radius:50%;background:var(--photo) center/cover;box-shadow:0 24px 50px -18px rgba(70,25,0,.6);transition:transform 3s cubic-bezier(.45,0,.35,1)}
+.circ svg.arc{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg) scaleX(-1)}
+.circ svg.arc circle{fill:none;stroke-width:2}
+.circ svg.arc .bgc{stroke:rgba(255,255,255,.25)}
+.circ svg.arc .fg{stroke:#fff;stroke-linecap:round;stroke-dasharray:var(--len);stroke-dashoffset:var(--len)}
+.circ .lab{position:absolute;top:44%;font-size:13px;font-weight:500;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+
+/* big white round button */
+.round{width:96px;height:96px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;margin:0 auto;box-shadow:0 16px 36px -14px rgba(70,25,0,.55);font-size:16px;font-weight:600;line-height:1.1;text-align:center}
+.round svg{width:30px;height:30px;color:#D9652A}
+.round.big{width:118px;height:118px}
+
+/* tiles (Stress) */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.tile{border-radius:30px;padding:18px;min-height:150px;display:flex;flex-direction:column;justify-content:space-between}
+.tile .h{font-size:15.5px;font-weight:500}
+.tile .num{font-size:52px}
+.solid .h{color:#5E4E42}
+.gauge{position:relative;padding:20px 18px 18px;border-radius:34px;margin-top:14px;text-align:center}
+.gauge .h{display:flex;justify-content:space-between;align-items:baseline;font-size:15.5px;font-weight:500;color:var(--w90)}
+.gauge .num{font-size:84px;margin-top:4px;text-align:right}
+.gauge svg.g{width:100%;max-width:300px;height:auto;display:block;margin:-6px auto 0}
+.gauge .heart{position:absolute;left:50%;bottom:24px;transform:translateX(-50%)}
+.gauge .gl{display:flex;justify-content:space-between;font-size:13px;color:var(--w90);margin-top:-6px;padding:0 10px}
+.week{display:flex;gap:6px;align-items:flex-end;height:108px;padding:6px 0 0}
+.week div{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}
+.week em{font-style:normal;font-size:13px;font-weight:600;min-height:16px}
+.week i{width:100%;max-width:26px;border-radius:13px;background:rgba(255,255,255,.22);flex:1;position:relative;overflow:hidden}
+.week i::after{content:"";position:absolute;inset:auto 0 0;height:var(--h);background:#fff;border-radius:13px}
+.week span{font-size:13px;color:var(--w90)}
+.week .today span{color:#fff;font-weight:700}
+.status{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:22px;background:#FFF8F1;color:var(--ink);margin-top:12px}
+.status .tx{flex:1}.status b{display:block;font-size:16px;font-weight:600}.status small{font-size:14px;color:#6B5B4E}
+.status .go{height:40px;padding:0 14px;border-radius:12px;background:var(--ink);color:#fff;font-size:14.5px;font-weight:600;white-space:nowrap}
+
+/* photos grid */
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pgrid .pt{aspect-ratio:1;border-radius:20px;background:rgba(255,255,255,.2) center/cover;position:relative;border:1px solid var(--gline)}
+.pgrid .pt button{position:absolute;top:6px;left:6px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center}
+.pgrid .pt button svg{width:14px;height:14px;stroke-width:2.6}
+.pgrid label.pt{display:grid;place-items:center;border:1.5px dashed rgba(255,255,255,.7);background:transparent;font-size:14px;font-weight:500;text-align:center;cursor:pointer}
+.pgrid label.pt svg{width:24px;height:24px;margin:0 auto 4px;display:block}
+.field{width:100%;height:54px;border-radius:16px;border:1px solid var(--gline);background:rgba(255,255,255,.22);padding:0 16px;font-size:17px;outline:none;color:#fff}
+.field::placeholder{color:rgba(255,255,255,.75)}
+.cust{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.cust span{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 8px 0 14px;border-radius:20px;background:#fff;color:var(--ink);font-size:15px;font-weight:500}
+.cust button{width:26px;height:26px;display:grid;place-items:center;color:#7A6A5D}
+.cust button svg{width:14px;height:14px}
 
 /* connect steps */
-.step{display:flex;gap:12px;padding:16px 0;border-bottom:1px solid var(--line)}
+.step{display:flex;gap:12px;padding:16px;border-bottom:1px solid rgba(255,255,255,.2)}
 .step:last-child{border:0}
-.step .k{width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;font-size:15px;font-weight:600;display:grid;place-items:center;flex-shrink:0}
+.step .k{width:30px;height:30px;border-radius:50%;background:#fff;color:var(--ink);font-size:15px;font-weight:700;display:grid;place-items:center;flex-shrink:0}
 .step p{font-size:16px;line-height:1.55}
-.step ul{margin:6px 0 0;padding-inline-start:18px;font-size:15.5px;line-height:1.6;color:var(--soft)}
-.step code{display:block;margin-top:8px;background:#F3EEE7;border-radius:10px;padding:10px;font-size:12.5px;direction:ltr;text-align:left;word-break:break-all;color:var(--soft)}
-.copy{display:inline-flex;align-items:center;gap:6px;margin-top:8px;height:38px;padding:0 14px;border-radius:999px;background:var(--ink);color:#fff;font-size:14.5px;font-weight:600}
+.step ul{margin:6px 0 0;padding-inline-start:18px;font-size:15.5px;line-height:1.6;color:var(--w90)}
+.step code{display:block;margin-top:8px;background:rgba(0,0,0,.2);border-radius:12px;padding:10px;font-size:12.5px;direction:ltr;text-align:left;word-break:break-all}
+.copy{display:inline-flex;align-items:center;gap:6px;margin-top:8px;height:40px;padding:0 14px;border-radius:12px;background:#fff;color:var(--ink);font-size:14.5px;font-weight:600}
+.copy svg{width:16px;height:16px}
 
 /* pause */
-#pause .ph-bg::after{background:linear-gradient(180deg,rgba(10,7,4,.6) 0%,rgba(10,7,4,.4) 30%,rgba(10,7,4,.55) 55%,rgba(10,7,4,.92) 100%)}
-#pause .mega{font-size:38px;margin-top:4vh}
-#pause .idea{display:inline-block;margin-top:16px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:12px 18px;border-radius:18px;text-shadow:none;max-width:320px}
-#pause .idea small{display:block;font-size:13px;font-weight:600;color:var(--amber);margin-bottom:2px}
-#pause .idea span{font-size:19px;font-weight:500;line-height:1.35}
-#pause .msg{opacity:0;transform:translateY(8px);transition:all .9s var(--ease)}
+#pause .bgph{position:fixed!important;inset:-60px;background:center/cover;filter:blur(50px) saturate(1.2);opacity:.3;z-index:0;mix-blend-mode:soft-light}
+#pause .circ{margin-top:3vh}
+#pause .msg{opacity:0;transform:translateY(8px);transition:all .9s var(--ease);text-align:center}
 #pause .msg.on{opacity:1;transform:none}
-#pause .orb{transform:scale(.8)}
-#pause.in .orb{transform:scale(1)}
-#pause.out .orb{transform:scale(.86)}
-#pause .anyway{opacity:0;pointer-events:none;transition:opacity .6s;margin-top:10px;height:48px;color:rgba(255,255,255,.9);font-size:16px;font-weight:500;text-decoration:underline;text-underline-offset:4px;text-decoration-color:rgba(255,255,255,.4)}
+#pause .title{font-size:30px;font-weight:600;line-height:1.18;margin-top:20px;text-shadow:0 1px 14px rgba(80,30,0,.3)}
+#pause .idea{display:inline-block;margin-top:14px;padding:12px 18px;border-radius:20px;max-width:330px}
+#pause .idea small{display:block;font-size:13px;font-weight:600;color:var(--amber);margin-bottom:2px}
+#pause .idea span{font-size:18.5px;font-weight:500;line-height:1.35}
+#pause .cue{text-align:center;font-size:18px;font-weight:500;margin-top:16px;min-height:26px}
+#pause .ph{transform:scale(.86)}
+#pause.in .ph{transform:scale(1)}
+#pause.out .ph{transform:scale(.9)}
+#pause .round{opacity:.5;pointer-events:none;transition:opacity .5s}
+#pause.ready .round{opacity:1;pointer-events:auto}
+#pause .anyway{opacity:0;pointer-events:none;transition:opacity .6s;margin-top:12px;width:auto;padding:0 20px;height:46px;flex:none;align-self:center;font-size:15.5px;font-weight:500}
 #pause.ready .anyway{opacity:1;pointer-events:auto}
-#pause:not(.ready) .orb{pointer-events:none}
-#pause .hint{text-align:center;font-size:14px;color:rgba(255,255,255,.75);margin-bottom:12px;min-height:20px}
 
-/* sheets */
-.sheet{position:fixed;inset:0;background:rgba(10,7,4,.45);display:none;align-items:flex-end;z-index:20}
+/* sheets (solid, dark text = easiest to read for forms) */
+.sheet{position:fixed;inset:0;background:rgba(40,15,0,.4);display:none;align-items:flex-end;z-index:20}
 .sheet.on{display:flex;animation:fade .25s}
-.sheet>div{background:var(--bg);color:var(--ink);width:100%;border-radius:28px 28px 0 0;padding:10px 20px calc(env(safe-area-inset-bottom) + 20px);max-height:90vh;overflow-y:auto}
-.sheet>div::before{content:"";display:block;width:40px;height:5px;border-radius:3px;background:#D4CBBE;margin:0 auto 14px}
+.sheet>div{background:#FFF8F1;color:var(--ink);width:100%;border-radius:30px 30px 0 0;padding:10px 20px calc(env(safe-area-inset-bottom) + 20px);max-height:90vh;overflow-y:auto}
+.sheet>div::before{content:"";display:block;width:40px;height:5px;border-radius:3px;background:#E1D3C4;margin:0 auto 14px}
 .sheet h2{font-size:24px;font-weight:700}
-.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 30px);transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:999px;font-size:15px;opacity:0;transition:.3s;z-index:40;pointer-events:none}
+.sheet .lbl{color:var(--ink)}
+.sheet .lbl small{color:#8A7B6E}
+.sheet .sf{width:100%;height:54px;border-radius:16px;border:1.5px solid #EADFD2;background:#fff;padding:0 16px;font-size:17px;outline:none}
+.sheet .sf:focus{border-color:#D9652A}
+.sheet .chips{display:flex;flex-wrap:wrap;gap:8px}
+.sheet .chip{min-height:46px;padding:0 18px;border-radius:23px;border:1.5px solid #EADFD2;background:#fff;font-size:16px;font-weight:500}
+.sheet .chip.on{background:#D9652A;border-color:#D9652A;color:#fff}
+.sheet .pgrid .pt{background-color:#F1E6DA;border-color:#EADFD2}
+.sheet .pgrid label.pt{border-color:#D8C6B4;color:#6B5B4E}
+.sheet .srow{display:flex;align-items:center;gap:12px;width:100%;text-align:right;padding:14px 4px;border-bottom:1px solid #EFE4D8;min-height:64px}
+.sheet .srow:last-child{border:0}
+.sheet .srow .ic{width:40px;height:40px;border-radius:50%;background:#FBE6D6;color:#C2541C;display:grid;place-items:center;flex-shrink:0}
+.sheet .srow .ic svg{width:20px;height:20px}
+.sheet .srow .tx{flex:1}.sheet .srow b{display:block;font-size:17px;font-weight:500}.sheet .srow small{font-size:14px;color:#7A6A5D}
+.sheet .srow .end{color:#B3A396}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 30px);transform:translate(-50%,20px);background:#fff;color:var(--ink);padding:12px 20px;border-radius:16px;font-size:15px;font-weight:500;opacity:0;transition:.3s;z-index:40;pointer-events:none;box-shadow:0 10px 30px -10px rgba(0,0,0,.3)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
 <body>
+<div class="mesh"></div>
 
 <svg width="0" height="0" style="position:absolute">
-  <symbol id="i-check" viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9"/></symbol>
-  <symbol id="i-next" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
   <symbol id="i-back" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
-  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
-  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10A4.2 4.2 0 0 1 12 7.3 4.2 4.2 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M12 21c-4-3-6-6.5-6-10.5C6 6.5 9 3.5 12 2c3 1.5 6 4.5 6 8.5 0 4-2 7.5-6 10.5z"/><path d="M12 21V9"/></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v1.5M12 19.5V21M3 12h1.5M19.5 12H21M5.6 5.6l1 1M17.4 17.4l1 1M5.6 18.4l1-1M17.4 6.6l1-1"/></symbol>
   <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-6.5 8 6.5"/><path d="M6 9.5V19h12V9.5"/></symbol>
   <symbol id="i-candle" viewBox="0 0 24 24"><path d="M9 10h6v10H9z"/><path d="M12 3.5c1.3 1.4 1.6 2.6.9 3.4-.5.5-1.3.5-1.8 0-.7-.8-.4-2 .9-3.4z"/></symbol>
   <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z"/></symbol>
-  <symbol id="i-body" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><path d="M6 9.5l6 1.5 6-1.5M12 11v4l-3 5M12 15l3 5"/></symbol>
-  <symbol id="i-wind" viewBox="0 0 24 24"><path d="M3 9h11a3 3 0 1 0-3-3M3 15h15a3 3 0 1 1-3 3"/></symbol>
-  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 7h11M9 12h11M9 17h11"/><circle cx="4.5" cy="7" r=".8"/><circle cx="4.5" cy="12" r=".8"/><circle cx="4.5" cy="17" r=".8"/></symbol>
-  <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 11a3.5 3.5 0 0 0 1 7z"/></symbol>
-  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 19s-7-4.4-7-9.5A3.8 3.8 0 0 1 12 7a3.8 3.8 0 0 1 7 2.5C19 14.6 12 19 12 19z"/></symbol>
-  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c.6-3.2 3-5 6-5s5.4 1.8 6 5"/><path d="M16 5.5a3 3 0 0 1 0 5.6M18 14.3c1.6.6 2.7 2.2 3 4.7"/></symbol>
   <symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M20.5 16l-5-5L6 19.5"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c.6-3.2 3-5 6-5s5.4 1.8 6 5"/><path d="M16 5.5a3 3 0 0 1 0 5.6M18 14.3c1.6.6 2.7 2.2 3 4.7"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
   <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
-  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12h10l1-12M9 7V4h6v3"/></symbol>
-  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
 </svg>
 
 <!-- ============ 1. WELCOME ============ -->
-<section class="screen photo" id="ob1">
-  <div class="ph-bg"></div>
-  <div class="top" style="justify-content:center"><span class="word">Look Up</span></div>
-  <div class="hero">
-    <span class="kicker"><svg class="i"><use href="#i-check"/></svg>בלי הרשמה · הכול נשאר בטלפון</span>
-    <h1 class="mega">הטלפון שלך<br><span class="a">יחזיר אותך</span><br>לאנשים שלך</h1>
-    <p class="lede">רגע לפני שאינסטגרם או טיקטוק נפתחים: נשימה אחת, תמונה שאוהבים, ודבר קטן לעשות במקום. תמיד אפשר להמשיך.</p>
+<section class="screen" id="ob1">
+  <div class="brand" style="margin-top:2vh">Look<br>Up</div>
+  <h1 class="t">הטלפון שלך יחזיר אותך<br>לאנשים שלך</h1>
+  <p class="d">רגע לפני שאינסטגרם או טיקטוק נפתחים: נשימה אחת, תמונה שאוהבים, ודבר קטן לעשות במקום.</p>
+  <div class="grow" style="min-height:16px"></div>
+  <div class="circ" style="--len:820">
+    <svg class="arc" viewBox="0 0 280 280"><circle class="bgc" cx="140" cy="140" r="130"/><circle class="fg" cx="140" cy="140" r="130" style="stroke-dashoffset:520"/></svg>
+    <div class="ph"></div>
   </div>
-  <div class="grow" style="min-height:24px"></div>
-  <div class="orbwrap"><button class="orb" onclick="go('ob2')">בואו<br>נתחיל</button></div>
-  <p class="foot">ההגדרה לוקחת פחות מדקה</p>
+  <div class="grow" style="min-height:16px"></div>
+  <div class="duo"><button class="pill white" onclick="go('ob2')">בואו נתחיל</button></div>
+  <p class="foot">פחות מדקה · בלי הרשמה · הכול נשאר בטלפון</p>
 </section>
 
 <!-- ============ 2. PEOPLE ============ -->
 <section class="screen" id="ob2">
-  <div class="top"><button class="back" onclick="back('ob1')"><svg class="i"><use href="#i-back"/></svg>חזרה</button><span class="stepof" data-step="1"></span></div>
-  <div class="prog" data-step="1"></div>
-  <h1 class="t">בשביל מי חשוב לך <span class="a">להיות יותר כאן?</span></h1>
-  <p class="d">ילדים, בן או בת זוג, הורים, חברים. כשפותחים אינסטגרם בשעות המשפחה, יופיעו התמונה שלהם ורעיון קטן איתם.</p>
-  <div id="peopleList" style="margin-top:20px"></div>
-  <button class="add" onclick="openPerson()"><svg class="i"><use href="#i-plus"/></svg>להוסיף אדם</button>
+  <div class="top"><button class="gbtn" onclick="back('ob1')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <div class="stepof" data-step="1" style="margin-top:14px"></div><div class="prog" data-step="1"></div>
+  <h1 class="t">בשביל מי חשוב לך<br>להיות יותר כאן?</h1>
+  <p class="d">ילדים, בן או בת זוג, הורים, חברים. בשעות המשפחה יופיעו התמונה שלהם ורעיון קטן איתם.</p>
+  <div class="bubbles" id="peopleList" style="margin-top:18px"></div>
   <div class="grow"></div>
-  <div class="bottom">
-    <button class="pill ink" id="ob2next" onclick="go('ob3')">המשך <svg class="i"><use href="#i-next"/></svg></button>
-    <button class="pill ghost" id="ob2skip" onclick="go('ob3')">אוסיף אחר כך</button>
-  </div>
+  <div class="duo"><button class="pill glassb" id="ob2skip" onclick="go('ob3')">אוסיף אחר כך</button><button class="pill white" id="ob2next" onclick="go('ob3')">המשך</button></div>
 </section>
 
 <!-- ============ 3. PHOTOS + IDEAS ============ -->
 <section class="screen" id="ob3">
-  <div class="top"><button class="back" onclick="back('ob2')"><svg class="i"><use href="#i-back"/></svg>חזרה</button><span class="stepof" data-step="2"></span></div>
-  <div class="prog" data-step="2"></div>
-  <h1 class="t">מה עושה לך <span class="a">טוב?</span></h1>
+  <div class="top"><button class="gbtn" onclick="back('ob2')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <div class="stepof" data-step="2" style="margin-top:14px"></div><div class="prog" data-step="2"></div>
+  <h1 class="t">מה עושה לך טוב?</h1>
   <p class="d">תמונות ורעיונות שיופיעו בהפסקה בשאר שעות היום.</p>
+  <div class="lbl">מה לעשות במקום לגלול?<small>לחיצה בוחרת</small></div>
+  <div class="bubbles" id="catChips"></div>
   <div class="lbl">תמונות שאוהבים<small>לא חובה · נשמרות רק בטלפון</small></div>
-  <div class="grid" id="genGrid"></div>
-  <label class="add"><svg class="i"><use href="#i-image"/></svg>לבחור תמונות מהגלריה<input type="file" accept="image/*" multiple hidden onchange="addGeneral(this)"></label>
-  <div class="lbl">מה לעשות במקום לגלול?<small>אפשר לבחור כמה</small></div>
-  <div class="chips" id="catChips"></div>
+  <div class="pgrid" id="genGrid"></div>
   <div class="lbl">רעיון משלך<small>לא חובה</small></div>
-  <div style="display:flex;gap:8px"><input class="field" id="customIdea" placeholder="למשל: לנגן 5 דקות בגיטרה" onkeydown="if(event.key==='Enter')addCustom()"><button class="pill ink" style="width:auto;padding:0 20px;height:54px" onclick="addCustom()">הוספה</button></div>
-  <div class="chips" id="customList" style="margin-top:10px"></div>
-  <div class="grow" style="min-height:20px"></div>
-  <div class="bottom"><button class="pill ink" onclick="go('ob4')">המשך <svg class="i"><use href="#i-next"/></svg></button></div>
+  <div style="display:flex;gap:8px"><input class="field" id="customIdea" placeholder="למשל: לנגן 5 דקות בגיטרה" onkeydown="if(event.key==='Enter')addCustom()"><button class="pill white" style="flex:none;width:auto;padding:0 18px;height:54px" onclick="addCustom()">הוספה</button></div>
+  <div class="cust" id="customList"></div>
+  <div class="grow" style="min-height:16px"></div>
+  <div class="duo"><button class="pill white" id="ob3btn" onclick="go('ob4')">המשך</button></div>
 </section>
 
 <!-- ============ 4. TIMES ============ -->
 <section class="screen" id="ob4">
-  <div class="top"><button class="back" onclick="back('ob3')"><svg class="i"><use href="#i-back"/></svg>חזרה</button><span class="stepof" data-step="3"></span></div>
-  <div class="prog" data-step="3"></div>
-  <h1 class="t">מתי הכי חשוב לך <span class="a">להיות כאן?</span></h1>
-  <p class="d">לפי השעה, ההפסקה תציג דברים אחרים. לחיצה על שעה משנה אותה.</p>
-  <div class="card" style="margin-top:20px">
-    <div class="row"><span class="ic"><svg class="i"><use href="#i-sun"/></svg></span><span class="tx"><b>בוקר שקט</b><small>עד השעה הזו: מים, מתיחה, בוקר טוב</small></span><input type="time" class="time" id="mEnd" value="08:00"></div>
-    <div class="row"><span class="ic"><svg class="i"><use href="#i-home"/></svg></span><span class="tx"><b>שעות משפחה</b><small>האנשים שלך ורעיון קטן איתם</small></span></div>
-    <div class="row" style="padding-top:0;min-height:0;justify-content:flex-start;gap:8px;padding-inline-start:50px"><span style="color:var(--soft);font-size:15px">מ-</span><input type="time" class="time" id="fStart" value="17:00"><span style="color:var(--soft);font-size:15px">עד</span><input type="time" class="time" id="fEnd" value="21:00"></div>
-    <div class="row"><span class="ic"><svg class="i"><use href="#i-candle"/></svg></span><span class="tx"><b>שבת כזמן משפחה</b><small>מכניסת שבת ועד מוצאי שבת</small></span><button class="tgl on" id="shabbat" onclick="this.classList.toggle('on')" aria-label="שבת"></button></div>
-    <div class="row"><span class="ic"><svg class="i"><use href="#i-moon"/></svg></span><span class="tx"><b>לילה</b><small>מהשעה הזו: מנוחה, בלי פיד</small></span><input type="time" class="time" id="nStart" value="22:30"></div>
+  <div class="top"><button class="gbtn" onclick="back('ob3')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <div class="stepof" data-step="3" style="margin-top:14px"></div><div class="prog" data-step="3"></div>
+  <h1 class="t">מתי הכי חשוב לך<br>להיות כאן?</h1>
+  <p class="d">לפי השעה ההפסקה מציגה דברים אחרים. לחיצה על שעה משנה אותה.</p>
+  <div style="margin-top:20px">
+    <div class="rowg"><span class="ic"><svg class="i"><use href="#i-sun"/></svg></span><span class="tx"><b>בוקר שקט</b><small>עד השעה הזו: מים, מתיחה, בוקר טוב</small></span><input type="time" class="time" id="mEnd" value="08:00"></div>
+    <div class="rowg" style="flex-wrap:wrap"><span class="ic"><svg class="i"><use href="#i-home"/></svg></span><span class="tx"><b>שעות משפחה</b><small>האנשים שלך ורעיון קטן איתם</small></span>
+      <span style="display:flex;align-items:center;gap:8px;width:100%;padding-inline-start:50px;margin-top:8px;font-size:15px">מ-<input type="time" class="time" id="fStart" value="17:00">עד<input type="time" class="time" id="fEnd" value="21:00"></span></div>
+    <div class="rowg"><span class="ic"><svg class="i"><use href="#i-candle"/></svg></span><span class="tx"><b>שבת כזמן משפחה</b><small>מכניסת שבת ועד מוצאי שבת</small></span><button class="tgl on" id="shabbat" onclick="this.classList.toggle('on')" aria-label="שבת"></button></div>
+    <div class="rowg"><span class="ic"><svg class="i"><use href="#i-moon"/></svg></span><span class="tx"><b>לילה</b><small>מהשעה הזו: מנוחה, בלי פיד</small></span><input type="time" class="time" id="nStart" value="22:30"></div>
   </div>
-  <div class="grow" style="min-height:20px"></div>
-  <div class="bottom"><button class="pill ink" id="ob4btn" onclick="finishTimes()">המשך <svg class="i"><use href="#i-next"/></svg></button></div>
+  <div class="grow" style="min-height:16px"></div>
+  <div class="duo"><button class="pill white" id="ob4btn" onclick="finishTimes()">המשך</button></div>
 </section>
 
-<!-- ============ 5. CONNECT INSTAGRAM ============ -->
+<!-- ============ 5. CONNECT ============ -->
 <section class="screen" id="ob5">
-  <div class="top"><button class="back" id="ob5back" onclick="back(st.setup?'home':'ob4')"><svg class="i"><use href="#i-back"/></svg>חזרה</button><span class="stepof" data-step="4"></span></div>
-  <div class="prog" data-step="4" id="ob5prog"></div>
-  <h1 class="t">חיבור <span class="a">לאינסטגרם</span></h1>
-  <p class="d">כדי שההפסקה תופיע כשפותחים אינסטגרם, צריך ליצור פעם אחת קיצור ואוטומציה באפליקציית <b>קיצורים</b> של האייפון. זה לוקח בערך 3 דקות.</p>
-  <div class="card" style="margin-top:18px" id="guideCard"></div>
-  <div class="grow" style="min-height:20px"></div>
-  <div class="bottom">
-    <button class="pill ink" onclick="finishConnect(true)">סיימתי את החיבור <svg class="i"><use href="#i-check"/></svg></button>
-    <button class="pill ghost" id="ob5later" onclick="finishConnect(false)">אעשה את זה אחר כך</button>
-  </div>
+  <div class="top"><button class="gbtn" onclick="back(st.setup?'home':'ob4')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <div class="stepof" data-step="4" style="margin-top:14px"></div><div class="prog" data-step="4"></div>
+  <h1 class="t">חיבור לאינסטגרם</h1>
+  <p class="d">פעם אחת, בערך 3 דקות, באפליקציית <b>קיצורים</b> של האייפון. אחרי זה ההפסקה תופיע לבד כשפותחים אינסטגרם.</p>
+  <div class="glass" style="margin-top:18px" id="guideCard"></div>
+  <div class="grow" style="min-height:16px"></div>
+  <div class="duo"><button class="pill glassb" id="ob5later" onclick="finishConnect(false)">אחר כך</button><button class="pill white" onclick="finishConnect(true)">סיימתי לחבר</button></div>
 </section>
 
 <!-- ============ HOME ============ -->
 <section class="screen" id="home">
-  <div class="top"><span class="word">Look Up</span><button class="icon-btn" onclick="openSettings()" aria-label="הגדרות"><svg class="i"><use href="#i-gear"/></svg></button></div>
-  <div class="hcard" id="hcard">
-    <div class="s" id="hDate"></div>
-    <div class="n" id="tHere">0</div>
-    <div class="l" id="tLbl">פעמים בחרת להיות כאן היום</div>
+  <div class="top"><span></span><div class="brand sm">Look Up</div><button class="gbtn" onclick="openSettings()" aria-label="הגדרות"><svg class="i"><use href="#i-gear"/></svg></button></div>
+  <div class="gauge glass">
+    <div class="h"><span>היום בחרת להיות כאן</span><span id="hDate" style="font-size:14px;opacity:.85"></span></div>
+    <div class="num" id="tHere">0<small>פעמים</small></div>
+    <svg class="g" viewBox="0 0 300 150" id="gauge"></svg>
+    <div class="gl"><span>התחלה</span><span>יעד: 5</span></div>
+    <button class="round heart" style="width:76px;height:76px" onclick="startPause('instagram',true)" aria-label="לנסות את ההפסקה"><svg class="i"><use href="#i-heart"/></svg></button>
   </div>
+  <p style="text-align:center;font-size:14px;color:var(--w90);margin-top:8px">לחיצה על הלב: לנסות את ההפסקה</p>
   <div id="connectStatus"></div>
-  <div class="kpis">
-    <div class="kpi"><b id="wHere">0</b><span>"אני כאן" השבוע</span></div>
-    <div class="kpi"><b id="wOpen">0</b><span>פתחת בכל זאת השבוע</span></div>
+  <div class="tiles">
+    <div class="tile solid"><span class="h">"אני כאן" השבוע</span><span class="num" id="wHere">0</span></div>
+    <div class="tile glass"><span class="h">פתחת בכל זאת</span><span class="num" id="wOpen">0</span></div>
   </div>
-  <div class="lbl">7 הימים האחרונים</div>
-  <div class="card"><div class="week" id="week"></div></div>
-  <div id="pplWrap">
-    <div class="lbl">השבוע בחרת ב…</div>
-    <div class="card" id="pplStats"></div>
-  </div>
-  <div class="grow" style="min-height:20px"></div>
-  <div class="bottom"><button class="pill amber" onclick="startPause('instagram',true)"><svg class="i" style="fill:#fff;stroke:none"><use href="#i-play"/></svg>לנסות את ההפסקה עכשיו</button></div>
+  <div class="glass" style="padding:16px 16px 12px;margin-top:10px"><div style="font-size:15.5px;font-weight:500">7 הימים האחרונים</div><div class="week" id="week"></div></div>
+  <div id="pplWrap"><div class="lbl">השבוע בחרת ב…</div><div id="pplStats"></div></div>
+  <div style="height:10px"></div>
 </section>
 
 <!-- ============ PAUSE ============ -->
-<section class="screen photo" id="pause">
-  <div class="ph-bg" id="pBg"></div>
-  <div class="top" style="justify-content:center"><span class="word" style="font-size:20px;opacity:.9">Look Up</span></div>
-  <div class="hero" style="margin-top:3vh">
-    <span class="kicker" id="pGreet"></span>
-    <div class="msg" id="pMsg">
-      <h1 class="mega" id="pTitle"></h1>
-      <div class="idea"><small id="pIdeaLbl">במקום:</small><span id="pIdea"></span></div>
-    </div>
+<section class="screen" id="pause">
+  <div class="bgph" id="pBgBlur"></div>
+  <div class="top"><span></span><div class="brand sm" id="pGreet" style="font-family:Heebo;text-transform:none;font-weight:500;letter-spacing:0;font-size:15px"></div><span></span></div>
+  <div class="circ" id="pCirc" style="--len:820">
+    <svg class="arc" viewBox="0 0 280 280"><circle class="bgc" cx="140" cy="140" r="130"/><circle class="fg" id="pArc" cx="140" cy="140" r="130"/></svg>
+    <div class="ph" id="pPhoto"></div>
   </div>
-  <div class="grow" style="min-height:20px"></div>
-  <p class="hint" id="hint">עקבו אחרי העיגול</p>
-  <div class="orbwrap"><button class="orb" id="orb" onclick="choose('here')"><span id="orbTxt">נשימה<br>פנימה</span></button></div>
-  <button class="anyway" id="anyway" onclick="choose('open')">לפתוח בכל זאת</button>
+  <div class="cue" id="cue">נשימה פנימה…</div>
+  <div class="msg" id="pMsg">
+    <div class="title" id="pTitle"></div>
+    <div class="idea glass"><small id="pIdeaLbl">במקום:</small><span id="pIdea"></span></div>
+  </div>
+  <div class="grow" style="min-height:16px"></div>
+  <button class="round big" id="orb" onclick="choose('here')"><span><svg class="i" style="display:block;margin:0 auto 4px;color:#3E9B5F"><use href="#i-leaf"/></svg>אני כאן</span></button>
+  <button class="pill glassb anyway" id="anyway" onclick="choose('open')">לפתוח בכל זאת</button>
 </section>
 
-<section class="screen photo" id="done">
-  <div class="ph-bg" id="dBg"></div>
+<section class="screen" id="done">
   <div class="grow"></div>
-  <div class="hero" style="margin-top:0">
-    <span class="kicker"><svg class="i"><use href="#i-check"/></svg>נשמר</span>
-    <h1 class="mega" id="dTitle"></h1>
-    <p class="lede" id="dSub"></p>
-  </div>
+  <div class="round big" style="pointer-events:none"><svg class="i" style="color:#3E9B5F;width:40px;height:40px"><use href="#i-check"/></svg></div>
+  <h1 class="t" id="dTitle" style="font-size:32px;margin-top:26px"></h1>
+  <p class="d" id="dSub"></p>
   <div class="grow"></div>
   <p class="foot" id="dFoot">אפשר לסגור את המסך הזה.</p>
 </section>
@@ -332,26 +356,25 @@ h1.t .a{color:var(--amberInk)}
 <div class="sheet" id="pSheet" onclick="if(event.target===this)closeSheet()"><div>
   <h2>להוסיף אדם</h2>
   <div class="lbl" style="margin-top:16px">שם</div>
-  <input class="field" id="pName" placeholder="למשל: נועה" oninput="checkPerson()">
+  <input class="sf" id="pName" placeholder="למשל: נועה" oninput="checkPerson()">
   <div class="lbl">מי זה בשבילך?</div>
   <div class="chips" id="relChips"></div>
   <div class="lbl">תמונות<small>1–5, מהגלריה</small></div>
-  <div class="grid" id="pPicGrid"></div>
-  <label class="add"><svg class="i"><use href="#i-image"/></svg>לבחור תמונות<input type="file" accept="image/*" multiple hidden onchange="pickPersonPics(this)"></label>
+  <div class="pgrid" id="pPicGrid"></div>
   <button class="pill ink" id="pSave" style="margin-top:20px" onclick="savePerson()" disabled>שמירה</button>
-  <button class="pill ghost" onclick="closeSheet()">ביטול</button>
+  <button class="pill link" style="color:#7A6A5D" onclick="closeSheet()">ביטול</button>
 </div></div>
 
 <!-- settings sheet -->
 <div class="sheet" id="sSheet" onclick="if(event.target===this)closeSheet()"><div>
   <h2>הגדרות</h2>
-  <div class="card" style="margin-top:16px">
-    <button class="row" style="width:100%;text-align:right" onclick="closeSheet();edit('ob2')"><span class="ic"><svg class="i"><use href="#i-users"/></svg></span><span class="tx"><b>האנשים שלי</b><small id="sPeople"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
-    <button class="row" style="width:100%;text-align:right" onclick="closeSheet();edit('ob3')"><span class="ic"><svg class="i"><use href="#i-bulb"/></svg></span><span class="tx"><b>תמונות ורעיונות</b><small id="sIdeas"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
-    <button class="row" style="width:100%;text-align:right" onclick="closeSheet();edit('ob4')"><span class="ic"><svg class="i"><use href="#i-clock"/></svg></span><span class="tx"><b>שעות</b><small id="sTimes"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
-    <button class="row" style="width:100%;text-align:right" onclick="closeSheet();go('ob5')"><span class="ic"><svg class="i"><use href="#i-link"/></svg></span><span class="tx"><b>חיבור לאינסטגרם וטיקטוק</b><small id="sConn"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
+  <div style="margin-top:10px">
+    <button class="srow" onclick="closeSheet();edit('ob2')"><span class="ic"><svg class="i"><use href="#i-users"/></svg></span><span class="tx"><b>האנשים שלי</b><small id="sPeople"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
+    <button class="srow" onclick="closeSheet();edit('ob3')"><span class="ic"><svg class="i"><use href="#i-bulb"/></svg></span><span class="tx"><b>תמונות ורעיונות</b><small id="sIdeas"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
+    <button class="srow" onclick="closeSheet();edit('ob4')"><span class="ic"><svg class="i"><use href="#i-clock"/></svg></span><span class="tx"><b>שעות</b><small id="sTimes"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
+    <button class="srow" onclick="closeSheet();go('ob5')"><span class="ic"><svg class="i"><use href="#i-link"/></svg></span><span class="tx"><b>חיבור לאינסטגרם וטיקטוק</b><small id="sConn"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
   </div>
-  <button class="pill ghost" style="color:#B5533A;margin-top:12px" onclick="resetAll()"><svg class="i"><use href="#i-trash"/></svg>מחיקת כל הנתונים</button>
+  <button class="pill link" style="color:#B5462A;margin-top:12px" onclick="resetAll()"><svg class="i"><use href="#i-trash"/></svg>מחיקת כל הנתונים</button>
 </div></div>
 
 <div class="toast" id="toast"></div>
@@ -371,11 +394,10 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 /* ---------- photos ---------- */
 function resize(file,max=1400){return new Promise(r=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height,k=Math.min(1,max/Math.max(w,h));const c=document.createElement('canvas');c.width=w*k;c.height=h*k;c.getContext('2d').drawImage(img,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',.8));URL.revokeObjectURL(img.src)};img.src=URL.createObjectURL(file)})}
 const urlCache={};async function photo(id){if(!id)return'';if(urlCache[id])return urlCache[id];const v=await DB.get(id);urlCache[id]=v||'';return urlCache[id]}
-const setBg=(el,src,night)=>{el.style.backgroundImage=src?`url(${src})`:(night?'var(--photoNight)':'')}
 
 /* ---------- content ---------- */
 const REL={son:{l:'בן',g:'m',k:'kid'},daughter:{l:'בת',g:'f',k:'kid'},partnerM:{l:'בן זוג',g:'m',k:'partner'},partnerF:{l:'בת זוג',g:'f',k:'partner'},dad:{l:'אבא',g:'m',k:'parent'},mom:{l:'אמא',g:'f',k:'parent'},friendM:{l:'חבר',g:'m',k:'friend'},friendF:{l:'חברה',g:'f',k:'friend'}};
-const CATS={body:['body','תנועה','שכיבות סמיכה, מתיחה'],breath:['wind','נשימה','אוויר, חלון, מרפסת'],life:['list','סידורים','ארוחת ערב, הודעה חשובה'],rest:['cloud','מנוחה','לעצום עיניים, משהו חם']};
+const CATS={body:['תנועה',104],breath:['נשימה',92],life:['סידורים',98],rest:['מנוחה',88]};
 const P=(g,m,f)=>g==='f'?f:m;
 const PEOPLE_IDEAS={
  kid:[(n,g)=>`לשאול את ${n} מה הכי ${P(g,'הצחיק אותו','הצחיק אותה')} היום`,(n,g)=>`לשחק עם ${n} משהו קטן, רק שניכם`,(n,g)=>`לחבק את ${n}, סתם ככה`,(n,g)=>`לשבת ליד ${n} ולראות מה ${P(g,'הוא עושה','היא עושה')}`],
@@ -389,6 +411,7 @@ const DAY_TITLES=['רגע לעצמך.','מה קורה סביבך עכשיו?','�
 const NIGHT=[['עשית מספיק היום.','המיטה מחכה. הפיד יחכה למחר.'],['לילה טוב.','מחר בבוקר זה ירגיש טוב.']];
 const APPS={instagram:{n:'אינסטגרם',u:'instagram://'},tiktok:{n:'טיקטוק',u:'snssdk1233://'},youtube:{n:'יוטיוב',u:'youtube://'},facebook:{n:'פייסבוק',u:'fb://'},x:{n:'X',u:'twitter://'}};
 const pick=a=>a[Math.floor(Math.random()*a.length)];
+const GOAL=5;
 
 /* ---------- time logic ---------- */
 const mins=t=>{const[h,m]=t.split(':').map(Number);return h*60+m};
@@ -411,39 +434,41 @@ function toast(t){const e=document.getElementById('toast');e.textContent=t;e.cla
 function closeSheet(){document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('on'))}
 function doneEditing(){editing=false;toast('נשמר');go('home')}
 
-/* ---------- people ---------- */
+/* ---------- people (bubbles) ---------- */
 let draft=null;
 function openPerson(){draft={id:uid(),name:'',rel:'daughter',pics:[]};document.getElementById('pName').value='';renderRel();renderDraftPics();checkPerson();document.getElementById('pSheet').classList.add('on')}
 function renderRel(){document.getElementById('relChips').innerHTML=Object.entries(REL).map(([k,v])=>`<button class="chip ${draft.rel===k?'on':''}" onclick="draft.rel='${k}';renderRel()">${v.l}</button>`).join('')}
 function checkPerson(){document.getElementById('pSave').disabled=!document.getElementById('pName').value.trim()}
 async function pickPersonPics(inp){for(const f of inp.files){if(draft.pics.length>=5)break;const id='ph_'+uid();await DB.put(id,await resize(f));draft.pics.push(id)}inp.value='';renderDraftPics()}
-async function renderDraftPics(){const g=document.getElementById('pPicGrid');g.innerHTML='';g.style.marginBottom=draft.pics.length?'10px':'0';
- for(const id of draft.pics){const d=document.createElement('div');d.className='tile';d.style.backgroundImage=`url(${await photo(id)})`;const b=document.createElement('button');b.innerHTML=ic('x');b.setAttribute('aria-label','הסרה');b.onclick=()=>{draft.pics=draft.pics.filter(x=>x!==id);DB.del(id);renderDraftPics()};d.appendChild(b);g.appendChild(d)}}
-function savePerson(){draft.name=document.getElementById('pName').value.trim();if(!draft.name)return;st.people.push(draft);save();closeSheet();renderPeople();toast(`${draft.name} נוספ${REL[draft.rel].g==='f'?'ה':''}`)}
+async function renderDraftPics(){const g=document.getElementById('pPicGrid');let h='';
+ for(const id of draft.pics)h+=`<div class="pt" style="background-image:url(${await photo(id)})"><button onclick="rmDraftPic('${id}')" aria-label="הסרה">${ic('x')}</button></div>`;
+ if(draft.pics.length<5)h+=`<label class="pt"><span>${ic('image')}להוסיף</span><input type="file" accept="image/*" multiple hidden onchange="pickPersonPics(this)"></label>`;g.innerHTML=h}
+function rmDraftPic(id){draft.pics=draft.pics.filter(x=>x!==id);DB.del(id);renderDraftPics()}
+function savePerson(){draft.name=document.getElementById('pName').value.trim();if(!draft.name)return;st.people.push(draft);save();closeSheet();renderPeople();toast(`${draft.name} ${REL[draft.rel].g==='f'?'נוספה':'נוסף'}`)}
 function delPerson(id){const p=st.people.find(x=>x.id===id);if(!p||!confirm(`להסיר את ${p.name}?`))return;st.people=st.people.filter(x=>x.id!==id);p.pics.forEach(x=>DB.del(x));save();renderPeople()}
-async function renderPeople(){const L=document.getElementById('peopleList');
- if(!st.people.length){L.innerHTML=`<div class="empty"><b>עוד לא נוספו אנשים</b>למשל: נועה, הבת שלך, עם תמונה אחת שאוהבים.</div>`}
- else{let h='<div class="card">';for(const p of st.people){const src=await photo(p.pics[0]);h+=`<div class="row"><span class="av" style="${src?`background-image:url(${src})`:''}">${src?'':esc(p.name[0])}</span><span class="tx"><b>${esc(p.name)}</b><small>${REL[p.rel].l} · ${p.pics.length?p.pics.length+' תמונות':'בלי תמונה'}</small></span><button class="del" onclick="delPerson('${p.id}')" aria-label="הסרה">${ic('trash')}</button></div>`}L.innerHTML=h+'</div>'}
+async function renderPeople(){const L=document.getElementById('peopleList');let h='';const sizes=[112,100,92,104,96];
+ for(let i=0;i<st.people.length;i++){const p=st.people[i];const src=await photo(p.pics[0]);
+  h+=`<div class="bub ${src?'photo':'on'}" style="--s:${sizes[i%5]}px;${src?`background-image:url(${src})`:''}"><button class="x" onclick="delPerson('${p.id}')" aria-label="הסרה">${ic('x')}</button><span>${esc(p.name)}</span>${p.name===REL[p.rel].l?'':`<small>${REL[p.rel].l}</small>`}</div>`}
+ h+=`<button class="bub add" style="--s:${st.people.length?92:120}px" onclick="openPerson()">${ic('plus')}להוסיף<br>אדם</button>`;L.innerHTML=h;
  const n=document.getElementById('ob2next'),s=document.getElementById('ob2skip');
- if(editing){n.innerHTML='שמירה '+ic('check');n.onclick=doneEditing;s.style.display='none'}
- else{n.innerHTML='המשך '+ic('next');n.onclick=()=>go('ob3');s.style.display=st.people.length?'none':''}}
+ if(editing){n.textContent='שמירה';n.onclick=doneEditing;s.style.display='none'}
+ else{n.textContent='המשך';n.onclick=()=>go('ob3');s.style.display=st.people.length?'none':''}}
 
 /* ---------- general photos & categories ---------- */
 async function addGeneral(inp){for(const f of inp.files){const id='ph_'+uid();await DB.put(id,await resize(f));st.general.push(id)}inp.value='';save();renderGeneral()}
-async function renderGeneral(){const g=document.getElementById('genGrid');g.innerHTML='';g.style.marginBottom=st.general.length?'10px':'0';
- for(const id of st.general){const d=document.createElement('div');d.className='tile';d.style.backgroundImage=`url(${await photo(id)})`;const b=document.createElement('button');b.innerHTML=ic('x');b.setAttribute('aria-label','הסרת תמונה');b.onclick=()=>{st.general=st.general.filter(x=>x!==id);DB.del(id);save();renderGeneral()};d.appendChild(b);g.appendChild(d)}
- document.getElementById('catChips').innerHTML=Object.entries(CATS).map(([k,[i,l]])=>`<button class="chip ${st.cats.includes(k)?'on':''}" onclick="toggleCat('${k}')"><svg class="i ok"><use href="#i-check"/></svg>${st.cats.includes(k)?'':ic(i)}${l}</button>`).join('');
- renderCustom();
- const btn=document.querySelector('#ob3 .bottom .pill');if(editing){btn.innerHTML='שמירה '+ic('check');btn.onclick=doneEditing}else{btn.innerHTML='המשך '+ic('next');btn.onclick=()=>go('ob4')}}
+async function renderGeneral(){const g=document.getElementById('genGrid');let h='';
+ for(const id of st.general)h+=`<div class="pt" style="background-image:url(${await photo(id)})"><button onclick="rmGen('${id}')" aria-label="הסרת תמונה">${ic('x')}</button></div>`;
+ h+=`<label class="pt"><span>${ic('image')}להוסיף<br>תמונות</span><input type="file" accept="image/*" multiple hidden onchange="addGeneral(this)"></label>`;g.innerHTML=h;
+ document.getElementById('catChips').innerHTML=Object.entries(CATS).map(([k,[l,s]])=>`<button class="bub ${st.cats.includes(k)?'on':''}" style="--s:${s}px" onclick="toggleCat('${k}')">${st.cats.includes(k)?ic('check'):''}${l}</button>`).join('');
+ renderCustom();const b=document.getElementById('ob3btn');if(editing){b.textContent='שמירה';b.onclick=doneEditing}else{b.textContent='המשך';b.onclick=()=>go('ob4')}}
+function rmGen(id){st.general=st.general.filter(x=>x!==id);DB.del(id);save();renderGeneral()}
 function toggleCat(k){st.cats=st.cats.includes(k)?st.cats.filter(x=>x!==k):[...st.cats,k];save();renderGeneral()}
 function addCustom(){const i=document.getElementById('customIdea');const v=i.value.trim();if(!v)return;st.custom.push(v);save();i.value='';renderCustom();toast('הרעיון נוסף')}
-function renderCustom(){document.getElementById('customList').innerHTML=st.custom.map((c,i)=>`<span class="chip on">${esc(c)}<button onclick="st.custom.splice(${i},1);save();renderCustom()" aria-label="הסרה" style="display:grid;color:#fff;opacity:.8">${ic('x')}</button></span>`).join('')}
+function renderCustom(){document.getElementById('customList').innerHTML=st.custom.map((c,i)=>`<span>${esc(c)}<button onclick="st.custom.splice(${i},1);save();renderCustom()" aria-label="הסרה">${ic('x')}</button></span>`).join('')}
 
 /* ---------- times ---------- */
-function loadTimes(){const T=st.times;['mEnd','fStart','fEnd','nStart'].forEach(k=>document.getElementById(k).value=T[k]);document.getElementById('shabbat').classList.toggle('on',T.shabbat);
- document.getElementById('ob4btn').innerHTML=editing?'שמירה '+ic('check'):'המשך '+ic('next')}
-function finishTimes(){const T=st.times;['mEnd','fStart','fEnd','nStart'].forEach(k=>T[k]=document.getElementById(k).value||T[k]);T.shabbat=document.getElementById('shabbat').classList.contains('on');save();
- if(editing)return doneEditing();go('ob5')}
+function loadTimes(){const T=st.times;['mEnd','fStart','fEnd','nStart'].forEach(k=>document.getElementById(k).value=T[k]);document.getElementById('shabbat').classList.toggle('on',T.shabbat);document.getElementById('ob4btn').textContent=editing?'שמירה':'המשך'}
+function finishTimes(){const T=st.times;['mEnd','fStart','fEnd','nStart'].forEach(k=>T[k]=document.getElementById(k).value||T[k]);T.shabbat=document.getElementById('shabbat').classList.contains('on');save();if(editing)return doneEditing();go('ob5')}
 function finishConnect(ok){if(ok)st.connected=true;const first=!st.setup;st.setup=true;save();
  if(pendingApp){const a=pendingApp;pendingApp=null;startPause(a);return}
  if(first&&!ok)toast('אפשר לחבר מתי שרוצים, מההגדרות');go('home')}
@@ -457,50 +482,56 @@ async function startPause(app,test){curApp=APPS[app]?app:'instagram';isTest=!!te
  else if(m==='night'){const n=pick(NIGHT);title=n[0];idea=n[1];pic=pick(st.general)||pick(st.people.flatMap(p=>p.pics));greet='לילה';lbl='ועכשיו:'}
  else{title=pick(DAY_TITLES);const pool=[...st.cats.flatMap(c=>IDEAS[c]||[]),...st.custom,...st.custom];idea=pick(pool.length?pool:IDEAS.breath);pic=pick([...st.general,...st.people.flatMap(p=>p.pics)]);greet=`רגע לפני ${APPS[curApp].n}`}
  lastSrc=await photo(pic)||'';lastNight=m==='night';
- setBg(document.getElementById('pBg'),lastSrc,lastNight);
+ const bg=lastSrc?`url(${lastSrc})`:(lastNight?'var(--photoNight)':'var(--photo)');
+ document.getElementById('pPhoto').style.backgroundImage=bg;document.getElementById('pBgBlur').style.backgroundImage=bg;
  document.getElementById('pGreet').textContent=greet;document.getElementById('pTitle').textContent=title;
  document.getElementById('pIdea').textContent=idea;document.getElementById('pIdeaLbl').textContent=lbl;
  document.getElementById('anyway').textContent=`לפתוח את ${APPS[curApp].n} בכל זאת`;
  document.getElementById('pMsg').classList.remove('on');
  go('pause');runBreath()}
-function runBreath(){timers.forEach(clearTimeout);const s=document.getElementById('pause'),t=document.getElementById('orbTxt'),h=document.getElementById('hint');s.classList.remove('in','out','ready');t.innerHTML='נשימה<br>פנימה';h.textContent='נושמים יחד עם העיגול';
+function runBreath(){timers.forEach(clearTimeout);const s=document.getElementById('pause'),c=document.getElementById('cue'),a=document.getElementById('pArc');
+ s.classList.remove('in','out','ready');c.textContent='נשימה פנימה…';a.style.transition='none';a.style.strokeDashoffset=820;
  if(navigator.vibrate)navigator.vibrate(20);
- requestAnimationFrame(()=>requestAnimationFrame(()=>s.classList.add('in')));
- timers=[setTimeout(()=>{s.classList.replace('in','out');t.innerHTML='ועכשיו<br>החוצה'},3000),
- setTimeout(()=>document.getElementById('pMsg').classList.add('on'),5200),
- setTimeout(()=>{s.classList.remove('out');s.classList.add('in','ready');t.innerHTML='אני<br>כאן';h.textContent='לחיצה על העיגול: נשארים כאן'},6600)]}
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{s.classList.add('in');a.style.transition='stroke-dashoffset 6.4s linear';a.style.strokeDashoffset=0}));
+ timers=[setTimeout(()=>{s.classList.replace('in','out');c.textContent='ועכשיו החוצה…'},3000),
+ setTimeout(()=>{c.textContent='';document.getElementById('pMsg').classList.add('on')},5400),
+ setTimeout(()=>{s.classList.remove('out');s.classList.add('in','ready')},6500)]}
 function choose(kind){if(!isTest){st.log.push({t:Date.now(),k:kind,app:curApp,p:curPerson});st.log=st.log.slice(-2000);save()}
- if(kind==='here'){const today=countDay(new Date());document.getElementById('dTitle').innerHTML='יפה.<br><span class="a">בחרת להיות כאן.</span>';
+ if(kind==='here'){const today=countDay(new Date());document.getElementById('dTitle').innerHTML='יפה.<br>בחרת להיות כאן.';
   const p=st.people.find(x=>x.id===curPerson);document.getElementById('dSub').textContent=p?`עכשיו רק ${p.name}.`:(isTest?'ככה זה ייראה כשפותחים אינסטגרם.':`זו הפעם ה-${today.here||1} היום.`);
-  document.getElementById('dFoot').textContent=isTest?'חוזרים למסך הבית…':'אפשר לסגור את המסך הזה.';
-  setBg(document.getElementById('dBg'),lastSrc,lastNight);go('done');if(isTest)setTimeout(()=>go('home'),2600);return}
+  document.getElementById('dFoot').textContent=isTest?'חוזרים למסך הבית…':'אפשר לסגור את המסך הזה.';go('done');if(isTest)setTimeout(()=>go('home'),2600);return}
  if(isTest){toast('בניסיון לא נפתחת אפליקציה');go('home');return}
  location.href='shortcuts://run-shortcut?name='+encodeURIComponent('Look Up Pass')+'&input=text&text='+encodeURIComponent(APPS[curApp].u)}
 
 /* ---------- home ---------- */
 const dayKey=d=>d.toDateString();
 function countDay(d){const k=dayKey(d),r={here:0,open:0};st.log.forEach(e=>{if(dayKey(new Date(e.t))===k)r[e.k]++});return r}
+function drawGauge(v){const cx=150,cy=145,R=120;let t='';
+ for(let i=0;i<=40;i++){const a=Math.PI*(i/40),long=i%5===0,r1=R-(long?14:8),x1=cx+r1*Math.cos(a),y1=cy-r1*Math.sin(a),x2=cx+R*Math.cos(a),y2=cy-R*Math.sin(a);
+  const on=i/40<=v;t+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${on?'#fff':'rgba(255,255,255,.35)'}" stroke-width="${long?2:1.4}" stroke-linecap="round"/>`}
+ const a=Math.PI*Math.min(1,v),R2=R-26;t+=`<path d="M${cx-R2} ${cy} A${R2} ${R2} 0 0 1 ${cx+R2} ${cy}" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="2" stroke-dasharray="3 6"/>`;
+ t+=`<circle cx="${(cx+R2*Math.cos(a)).toFixed(1)}" cy="${(cy-R2*Math.sin(a)).toFixed(1)}" r="6" fill="#fff"/>`;
+ document.getElementById('gauge').innerHTML=t}
 async function renderHome(){const now=new Date();
- document.getElementById('hDate').textContent=now.toLocaleDateString('he-IL',{weekday:'long',day:'numeric',month:'long'});
- const firstPic=st.general[0]||st.people.flatMap(p=>p.pics)[0];const src=await photo(firstPic);document.getElementById('hcard').style.backgroundImage=src?`url(${src})`:'';
- const today=countDay(now).here;document.getElementById('tHere').textContent=today;
- document.getElementById('tLbl').textContent=today===1?'פעם אחת בחרת להיות כאן היום':'פעמים בחרת להיות כאן היום';
- document.getElementById('connectStatus').innerHTML=st.connected?'':`<div class="status"><span class="tx"><b>עוד לא מחובר לאינסטגרם</b><small>בלי זה ההפסקה לא תופיע. 3 דקות.</small></span><button class="go" onclick="go('ob5')">לחבר עכשיו</button></div>`;
+ document.getElementById('hDate').textContent=now.toLocaleDateString('he-IL',{weekday:'long',day:'numeric',month:'numeric'});
+ const today=countDay(now).here;document.getElementById('tHere').innerHTML=`${today}<small>${today===1?'פעם':'פעמים'}</small>`;
+ drawGauge(today/GOAL);
+ document.getElementById('connectStatus').innerHTML=st.connected?'':`<div class="status"><span class="tx"><b>עוד לא מחובר לאינסטגרם</b><small>בלי זה ההפסקה לא תופיע. 3 דקות.</small></span><button class="go" onclick="go('ob5')">לחבר</button></div>`;
  const days=[...Array(7)].map((_,i)=>{const d=new Date(now);d.setDate(now.getDate()-6+i);return{d,c:countDay(d)}});const max=Math.max(1,...days.map(x=>x.c.here));
  document.getElementById('week').innerHTML=days.map((x,i)=>`<div class="${i===6?'today':''}"><em>${x.c.here||''}</em><i style="--h:${x.c.here/max*100}%"></i><span>${i===6?'היום':x.d.toLocaleDateString('he-IL',{weekday:'short'}).replace('יום ','')}</span></div>`).join('');
  const wk=st.log.filter(e=>e.t>now-7*864e5);document.getElementById('wHere').textContent=wk.filter(e=>e.k==='here').length;document.getElementById('wOpen').textContent=wk.filter(e=>e.k==='open').length;
  document.getElementById('pplWrap').style.display=st.people.length?'':'none';
  const counts=st.people.map(p=>wk.filter(e=>e.k==='here'&&e.p===p.id).length);const pmax=Math.max(1,...counts);let h='';
- for(let i=0;i<st.people.length;i++){const p=st.people[i],n=counts[i],s=await photo(p.pics[0]);
-  h+=`<div class="row"><span class="av" style="${s?`background-image:url(${s})`:''}">${s?'':esc(p.name[0])}</span><span class="tx"><b>${esc(p.name)}</b><div class="bar"><b style="--w:${n/pmax*100}%"></b></div></span><span class="end" style="color:var(--ink);font-weight:600;font-size:15px;min-width:64px;justify-content:flex-end">${n===1?'פעם אחת':n+' פעמים'}</span></div>`}
+ for(let i=0;i<st.people.length;i++){const p=st.people[i],n=counts[i];
+  h+=`<div class="rowg"><span class="tx"><b style="display:flex;justify-content:space-between"><span>${esc(p.name)}</span><span>${n}</span></b><div class="bar"><b style="--w:${n/pmax*100}%"></b></div></span></div>`}
  document.getElementById('pplStats').innerHTML=h}
 
 /* ---------- connect guide ---------- */
 function renderGuide(){const base=location.origin+location.pathname;const u=a=>`${base}#pause&app=${a}`;
- document.getElementById('ob5prog').style.display=st.setup?'none':'';document.getElementById('ob5later').textContent=st.setup?'חזרה למסך הבית':'אעשה את זה אחר כך';
+ document.getElementById('ob5later').textContent=st.setup?'חזרה':'אחר כך';
  document.getElementById('guideCard').innerHTML=`
- <div class="step"><span class="k">1</span><div><p>באפליקציית <b>קיצורים</b> ← לשונית <b>קיצורים</b> ← <b>+</b>. לקרוא לקיצור בדיוק <b>Look Up Pass</b> ולהוסיף 3 פעולות:</p><ul><li>תאריך נוכחי</li><li>שמירת קובץ: תיקייה Shortcuts, שם <b>lookup.txt</b>, החלפה מופעלת</li><li>פתיחת כתובות URL ← קלט הקיצור</li></ul></div></div>
- <div class="step"><span class="k">2</span><div><p>לשונית <b>אוטומציה</b> ← <b>+</b> ← אפליקציה ← לבחור <b>Instagram</b> ← "נפתחת" ← <b>הפעלה מיידית</b>.</p></div></div>
+ <div class="step"><span class="k">1</span><div><p>באפליקציית <b>קיצורים</b> ← <b>+</b>. לקרוא לקיצור בדיוק <b>Look Up Pass</b> ולהוסיף 3 פעולות:</p><ul><li>תאריך נוכחי</li><li>שמירת קובץ: תיקייה Shortcuts, שם <b>lookup.txt</b>, החלפה מופעלת</li><li>פתיחת כתובות URL ← קלט הקיצור</li></ul></div></div>
+ <div class="step"><span class="k">2</span><div><p>לשונית <b>אוטומציה</b> ← <b>+</b> ← אפליקציה ← <b>Instagram</b> ← "נפתחת" ← <b>הפעלה מיידית</b>.</p></div></div>
  <div class="step"><span class="k">3</span><div><p>פעולות האוטומציה:</p><ul><li>קבלת קובץ lookup.txt מתיקיית Shortcuts (לכבות "הצג שגיאה")</li><li>זמן בין תאריכים: מהקובץ ועד עכשיו, ב<b>שניות</b></li><li>אם התוצאה <b>קטנה מ-60</b> ← עצירת קיצור זה</li><li>פתיחת כתובת URL:</li></ul><code>${u('instagram')}</code><button class="copy" onclick="cp('${u('instagram')}')">${ic('link')}העתקת הכתובת</button></div></div>
  <div class="step"><span class="k">4</span><div><p>לטיקטוק: לשכפל את האוטומציה, לבחור TikTok ולהחליף את הכתובת:</p><code>${u('tiktok')}</code><button class="copy" onclick="cp('${u('tiktok')}')">${ic('link')}העתקת הכתובת</button></div></div>`}
 function cp(t){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הכתובת הועתקה')).catch(()=>toast('לא הצלחתי להעתיק. אפשר לסמן ולהעתיק ידנית'))}
