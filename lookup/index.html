@@ -3,172 +3,183 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#120D09">
+<meta name="theme-color" content="#F5F1EB">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Look Up</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Visual direction: "Biova" by Nixtio (Dribbble) — full-bleed warm photo, thin oversized type, amber accent line, glossy orb CTA, white pills. */
+/* Look Up v4 — visual direction from "Biova" by Nixtio (Dribbble): warm photo moments + orb CTA.
+   Utility screens are light and high-contrast so everything is easy to read. */
 :root{
-  --amber:#FFB547; --amber2:#E9760F; --night:#120D09; --paper:#F4F1EC; --ink:#1E1A16; --mute:#857B70; --hair:rgba(255,255,255,.18);
-  --ease:cubic-bezier(.22,.8,.26,1);
+  --amber:#FFB547; --amber2:#E9760F; --amberInk:#B85A07;
+  --bg:#F5F1EB; --card:#FFFFFF; --ink:#1E1A16; --soft:#5E554C; --faint:#958A7E; --line:#E7E0D6;
+  --night:#120D09; --ease:cubic-bezier(.22,.8,.26,1);
   --photo:url("https://images.unsplash.com/photo-1788094667065-2ffdca7a66fc?w=1200&q=80");
   --photoNight:url("https://images.unsplash.com/photo-1581491608595-6dadce30433a?w=1200&q=80");
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
-html,body{height:100%;background:var(--night);color:#fff;font-family:Heebo,-apple-system,system-ui,sans-serif;font-weight:400;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+html,body{height:100%;background:var(--bg);color:var(--ink);font-family:Heebo,-apple-system,system-ui,sans-serif;font-weight:400;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 input{font:inherit;color:inherit}
-svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 
-.screen{position:fixed;inset:0;display:none;flex-direction:column;padding:calc(env(safe-area-inset-top) + 16px) 22px calc(env(safe-area-inset-bottom) + 22px);overflow-y:auto;overflow-x:hidden}
-.screen.on{display:flex;animation:fade .55s var(--ease)}
+.screen{position:fixed;inset:0;display:none;flex-direction:column;padding:calc(env(safe-area-inset-top) + 14px) 20px calc(env(safe-area-inset-bottom) + 20px);overflow-y:auto;overflow-x:hidden}
+.screen.on{display:flex;animation:fade .45s var(--ease)}
 .screen>*{flex-shrink:0;position:relative}
 .screen>.grow{flex:1;flex-shrink:1}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 
-/* full-bleed photo layer */
-.ph-bg{position:fixed!important;inset:0;background:var(--photo) center/cover;z-index:0;filter:brightness(.62) saturate(1.25) contrast(1.08)}
-.mega .a,.dtitle .a,#pause .idea{text-shadow:0 2px 24px rgba(0,0,0,.35)}
-.ph-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,13,9,.55) 0%,rgba(18,13,9,.05) 30%,rgba(18,13,9,.2) 55%,rgba(18,13,9,.92) 100%)}
-.hair{position:fixed!important;top:0;bottom:0;left:50%;width:1px;background:linear-gradient(180deg,transparent,var(--hair) 15%,var(--hair) 85%,transparent);z-index:1;pointer-events:none}
-.screen>.ph-bg~*{z-index:2}
-
-/* top bar */
-.bar{display:flex;justify-content:space-between;align-items:center;height:52px}
-.word{font-size:26px;font-weight:500;letter-spacing:-.8px;direction:ltr}
-.round{width:52px;height:52px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;box-shadow:0 6px 20px -8px rgba(0,0,0,.4)}
-.round.glass{background:rgba(255,255,255,.22);color:#fff;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:none}
-.round.dark{background:#3A3A2E;color:#fff}
-
-/* hero block */
-.hero{text-align:center;margin-top:7vh}
-.tick{width:40px;height:40px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-.tick svg{width:18px;height:18px;stroke-width:2}
-.kicker{font-size:15px;font-weight:400;opacity:.92}
-.mega{font-size:48px;line-height:1.02;font-weight:300;letter-spacing:-1.6px;margin-top:5vh}
+/* ---------- photo moments (welcome, pause, done) ---------- */
+.photo{background:var(--night);color:#fff}
+.ph-bg{position:fixed!important;inset:0;background:var(--photo) center/cover;z-index:0}
+.ph-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,7,4,.55) 0%,rgba(10,7,4,.35) 25%,rgba(10,7,4,.55) 50%,rgba(10,7,4,.9) 100%)}
+.photo>.ph-bg~*{z-index:2}
+.hero{text-align:center;margin-top:6vh;text-shadow:0 2px 18px rgba(0,0,0,.45)}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:500;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);padding:7px 14px;border-radius:999px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);text-shadow:none}
+.kicker svg{width:16px;height:16px;stroke-width:2.2}
+.mega{font-size:42px;line-height:1.1;font-weight:600;letter-spacing:-1px;margin-top:4.5vh}
 .mega .a{color:var(--amber)}
-.lede{font-size:15px;line-height:1.5;font-weight:300;opacity:.85;max-width:290px;margin:22px auto 0}
-
-/* glossy orb CTA */
-.orbwrap{width:168px;height:168px;margin:0 auto;border-radius:50%;display:grid;place-items:center;background:rgba(40,25,12,.35);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-.orb{width:140px;height:140px;border-radius:50%;display:grid;place-items:center;text-align:center;color:#fff;font-size:18px;line-height:1.15;font-weight:400;
+.lede{font-size:17px;line-height:1.5;font-weight:400;max-width:310px;margin:18px auto 0;color:rgba(255,255,255,.92)}
+.orbwrap{width:164px;height:164px;margin:0 auto;border-radius:50%;display:grid;place-items:center;background:rgba(40,25,12,.35);border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.orb{width:138px;height:138px;border-radius:50%;display:grid;place-items:center;text-align:center;color:#fff;font-size:19px;line-height:1.15;font-weight:600;text-shadow:0 1px 6px rgba(120,50,0,.4);
   background:radial-gradient(circle at 50% 22%,#FFD08A 0%,var(--amber) 38%,var(--amber2) 100%);
   box-shadow:inset 0 2px 1px rgba(255,255,255,.45),inset 0 -14px 24px rgba(150,60,0,.35),0 18px 40px -12px rgba(233,118,15,.7);transition:transform 3s cubic-bezier(.45,0,.35,1)}
-.orb:active{filter:brightness(.95)}
-.under{display:block;margin:14px auto 0;font-size:14.5px;font-weight:300;opacity:.75;text-align:center}
+.foot{text-align:center;font-size:14.5px;margin-top:14px;color:rgba(255,255,255,.8)}
 
-/* pills */
-.pill{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:58px;border-radius:999px;font-size:17px;font-weight:400;transition:transform .15s var(--ease)}
-.pill:active{transform:scale(.98)}
-.pill.white{background:#fff;color:var(--ink)}
-.pill.ink{background:var(--ink);color:#fff}
-.pill.ghost{height:46px;color:var(--mute);font-weight:300}
-.pill svg{width:18px;height:18px}
-
-/* light screens (middle phone) */
-.light{background:var(--paper);color:var(--ink)}
-.light .word{color:#3A3A2E}
-.lhero{height:30vh;margin:-6px -22px 0;background:var(--photoNight) center 65%/cover;-webkit-mask-image:linear-gradient(180deg,#000 55%,transparent);mask-image:linear-gradient(180deg,#000 55%,transparent);filter:saturate(1.1)}
-.lhero.b{background-image:var(--photo);background-position:center 30%;filter:brightness(.85) saturate(1.2)}
-.light .bar{position:absolute!important;top:calc(env(safe-area-inset-top) + 16px);inset-inline:22px;z-index:3}
-.light .bar .word{color:#fff}
-.title{font-size:40px;line-height:1.05;font-weight:300;letter-spacing:-1.3px;margin-top:22px}
-.title .a{color:var(--amber2)}
-.sub{font-size:15.5px;line-height:1.5;font-weight:300;color:var(--mute);margin-top:12px}
-.stack{display:flex;align-items:center;margin-top:20px}
-.stack i{width:46px;height:46px;border-radius:50%;background:#E3DBCF center/cover;border:3px solid var(--paper);margin-inline-start:-12px}
-.stack i:first-child{margin-inline-start:0}
-.stack span{margin-inline-start:12px;font-size:15px;color:var(--mute);font-weight:300}
-.list{margin-top:18px;display:flex;flex-direction:column}
-.person{display:flex;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid #E5DFD6}
-.person .pp{width:48px;height:48px;border-radius:50%;background:#E3DBCF center/cover;flex-shrink:0}
-.person b{font-weight:400;font-size:19px;letter-spacing:-.3px}
-.person small{color:var(--mute);display:block;font-size:13.5px;font-weight:300}
-.person .x{margin-inline-start:auto;color:var(--mute);font-size:22px;padding:6px 10px}
-.add{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:54px;border-radius:999px;border:1px solid #D9D1C5;color:var(--ink);font-weight:400;margin-top:14px;background:#fff}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
-.grid div{aspect-ratio:3/4;border-radius:18px;background:#E3DBCF center/cover}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.chip{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;border-radius:999px;border:1px solid #D9D1C5;background:#fff;font-size:15.5px;font-weight:400;transition:all .2s}
-.chip svg.i{width:17px;height:17px}
-.chip.on{background:#3A3A2E;border-color:#3A3A2E;color:#fff}
-.h3{font-size:24px;font-weight:300;letter-spacing:-.6px;margin-top:30px}
-
-/* dark screens (third phone) */
-.dark .ph-bg{background-position:center 20%}
-.dark .ph-bg::after{background:linear-gradient(180deg,rgba(18,13,9,.5) 0%,rgba(18,13,9,.15) 22%,rgba(18,13,9,.85) 52%,var(--night) 70%)}
-.dtitle{font-size:40px;line-height:1.05;font-weight:300;letter-spacing:-1.3px}
-.dtitle .a{color:var(--amber)}
-.track{padding:16px 0 4px}
-.track .lbl{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:400}
-.track .lbl svg{opacity:.9}
-.track .line{display:flex;align-items:center;gap:12px;margin-top:10px}
-.track .rail{flex:1;height:1px;background:rgba(255,255,255,.25);position:relative}
-.track .rail b{position:absolute;inset-block:0;right:0;width:var(--w,50%);background:var(--amber);height:1px}
-.track .rail em{position:absolute;top:50%;right:var(--w,50%);width:22px;height:22px;margin:-11px -11px 0 0;border-radius:50%;background:#2A241E;border:1px solid rgba(255,255,255,.35);display:grid;place-items:center}
-.track .rail em::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--amber)}
-.val{height:30px;padding:0 10px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);display:inline-flex;align-items:center;font-size:14px;font-weight:400;white-space:nowrap}
-.val input[type=time]{background:none;border:0;color:#fff;font-size:15px;width:62px;text-align:center}
-.val input[type=time]::-webkit-calendar-picker-indicator{display:none}
-.tgl{width:50px;height:30px;border-radius:15px;background:rgba(255,255,255,.2);position:relative;transition:.25s;flex-shrink:0}
-.tgl::after{content:"";position:absolute;top:3px;right:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.25s var(--ease)}
-.tgl.on{background:var(--amber2)}
+/* ---------- light utility screens ---------- */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px}
+.back{display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 14px 0 10px;border-radius:999px;background:var(--card);font-size:16px;font-weight:500;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.back svg{width:18px;height:18px}
+.stepof{font-size:14px;color:var(--soft);font-weight:500}
+.prog{display:flex;gap:4px;margin-top:12px}
+.prog i{flex:1;height:4px;border-radius:2px;background:var(--line)}
+.prog i.on{background:var(--amber2)}
+.word{font-size:24px;font-weight:700;letter-spacing:-.6px;direction:ltr}
+.icon-btn{width:44px;height:44px;border-radius:50%;background:var(--card);display:grid;place-items:center;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+h1.t{font-size:32px;line-height:1.15;font-weight:700;letter-spacing:-.6px;margin-top:22px}
+h1.t .a{color:var(--amberInk)}
+.d{font-size:17px;line-height:1.5;color:var(--soft);margin-top:8px}
+.lbl{font-size:15px;font-weight:600;color:var(--ink);margin:26px 0 10px}
+.lbl small{font-weight:400;color:var(--faint);font-size:14px;margin-inline-start:6px}
+.card{background:var(--card);border-radius:22px;padding:4px 16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.row{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);min-height:60px}
+.row:last-child{border:0}
+.row .ic{width:38px;height:38px;border-radius:12px;background:#FFF1E2;color:var(--amberInk);display:grid;place-items:center;flex-shrink:0}
+.row .ic svg{width:20px;height:20px}
+.row .tx{flex:1;min-width:0}
+.row .tx b{display:block;font-size:17px;font-weight:500}
+.row .tx small{display:block;font-size:14px;color:var(--soft);margin-top:1px;line-height:1.35}
+.row .end{margin-inline-start:auto;display:flex;align-items:center;gap:6px;color:var(--faint)}
+.row .end svg{width:18px;height:18px}
+.av{width:46px;height:46px;border-radius:50%;background:var(--line) center/cover;flex-shrink:0;display:grid;place-items:center;font-weight:600;color:var(--soft);font-size:18px}
+.del{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--faint)}
+.del svg{width:18px;height:18px}
+.empty{background:var(--card);border-radius:22px;padding:20px;text-align:center;color:var(--soft);font-size:15.5px;line-height:1.5}
+.empty b{display:block;color:var(--ink);font-size:17px;font-weight:500;margin-bottom:4px}
+.add{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:54px;border-radius:16px;border:1.5px dashed #CFC5B8;color:var(--ink);font-weight:500;font-size:16.5px;margin-top:10px;background:transparent}
+.add svg{width:20px;height:20px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.grid .tile{aspect-ratio:1;border-radius:16px;background:var(--line) center/cover;position:relative}
+.grid .tile button{position:absolute;top:6px;left:6px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center}
+.grid .tile button svg{width:14px;height:14px;stroke-width:2.4}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 16px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);font-size:16px;font-weight:500;transition:all .15s}
+.chip svg.i{width:18px;height:18px}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip .ok{display:none}
+.chip.on .ok{display:block}
+.field{width:100%;height:54px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);padding:0 16px;font-size:17px;outline:none}
+.field:focus{border-color:var(--ink)}
+.time{border:0;background:#F3EEE7;color:var(--ink);padding:8px 10px;border-radius:10px;font-weight:600;font-size:16px;min-width:76px;text-align:center}
+.tgl{width:52px;height:32px;border-radius:16px;background:#D9D1C5;position:relative;transition:.25s;flex-shrink:0}
+.tgl::after{content:"";position:absolute;top:3px;right:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:.25s var(--ease)}
+.tgl.on{background:#34A853}
 .tgl.on::after{right:23px}
-.big{font-size:96px;font-weight:300;letter-spacing:-4px;line-height:.9}
-.week{display:flex;gap:6px;align-items:flex-end;height:64px;margin-top:20px}
+.pill{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:58px;border-radius:999px;font-size:17.5px;font-weight:600;transition:transform .15s var(--ease),opacity .2s}
+.pill:active{transform:scale(.98)}
+.pill.ink{background:var(--ink);color:#fff}
+.pill.amber{background:var(--amber2);color:#fff}
+.pill.white{background:#fff;color:var(--ink)}
+.pill.ghost{height:48px;color:var(--soft);font-weight:500;font-size:16px}
+.pill[disabled]{opacity:.35}
+.pill svg{width:20px;height:20px}
+.bottom{padding-top:16px}
+
+/* home */
+.hcard{border-radius:26px;overflow:hidden;position:relative;color:#fff;padding:20px;min-height:220px;display:flex;flex-direction:column;justify-content:flex-end;background:var(--photo) center 30%/cover;margin-top:14px}
+.hcard::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,7,4,.1),rgba(10,7,4,.75))}
+.hcard>*{position:relative}
+.hcard .n{font-size:64px;font-weight:700;line-height:1;letter-spacing:-2px}
+.hcard .l{font-size:18px;font-weight:500;margin-top:4px}
+.hcard .s{font-size:14.5px;opacity:.85;margin-top:2px}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.kpi{background:var(--card);border-radius:20px;padding:14px 16px}
+.kpi b{font-size:28px;font-weight:700;display:block;line-height:1.1}
+.kpi span{font-size:14px;color:var(--soft)}
+.week{display:flex;gap:8px;align-items:flex-end;height:110px;padding:14px 0 10px}
 .week div{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
-.week i{width:100%;border-radius:999px;background:rgba(255,255,255,.12);min-height:4px;position:relative;overflow:hidden;width:8px}
-.week i::after{content:"";position:absolute;inset:auto 0 0;height:var(--h);background:var(--amber);border-radius:999px}
-.week span{font-size:11px;opacity:.55}
-.glasscard{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:26px;padding:6px 18px}
-.sec{font-size:13px;opacity:.55;margin:30px 0 2px;font-weight:400}
-.step{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.week em{font-style:normal;font-size:12.5px;font-weight:600;color:var(--ink);min-height:16px}
+.week i{width:100%;max-width:28px;border-radius:8px;background:#F1ECE4;flex:1;position:relative;overflow:hidden}
+.week i::after{content:"";position:absolute;inset:auto 0 0;height:var(--h);background:var(--amber2);border-radius:8px}
+.week div.today span{color:var(--ink);font-weight:700}
+.week span{font-size:13px;color:var(--soft)}
+.bar{height:8px;border-radius:4px;background:#F1ECE4;overflow:hidden;margin-top:8px}
+.bar b{display:block;height:100%;width:var(--w);background:var(--amber2);border-radius:4px}
+.status{display:flex;align-items:center;gap:12px;background:#FFF4E6;border:1px solid #F6D9B5;border-radius:20px;padding:14px 16px;margin-top:12px}
+.status.ok{background:#EAF6EC;border-color:#CBE8D0}
+.status .tx{flex:1}
+.status b{display:block;font-size:16px;font-weight:600}
+.status small{font-size:14px;color:var(--soft)}
+.status .go{height:38px;padding:0 14px;border-radius:999px;background:var(--ink);color:#fff;font-size:14.5px;font-weight:600;white-space:nowrap}
+
+/* connect steps */
+.step{display:flex;gap:12px;padding:16px 0;border-bottom:1px solid var(--line)}
 .step:last-child{border:0}
-.step .k{width:26px;height:26px;border-radius:50%;border:1px solid rgba(255,255,255,.3);font-size:13px;display:grid;place-items:center;flex-shrink:0}
-.step p{font-size:14.5px;line-height:1.55;font-weight:300}
-.step code{display:block;margin-top:8px;background:rgba(0,0,0,.3);border-radius:12px;padding:10px;font-size:12px;direction:ltr;text-align:left;word-break:break-all;opacity:.8}
-.copy{margin-top:8px;font-size:14px;color:var(--amber)}
-.stats{display:flex;gap:28px;margin-top:6px}
-.stats b{font-size:34px;font-weight:300;letter-spacing:-1px;display:block}
-.stats span{font-size:13px;opacity:.6;font-weight:300}
+.step .k{width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;font-size:15px;font-weight:600;display:grid;place-items:center;flex-shrink:0}
+.step p{font-size:16px;line-height:1.55}
+.step ul{margin:6px 0 0;padding-inline-start:18px;font-size:15.5px;line-height:1.6;color:var(--soft)}
+.step code{display:block;margin-top:8px;background:#F3EEE7;border-radius:10px;padding:10px;font-size:12.5px;direction:ltr;text-align:left;word-break:break-all;color:var(--soft)}
+.copy{display:inline-flex;align-items:center;gap:6px;margin-top:8px;height:38px;padding:0 14px;border-radius:999px;background:var(--ink);color:#fff;font-size:14.5px;font-weight:600}
 
 /* pause */
-#pause .ph-bg{transition:opacity 1s}
-#pause .cue{font-size:15px;font-weight:300;opacity:.85;height:22px;margin-top:16px;transition:opacity .5s;text-align:center}
-#pause .mega{font-size:44px;margin-top:4vh}
-#pause .idea{font-size:26px;line-height:1.15;font-weight:300;letter-spacing:-.6px;color:var(--amber);margin-top:6px}
+#pause .ph-bg::after{background:linear-gradient(180deg,rgba(10,7,4,.6) 0%,rgba(10,7,4,.4) 30%,rgba(10,7,4,.55) 55%,rgba(10,7,4,.92) 100%)}
+#pause .mega{font-size:38px;margin-top:4vh}
+#pause .idea{display:inline-block;margin-top:16px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:12px 18px;border-radius:18px;text-shadow:none;max-width:320px}
+#pause .idea small{display:block;font-size:13px;font-weight:600;color:var(--amber);margin-bottom:2px}
+#pause .idea span{font-size:19px;font-weight:500;line-height:1.35}
 #pause .msg{opacity:0;transform:translateY(8px);transition:all .9s var(--ease)}
 #pause .msg.on{opacity:1;transform:none}
 #pause .orb{transform:scale(.8)}
 #pause.in .orb{transform:scale(1)}
 #pause.out .orb{transform:scale(.86)}
-#pause .orb span{transition:opacity .4s}
-#pause .under{opacity:0;pointer-events:none;transition:opacity .6s}
-#pause.ready .under{opacity:.75;pointer-events:auto}
+#pause .anyway{opacity:0;pointer-events:none;transition:opacity .6s;margin-top:10px;height:48px;color:rgba(255,255,255,.9);font-size:16px;font-weight:500;text-decoration:underline;text-underline-offset:4px;text-decoration-color:rgba(255,255,255,.4)}
+#pause.ready .anyway{opacity:1;pointer-events:auto}
 #pause:not(.ready) .orb{pointer-events:none}
+#pause .hint{text-align:center;font-size:14px;color:rgba(255,255,255,.75);margin-bottom:12px;min-height:20px}
 
 /* sheets */
-.sheet{position:fixed;inset:0;background:rgba(10,7,4,.5);display:none;align-items:flex-end;z-index:20}
-.sheet.on{display:flex;animation:fade .3s}
-.sheet>div{background:var(--paper);color:var(--ink);width:100%;border-radius:32px 32px 0 0;padding:12px 22px calc(env(safe-area-inset-bottom) + 22px);max-height:88vh;overflow-y:auto}
-.sheet>div::before{content:"";display:block;width:38px;height:5px;border-radius:3px;background:#D9D1C5;margin:0 auto 16px}
-.field{width:100%;height:56px;border-radius:999px;border:1px solid #D9D1C5;background:#fff;padding:0 20px;font-size:17px;outline:none;font-weight:300}
-.field:focus{border-color:var(--ink)}
-.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 30px);transform:translate(-50%,20px);background:#fff;color:var(--ink);padding:12px 20px;border-radius:999px;font-size:15px;opacity:0;transition:.3s;z-index:40;pointer-events:none}
+.sheet{position:fixed;inset:0;background:rgba(10,7,4,.45);display:none;align-items:flex-end;z-index:20}
+.sheet.on{display:flex;animation:fade .25s}
+.sheet>div{background:var(--bg);color:var(--ink);width:100%;border-radius:28px 28px 0 0;padding:10px 20px calc(env(safe-area-inset-bottom) + 20px);max-height:90vh;overflow-y:auto}
+.sheet>div::before{content:"";display:block;width:40px;height:5px;border-radius:3px;background:#D4CBBE;margin:0 auto 14px}
+.sheet h2{font-size:24px;font-weight:700}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 30px);transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:999px;font-size:15px;opacity:0;transition:.3s;z-index:40;pointer-events:none}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
 <body>
 
 <svg width="0" height="0" style="position:absolute">
-  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M5 8h14M7.5 12h9M10 16h4"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9"/></symbol>
-  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v1.5M12 19.5V21M3 12h1.5M19.5 12H21M5.6 5.6l1 1M17.4 17.4l1 1M5.6 18.4l1-1M17.4 6.6l1-1"/></symbol>
   <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-6.5 8 6.5"/><path d="M6 9.5V19h12V9.5"/></symbol>
   <symbol id="i-candle" viewBox="0 0 24 24"><path d="M9 10h6v10H9z"/><path d="M12 3.5c1.3 1.4 1.6 2.6.9 3.4-.5.5-1.3.5-1.8 0-.7-.8-.4-2 .9-3.4z"/></symbol>
@@ -178,145 +189,184 @@ svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.6;stro
   <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 7h11M9 12h11M9 17h11"/><circle cx="4.5" cy="7" r=".8"/><circle cx="4.5" cy="12" r=".8"/><circle cx="4.5" cy="17" r=".8"/></symbol>
   <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 11a3.5 3.5 0 0 0 1 7z"/></symbol>
   <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 19s-7-4.4-7-9.5A3.8 3.8 0 0 1 12 7a3.8 3.8 0 0 1 7 2.5C19 14.6 12 19 12 19z"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c.6-3.2 3-5 6-5s5.4 1.8 6 5"/><path d="M16 5.5a3 3 0 0 1 0 5.6M18 14.3c1.6.6 2.7 2.2 3 4.7"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M20.5 16l-5-5L6 19.5"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12h10l1-12M9 7V4h6v3"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></symbol>
 </svg>
 
-<!-- ============ ONBOARDING 1 (left phone) ============ -->
-<section class="screen" id="ob1">
-  <div class="ph-bg"></div><div class="hair"></div>
-  <div class="bar"><span class="word">Look Up</span><button class="round glass" aria-label="תפריט"><svg class="i"><use href="#i-menu"/></svg></button></div>
-  <div class="hero">
-    <div class="tick"><svg class="i"><use href="#i-check"/></svg></div>
-    <div class="kicker">בלי הרשמה · הכול נשאר בטלפון</div>
-    <h1 class="mega">הטלפון שלך<br><span class="a">יחזיר אותך</span><br>לאנשים שלך</h1>
-    <p class="lede">רגע לפני אינסטגרם או טיקטוק: נשימה אחת, תמונה שאוהבים, ודבר קטן לעשות במקום.</p>
-  </div>
-  <div class="grow"></div>
-  <div class="orbwrap"><button class="orb" onclick="go('ob2')">בואו<br>נתחיל</button></div>
-</section>
-
-<!-- ============ ONBOARDING 2 (middle phone) ============ -->
-<section class="screen light" id="ob2">
-  <div class="bar"><span class="word">Look Up</span><button class="round dark" onclick="go('ob1')" aria-label="חזרה"><svg class="i" style="transform:scaleX(-1)"><use href="#i-arrow"/></svg></button></div>
-  <div class="lhero"></div>
-  <h1 class="title">בשביל מי<br><span class="a">להיות יותר כאן?</span></h1>
-  <p class="sub">שם ותמונה או שתיים. הם יופיעו ברגעים הנכונים.</p>
-  <div class="list" id="peopleList"></div>
-  <button class="add" onclick="openPerson()"><svg class="i"><use href="#i-plus"/></svg>להוסיף מישהו</button>
-  <div class="grow"></div>
-  <div class="stack" id="ob2stack" style="margin-bottom:16px"></div>
-  <button class="pill ink" onclick="go('ob3')">המשך <svg class="i"><use href="#i-arrow"/></svg></button>
-  <button class="pill ghost" onclick="go('ob3')">רק בשבילי, אדלג</button>
-</section>
-
-<section class="screen light" id="ob3">
-  <div class="bar"><span class="word">Look Up</span><button class="round dark" onclick="go('ob2')" aria-label="חזרה"><svg class="i" style="transform:scaleX(-1)"><use href="#i-arrow"/></svg></button></div>
-  <div class="lhero b"></div>
-  <h1 class="title">תמונות שעושות<br><span class="a">לך טוב</span></h1>
-  <p class="sub">ים, טיול, רגע עם חברים. נשמרות רק בטלפון הזה.</p>
-  <div class="grid" id="genGrid"></div>
-  <label class="add"><svg class="i"><use href="#i-plus"/></svg>לבחור תמונות<input type="file" accept="image/*" multiple hidden onchange="addGeneral(this)"></label>
-  <h2 class="h3">ומה במקום לגלול?</h2>
-  <div class="chips" id="catChips"></div>
-  <div class="grow" style="min-height:22px"></div>
-  <button class="pill ink" onclick="go('ob4')">המשך <svg class="i"><use href="#i-arrow"/></svg></button>
-</section>
-
-<!-- ============ ONBOARDING 4 (right phone) ============ -->
-<section class="screen dark" id="ob4">
+<!-- ============ 1. WELCOME ============ -->
+<section class="screen photo" id="ob1">
   <div class="ph-bg"></div>
-  <div class="bar"><span class="word">Look Up</span><button class="round" onclick="go('ob3')" aria-label="חזרה"><svg class="i" style="transform:scaleX(-1)"><use href="#i-arrow"/></svg></button></div>
-  <div class="grow" style="min-height:22vh"></div>
-  <h1 class="dtitle">מתי הכי חשוב<br><span class="a">להיות כאן?</span></h1>
-  <div style="margin-top:10px">
-    <div class="track"><div class="lbl"><svg class="i"><use href="#i-sun"/></svg>בוקר שקט עד</div><div class="line"><div class="rail" style="--w:30%"><b></b><em></em></div><span class="val"><input type="time" id="mEnd" value="08:00"></span></div></div>
-    <div class="track"><div class="lbl"><svg class="i"><use href="#i-home"/></svg>שעות משפחה</div><div class="line"><div class="rail" style="--w:70%"><b></b><em></em></div><span class="val"><input type="time" id="fStart" value="17:00">–<input type="time" id="fEnd" value="21:00"></span></div></div>
-    <div class="track"><div class="lbl"><svg class="i"><use href="#i-moon"/></svg>לילה מ-</div><div class="line"><div class="rail" style="--w:92%"><b></b><em></em></div><span class="val"><input type="time" id="nStart" value="22:30"></span></div></div>
-    <div class="track" style="display:flex;justify-content:space-between;align-items:center"><div class="lbl"><svg class="i"><use href="#i-candle"/></svg>שבת כולה זמן משפחה</div><div class="tgl on" id="shabbat" onclick="this.classList.toggle('on')"></div></div>
+  <div class="top" style="justify-content:center"><span class="word">Look Up</span></div>
+  <div class="hero">
+    <span class="kicker"><svg class="i"><use href="#i-check"/></svg>בלי הרשמה · הכול נשאר בטלפון</span>
+    <h1 class="mega">הטלפון שלך<br><span class="a">יחזיר אותך</span><br>לאנשים שלך</h1>
+    <p class="lede">רגע לפני שאינסטגרם או טיקטוק נפתחים: נשימה אחת, תמונה שאוהבים, ודבר קטן לעשות במקום. תמיד אפשר להמשיך.</p>
   </div>
-  <button class="pill white" style="margin-top:26px" onclick="finishSetup()">סיימתי <svg class="i"><use href="#i-arrow"/></svg></button>
+  <div class="grow" style="min-height:24px"></div>
+  <div class="orbwrap"><button class="orb" onclick="go('ob2')">בואו<br>נתחיל</button></div>
+  <p class="foot">ההגדרה לוקחת פחות מדקה</p>
 </section>
 
-<!-- ============ HOME (right phone) ============ -->
-<section class="screen dark" id="home">
-  <div class="ph-bg" id="homeBg"></div>
-  <div class="bar"><span class="word">Look Up</span><button class="round" onclick="openSettings()" aria-label="הגדרות"><svg class="i"><use href="#i-menu"/></svg></button></div>
-  <div class="grow" style="min-height:16vh"></div>
-  <div class="kicker" id="hDate" style="opacity:.7"></div>
-  <div style="display:flex;align-items:flex-end;gap:12px;margin-top:6px"><span class="big" id="tHere">0</span><span class="dtitle" style="font-size:30px;padding-bottom:10px">פעמים<br><span class="a">בחרת כאן היום</span></span></div>
-  <div class="week" id="week"></div>
-  <div class="stats" style="margin-top:22px">
-    <div><b id="wHere">0</b><span>"אני כאן" השבוע</span></div>
-    <div><b id="wOpen">0</b><span>פתחת בכל זאת</span></div>
+<!-- ============ 2. PEOPLE ============ -->
+<section class="screen" id="ob2">
+  <div class="top"><button class="back" onclick="back('ob1')"><svg class="i"><use href="#i-back"/></svg>חזרה</button><span class="stepof" data-step="1"></span></div>
+  <div class="prog" data-step="1"></div>
+  <h1 class="t">בשביל מי חשוב לך <span class="a">להיות יותר כאן?</span></h1>
+  <p class="d">ילדים, בן או בת זוג, הורים, חברים. כשפותחים אינסטגרם בשעות המשפחה, יופיעו התמונה שלהם ורעיון קטן איתם.</p>
+  <div id="peopleList" style="margin-top:20px"></div>
+  <button class="add" onclick="openPerson()"><svg class="i"><use href="#i-plus"/></svg>להוסיף אדם</button>
+  <div class="grow"></div>
+  <div class="bottom">
+    <button class="pill ink" id="ob2next" onclick="go('ob3')">המשך <svg class="i"><use href="#i-next"/></svg></button>
+    <button class="pill ghost" id="ob2skip" onclick="go('ob3')">אוסיף אחר כך</button>
   </div>
-  <div class="sec" id="pplTitle">השבוע בחרת ב…</div>
-  <div id="pplStats"></div>
-  <div class="sec">להגדיר את ההפסקה באייפון</div>
-  <div class="glasscard" id="guideCard"></div>
-  <button class="pill white" style="margin-top:22px" onclick="startPause('instagram',true)">לנסות את ההפסקה עכשיו <svg class="i"><use href="#i-arrow"/></svg></button>
 </section>
 
-<!-- ============ PAUSE (left phone) ============ -->
-<section class="screen" id="pause">
-  <div class="ph-bg" id="pBg"></div><div class="hair"></div>
-  <div class="bar"><span class="word">Look Up</span><span></span></div>
+<!-- ============ 3. PHOTOS + IDEAS ============ -->
+<section class="screen" id="ob3">
+  <div class="top"><button class="back" onclick="back('ob2')"><svg class="i"><use href="#i-back"/></svg>חזרה</button><span class="stepof" data-step="2"></span></div>
+  <div class="prog" data-step="2"></div>
+  <h1 class="t">מה עושה לך <span class="a">טוב?</span></h1>
+  <p class="d">תמונות ורעיונות שיופיעו בהפסקה בשאר שעות היום.</p>
+  <div class="lbl">תמונות שאוהבים<small>לא חובה · נשמרות רק בטלפון</small></div>
+  <div class="grid" id="genGrid"></div>
+  <label class="add"><svg class="i"><use href="#i-image"/></svg>לבחור תמונות מהגלריה<input type="file" accept="image/*" multiple hidden onchange="addGeneral(this)"></label>
+  <div class="lbl">מה לעשות במקום לגלול?<small>אפשר לבחור כמה</small></div>
+  <div class="chips" id="catChips"></div>
+  <div class="lbl">רעיון משלך<small>לא חובה</small></div>
+  <div style="display:flex;gap:8px"><input class="field" id="customIdea" placeholder="למשל: לנגן 5 דקות בגיטרה" onkeydown="if(event.key==='Enter')addCustom()"><button class="pill ink" style="width:auto;padding:0 20px;height:54px" onclick="addCustom()">הוספה</button></div>
+  <div class="chips" id="customList" style="margin-top:10px"></div>
+  <div class="grow" style="min-height:20px"></div>
+  <div class="bottom"><button class="pill ink" onclick="go('ob4')">המשך <svg class="i"><use href="#i-next"/></svg></button></div>
+</section>
+
+<!-- ============ 4. TIMES ============ -->
+<section class="screen" id="ob4">
+  <div class="top"><button class="back" onclick="back('ob3')"><svg class="i"><use href="#i-back"/></svg>חזרה</button><span class="stepof" data-step="3"></span></div>
+  <div class="prog" data-step="3"></div>
+  <h1 class="t">מתי הכי חשוב לך <span class="a">להיות כאן?</span></h1>
+  <p class="d">לפי השעה, ההפסקה תציג דברים אחרים. לחיצה על שעה משנה אותה.</p>
+  <div class="card" style="margin-top:20px">
+    <div class="row"><span class="ic"><svg class="i"><use href="#i-sun"/></svg></span><span class="tx"><b>בוקר שקט</b><small>עד השעה הזו: מים, מתיחה, בוקר טוב</small></span><input type="time" class="time" id="mEnd" value="08:00"></div>
+    <div class="row"><span class="ic"><svg class="i"><use href="#i-home"/></svg></span><span class="tx"><b>שעות משפחה</b><small>האנשים שלך ורעיון קטן איתם</small></span></div>
+    <div class="row" style="padding-top:0;min-height:0;justify-content:flex-start;gap:8px;padding-inline-start:50px"><span style="color:var(--soft);font-size:15px">מ-</span><input type="time" class="time" id="fStart" value="17:00"><span style="color:var(--soft);font-size:15px">עד</span><input type="time" class="time" id="fEnd" value="21:00"></div>
+    <div class="row"><span class="ic"><svg class="i"><use href="#i-candle"/></svg></span><span class="tx"><b>שבת כזמן משפחה</b><small>מכניסת שבת ועד מוצאי שבת</small></span><button class="tgl on" id="shabbat" onclick="this.classList.toggle('on')" aria-label="שבת"></button></div>
+    <div class="row"><span class="ic"><svg class="i"><use href="#i-moon"/></svg></span><span class="tx"><b>לילה</b><small>מהשעה הזו: מנוחה, בלי פיד</small></span><input type="time" class="time" id="nStart" value="22:30"></div>
+  </div>
+  <div class="grow" style="min-height:20px"></div>
+  <div class="bottom"><button class="pill ink" id="ob4btn" onclick="finishTimes()">המשך <svg class="i"><use href="#i-next"/></svg></button></div>
+</section>
+
+<!-- ============ 5. CONNECT INSTAGRAM ============ -->
+<section class="screen" id="ob5">
+  <div class="top"><button class="back" id="ob5back" onclick="back(st.setup?'home':'ob4')"><svg class="i"><use href="#i-back"/></svg>חזרה</button><span class="stepof" data-step="4"></span></div>
+  <div class="prog" data-step="4" id="ob5prog"></div>
+  <h1 class="t">חיבור <span class="a">לאינסטגרם</span></h1>
+  <p class="d">כדי שההפסקה תופיע כשפותחים אינסטגרם, צריך ליצור פעם אחת קיצור ואוטומציה באפליקציית <b>קיצורים</b> של האייפון. זה לוקח בערך 3 דקות.</p>
+  <div class="card" style="margin-top:18px" id="guideCard"></div>
+  <div class="grow" style="min-height:20px"></div>
+  <div class="bottom">
+    <button class="pill ink" onclick="finishConnect(true)">סיימתי את החיבור <svg class="i"><use href="#i-check"/></svg></button>
+    <button class="pill ghost" id="ob5later" onclick="finishConnect(false)">אעשה את זה אחר כך</button>
+  </div>
+</section>
+
+<!-- ============ HOME ============ -->
+<section class="screen" id="home">
+  <div class="top"><span class="word">Look Up</span><button class="icon-btn" onclick="openSettings()" aria-label="הגדרות"><svg class="i"><use href="#i-gear"/></svg></button></div>
+  <div class="hcard" id="hcard">
+    <div class="s" id="hDate"></div>
+    <div class="n" id="tHere">0</div>
+    <div class="l" id="tLbl">פעמים בחרת להיות כאן היום</div>
+  </div>
+  <div id="connectStatus"></div>
+  <div class="kpis">
+    <div class="kpi"><b id="wHere">0</b><span>"אני כאן" השבוע</span></div>
+    <div class="kpi"><b id="wOpen">0</b><span>פתחת בכל זאת השבוע</span></div>
+  </div>
+  <div class="lbl">7 הימים האחרונים</div>
+  <div class="card"><div class="week" id="week"></div></div>
+  <div id="pplWrap">
+    <div class="lbl">השבוע בחרת ב…</div>
+    <div class="card" id="pplStats"></div>
+  </div>
+  <div class="grow" style="min-height:20px"></div>
+  <div class="bottom"><button class="pill amber" onclick="startPause('instagram',true)"><svg class="i" style="fill:#fff;stroke:none"><use href="#i-play"/></svg>לנסות את ההפסקה עכשיו</button></div>
+</section>
+
+<!-- ============ PAUSE ============ -->
+<section class="screen photo" id="pause">
+  <div class="ph-bg" id="pBg"></div>
+  <div class="top" style="justify-content:center"><span class="word" style="font-size:20px;opacity:.9">Look Up</span></div>
   <div class="hero" style="margin-top:3vh">
-    <div class="tick"><svg class="i"><use href="#i-heart"/></svg></div>
-    <div class="kicker" id="pGreet"></div>
+    <span class="kicker" id="pGreet"></span>
     <div class="msg" id="pMsg">
       <h1 class="mega" id="pTitle"></h1>
-      <div class="idea" id="pIdea"></div>
+      <div class="idea"><small id="pIdeaLbl">במקום:</small><span id="pIdea"></span></div>
     </div>
   </div>
-  <div class="grow"></div>
+  <div class="grow" style="min-height:20px"></div>
+  <p class="hint" id="hint">עקבו אחרי העיגול</p>
   <div class="orbwrap"><button class="orb" id="orb" onclick="choose('here')"><span id="orbTxt">נשימה<br>פנימה</span></button></div>
-  <button class="under" id="anyway" onclick="choose('open')">לפתוח בכל זאת</button>
+  <button class="anyway" id="anyway" onclick="choose('open')">לפתוח בכל זאת</button>
 </section>
 
-<section class="screen" id="done">
-  <div class="ph-bg" id="dBg"></div><div class="hair"></div>
+<section class="screen photo" id="done">
+  <div class="ph-bg" id="dBg"></div>
   <div class="grow"></div>
   <div class="hero" style="margin-top:0">
-    <div class="tick"><svg class="i"><use href="#i-check"/></svg></div>
-    <h1 class="mega" style="margin-top:3vh" id="dTitle">יפה.</h1>
+    <span class="kicker"><svg class="i"><use href="#i-check"/></svg>נשמר</span>
+    <h1 class="mega" id="dTitle"></h1>
     <p class="lede" id="dSub"></p>
   </div>
   <div class="grow"></div>
-  <p class="under" style="opacity:.6">אפשר לסגור את המסך הזה.</p>
+  <p class="foot" id="dFoot">אפשר לסגור את המסך הזה.</p>
 </section>
 
 <!-- person sheet -->
 <div class="sheet" id="pSheet" onclick="if(event.target===this)closeSheet()"><div>
-  <h2 class="title" style="font-size:32px;margin-top:0">מי זה?</h2>
-  <input class="field" id="pName" placeholder="שם, למשל נועה" style="margin-top:14px">
+  <h2>להוסיף אדם</h2>
+  <div class="lbl" style="margin-top:16px">שם</div>
+  <input class="field" id="pName" placeholder="למשל: נועה" oninput="checkPerson()">
+  <div class="lbl">מי זה בשבילך?</div>
   <div class="chips" id="relChips"></div>
-  <label class="add" id="pPicLbl"><svg class="i"><use href="#i-plus"/></svg>תמונה אחת או כמה<input type="file" accept="image/*" multiple hidden onchange="pickPersonPics(this)"></label>
+  <div class="lbl">תמונות<small>1–5, מהגלריה</small></div>
   <div class="grid" id="pPicGrid"></div>
-  <button class="pill ink" style="margin-top:20px" onclick="savePerson()">שמירה</button>
+  <label class="add"><svg class="i"><use href="#i-image"/></svg>לבחור תמונות<input type="file" accept="image/*" multiple hidden onchange="pickPersonPics(this)"></label>
+  <button class="pill ink" id="pSave" style="margin-top:20px" onclick="savePerson()" disabled>שמירה</button>
+  <button class="pill ghost" onclick="closeSheet()">ביטול</button>
 </div></div>
 
 <!-- settings sheet -->
 <div class="sheet" id="sSheet" onclick="if(event.target===this)closeSheet()"><div>
-  <h2 class="title" style="font-size:32px;margin-top:0">הגדרות</h2>
-  <button class="pill ink" style="margin-top:16px" onclick="closeSheet();go('ob2')">עריכת אנשים, תמונות ושעות</button>
-  <h3 class="h3" style="font-size:20px">רעיון משלך</h3>
-  <input class="field" id="customIdea" placeholder="למשל: לנגן 5 דקות בגיטרה" style="margin-top:10px">
-  <button class="pill ghost" onclick="addCustom()">להוסיף</button>
-  <div id="customList"></div>
-  <button class="pill ghost" style="color:#B5533A;margin-top:10px" onclick="resetAll()">מחיקת כל הנתונים</button>
+  <h2>הגדרות</h2>
+  <div class="card" style="margin-top:16px">
+    <button class="row" style="width:100%;text-align:right" onclick="closeSheet();edit('ob2')"><span class="ic"><svg class="i"><use href="#i-users"/></svg></span><span class="tx"><b>האנשים שלי</b><small id="sPeople"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
+    <button class="row" style="width:100%;text-align:right" onclick="closeSheet();edit('ob3')"><span class="ic"><svg class="i"><use href="#i-bulb"/></svg></span><span class="tx"><b>תמונות ורעיונות</b><small id="sIdeas"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
+    <button class="row" style="width:100%;text-align:right" onclick="closeSheet();edit('ob4')"><span class="ic"><svg class="i"><use href="#i-clock"/></svg></span><span class="tx"><b>שעות</b><small id="sTimes"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
+    <button class="row" style="width:100%;text-align:right" onclick="closeSheet();go('ob5')"><span class="ic"><svg class="i"><use href="#i-link"/></svg></span><span class="tx"><b>חיבור לאינסטגרם וטיקטוק</b><small id="sConn"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
+  </div>
+  <button class="pill ghost" style="color:#B5533A;margin-top:12px" onclick="resetAll()"><svg class="i"><use href="#i-trash"/></svg>מחיקת כל הנתונים</button>
 </div></div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-/* ---------- storage (IndexedDB for photos, localStorage for the rest) ---------- */
+/* ---------- storage ---------- */
 const DB=(()=>{let db;const open=()=>new Promise((r,j)=>{if(db)return r(db);const q=indexedDB.open('lookup',1);q.onupgradeneeded=()=>q.result.createObjectStore('p');q.onsuccess=()=>{db=q.result;r(db)};q.onerror=j});
  const tx=async(m,f)=>{const d=await open();return new Promise((r,j)=>{const t=d.transaction('p',m);const s=t.objectStore('p');const q=f(s);t.oncomplete=()=>r(q&&q.result);t.onerror=j})};
  return{put:(k,v)=>tx('readwrite',s=>s.put(v,k)),get:k=>tx('readonly',s=>s.get(k)),del:k=>tx('readwrite',s=>s.delete(k)),clear:()=>tx('readwrite',s=>s.clear())}})();
-const S={get(){try{return JSON.parse(localStorage.lu||'{}')}catch(e){return{}}},set(o){localStorage.lu=JSON.stringify(o)}};
-let st=Object.assign({people:[],general:[],cats:['body','breath','life','rest'],custom:[],log:[],times:{mEnd:'08:00',fStart:'17:00',fEnd:'21:00',nStart:'22:30',shabbat:true},setup:false},S.get());
+const S={get(){try{return JSON.parse(localStorage.lu||'{}')}catch(e){return{}}},set(o){try{localStorage.lu=JSON.stringify(o)}catch(e){}}};
+let st=Object.assign({people:[],general:[],cats:['body','breath','life','rest'],custom:[],log:[],times:{mEnd:'08:00',fStart:'17:00',fEnd:'21:00',nStart:'22:30',shabbat:true},setup:false,connected:false},S.get());
 const save=()=>S.set(st);
 const uid=()=>Math.random().toString(36).slice(2,9);
 const ic=n=>`<svg class="i"><use href="#i-${n}"/></svg>`;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 /* ---------- photos ---------- */
 function resize(file,max=1400){return new Promise(r=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height,k=Math.min(1,max/Math.max(w,h));const c=document.createElement('canvas');c.width=w*k;c.height=h*k;c.getContext('2d').drawImage(img,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',.8));URL.revokeObjectURL(img.src)};img.src=URL.createObjectURL(file)})}
@@ -325,7 +375,7 @@ const setBg=(el,src,night)=>{el.style.backgroundImage=src?`url(${src})`:(night?'
 
 /* ---------- content ---------- */
 const REL={son:{l:'בן',g:'m',k:'kid'},daughter:{l:'בת',g:'f',k:'kid'},partnerM:{l:'בן זוג',g:'m',k:'partner'},partnerF:{l:'בת זוג',g:'f',k:'partner'},dad:{l:'אבא',g:'m',k:'parent'},mom:{l:'אמא',g:'f',k:'parent'},friendM:{l:'חבר',g:'m',k:'friend'},friendF:{l:'חברה',g:'f',k:'friend'}};
-const CATS={body:['body','גוף'],breath:['wind','נשימה'],life:['list','סידורים'],rest:['cloud','מנוחה']};
+const CATS={body:['body','תנועה','שכיבות סמיכה, מתיחה'],breath:['wind','נשימה','אוויר, חלון, מרפסת'],life:['list','סידורים','ארוחת ערב, הודעה חשובה'],rest:['cloud','מנוחה','לעצום עיניים, משהו חם']};
 const P=(g,m,f)=>g==='f'?f:m;
 const PEOPLE_IDEAS={
  kid:[(n,g)=>`לשאול את ${n} מה הכי ${P(g,'הצחיק אותו','הצחיק אותה')} היום`,(n,g)=>`לשחק עם ${n} משהו קטן, רק שניכם`,(n,g)=>`לחבק את ${n}, סתם ככה`,(n,g)=>`לשבת ליד ${n} ולראות מה ${P(g,'הוא עושה','היא עושה')}`],
@@ -350,92 +400,124 @@ function mode(d=new Date()){const T=st.times,now=d.getHours()*60+d.getMinutes(),
  return'day'}
 
 /* ---------- navigation ---------- */
-function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');
- if(id==='ob2')renderPeople();if(id==='ob3')renderGeneral();if(id==='ob4')loadTimes();if(id==='home')renderHome()}
+const TOTAL=4;let editing=false;
+function go(id){closeSheet();document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));const el=document.getElementById(id);el.classList.add('on');el.scrollTop=0;
+ el.querySelectorAll('[data-step]').forEach(x=>{const n=+x.dataset.step;if(editing||st.setup){x.style.display='none';return}x.style.display='';
+  if(x.classList.contains('prog'))x.innerHTML=[...Array(TOTAL)].map((_,i)=>`<i class="${i<n?'on':''}"></i>`).join('');else x.textContent=`שלב ${n} מתוך ${TOTAL}`});
+ if(id==='ob2')renderPeople();if(id==='ob3')renderGeneral();if(id==='ob4')loadTimes();if(id==='ob5')renderGuide();if(id==='home')renderHome()}
+function back(id){if(editing){editing=false;go('home')}else go(id)}
+function edit(id){editing=true;go(id)}
 function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),1800)}
 function closeSheet(){document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('on'))}
+function doneEditing(){editing=false;toast('נשמר');go('home')}
 
 /* ---------- people ---------- */
 let draft=null;
-function openPerson(){draft={id:uid(),name:'',rel:'daughter',pics:[]};document.getElementById('pName').value='';renderRel();renderDraftPics();document.getElementById('pSheet').classList.add('on')}
+function openPerson(){draft={id:uid(),name:'',rel:'daughter',pics:[]};document.getElementById('pName').value='';renderRel();renderDraftPics();checkPerson();document.getElementById('pSheet').classList.add('on')}
 function renderRel(){document.getElementById('relChips').innerHTML=Object.entries(REL).map(([k,v])=>`<button class="chip ${draft.rel===k?'on':''}" onclick="draft.rel='${k}';renderRel()">${v.l}</button>`).join('')}
-async function pickPersonPics(inp){for(const f of inp.files){const id='ph_'+uid();await DB.put(id,await resize(f));draft.pics.push(id)}inp.value='';renderDraftPics()}
-async function renderDraftPics(){const g=document.getElementById('pPicGrid');g.innerHTML='';for(const id of draft.pics){const d=document.createElement('div');d.style.backgroundImage=`url(${await photo(id)})`;g.appendChild(d)}}
-function savePerson(){draft.name=document.getElementById('pName').value.trim();if(!draft.name){toast('צריך שם');return}st.people.push(draft);save();closeSheet();renderPeople()}
-function delPerson(id){st.people=st.people.filter(p=>p.id!==id);save();renderPeople()}
-async function renderPeople(){const L=document.getElementById('peopleList');L.innerHTML='';let stack='';
- for(const p of st.people){const src=await photo(p.pics[0]);const el=document.createElement('div');el.className='person';el.innerHTML=`<div class="pp" style="background-image:url(${src})"></div><div><b>${esc(p.name)}</b><small>${REL[p.rel].l} · ${p.pics.length} תמונות</small></div><button class="x" onclick="delPerson('${p.id}')">×</button>`;L.appendChild(el);stack+=`<i style="background-image:url(${src})"></i>`}
- document.getElementById('ob2stack').innerHTML=st.people.length?stack+`<span>${st.people.length===1?'אדם אחד':st.people.length+' אנשים'} שחשובים לך</span>`:''}
-const esc=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function checkPerson(){document.getElementById('pSave').disabled=!document.getElementById('pName').value.trim()}
+async function pickPersonPics(inp){for(const f of inp.files){if(draft.pics.length>=5)break;const id='ph_'+uid();await DB.put(id,await resize(f));draft.pics.push(id)}inp.value='';renderDraftPics()}
+async function renderDraftPics(){const g=document.getElementById('pPicGrid');g.innerHTML='';g.style.marginBottom=draft.pics.length?'10px':'0';
+ for(const id of draft.pics){const d=document.createElement('div');d.className='tile';d.style.backgroundImage=`url(${await photo(id)})`;const b=document.createElement('button');b.innerHTML=ic('x');b.setAttribute('aria-label','הסרה');b.onclick=()=>{draft.pics=draft.pics.filter(x=>x!==id);DB.del(id);renderDraftPics()};d.appendChild(b);g.appendChild(d)}}
+function savePerson(){draft.name=document.getElementById('pName').value.trim();if(!draft.name)return;st.people.push(draft);save();closeSheet();renderPeople();toast(`${draft.name} נוספ${REL[draft.rel].g==='f'?'ה':''}`)}
+function delPerson(id){const p=st.people.find(x=>x.id===id);if(!p||!confirm(`להסיר את ${p.name}?`))return;st.people=st.people.filter(x=>x.id!==id);p.pics.forEach(x=>DB.del(x));save();renderPeople()}
+async function renderPeople(){const L=document.getElementById('peopleList');
+ if(!st.people.length){L.innerHTML=`<div class="empty"><b>עוד לא נוספו אנשים</b>למשל: נועה, הבת שלך, עם תמונה אחת שאוהבים.</div>`}
+ else{let h='<div class="card">';for(const p of st.people){const src=await photo(p.pics[0]);h+=`<div class="row"><span class="av" style="${src?`background-image:url(${src})`:''}">${src?'':esc(p.name[0])}</span><span class="tx"><b>${esc(p.name)}</b><small>${REL[p.rel].l} · ${p.pics.length?p.pics.length+' תמונות':'בלי תמונה'}</small></span><button class="del" onclick="delPerson('${p.id}')" aria-label="הסרה">${ic('trash')}</button></div>`}L.innerHTML=h+'</div>'}
+ const n=document.getElementById('ob2next'),s=document.getElementById('ob2skip');
+ if(editing){n.innerHTML='שמירה '+ic('check');n.onclick=doneEditing;s.style.display='none'}
+ else{n.innerHTML='המשך '+ic('next');n.onclick=()=>go('ob3');s.style.display=st.people.length?'none':''}}
 
 /* ---------- general photos & categories ---------- */
 async function addGeneral(inp){for(const f of inp.files){const id='ph_'+uid();await DB.put(id,await resize(f));st.general.push(id)}inp.value='';save();renderGeneral()}
-async function renderGeneral(){const g=document.getElementById('genGrid');g.innerHTML='';for(const id of st.general){const d=document.createElement('div');d.style.backgroundImage=`url(${await photo(id)})`;d.onclick=()=>{st.general=st.general.filter(x=>x!==id);DB.del(id);save();renderGeneral()};g.appendChild(d)}
- document.getElementById('catChips').innerHTML=Object.entries(CATS).map(([k,[i,l]])=>`<button class="chip ${st.cats.includes(k)?'on':''}" onclick="toggleCat('${k}')">${ic(i)}${l}</button>`).join('')}
+async function renderGeneral(){const g=document.getElementById('genGrid');g.innerHTML='';g.style.marginBottom=st.general.length?'10px':'0';
+ for(const id of st.general){const d=document.createElement('div');d.className='tile';d.style.backgroundImage=`url(${await photo(id)})`;const b=document.createElement('button');b.innerHTML=ic('x');b.setAttribute('aria-label','הסרת תמונה');b.onclick=()=>{st.general=st.general.filter(x=>x!==id);DB.del(id);save();renderGeneral()};d.appendChild(b);g.appendChild(d)}
+ document.getElementById('catChips').innerHTML=Object.entries(CATS).map(([k,[i,l]])=>`<button class="chip ${st.cats.includes(k)?'on':''}" onclick="toggleCat('${k}')"><svg class="i ok"><use href="#i-check"/></svg>${st.cats.includes(k)?'':ic(i)}${l}</button>`).join('');
+ renderCustom();
+ const btn=document.querySelector('#ob3 .bottom .pill');if(editing){btn.innerHTML='שמירה '+ic('check');btn.onclick=doneEditing}else{btn.innerHTML='המשך '+ic('next');btn.onclick=()=>go('ob4')}}
 function toggleCat(k){st.cats=st.cats.includes(k)?st.cats.filter(x=>x!==k):[...st.cats,k];save();renderGeneral()}
-function loadTimes(){const T=st.times;['mEnd','fStart','fEnd','nStart'].forEach(k=>document.getElementById(k).value=T[k]);document.getElementById('shabbat').classList.toggle('on',T.shabbat)}
-function finishSetup(){const T=st.times;['mEnd','fStart','fEnd','nStart'].forEach(k=>T[k]=document.getElementById(k).value);T.shabbat=document.getElementById('shabbat').classList.contains('on');st.setup=true;save();
- if(pendingApp){startPause(pendingApp)}else go('home')}
+function addCustom(){const i=document.getElementById('customIdea');const v=i.value.trim();if(!v)return;st.custom.push(v);save();i.value='';renderCustom();toast('הרעיון נוסף')}
+function renderCustom(){document.getElementById('customList').innerHTML=st.custom.map((c,i)=>`<span class="chip on">${esc(c)}<button onclick="st.custom.splice(${i},1);save();renderCustom()" aria-label="הסרה" style="display:grid;color:#fff;opacity:.8">${ic('x')}</button></span>`).join('')}
+
+/* ---------- times ---------- */
+function loadTimes(){const T=st.times;['mEnd','fStart','fEnd','nStart'].forEach(k=>document.getElementById(k).value=T[k]);document.getElementById('shabbat').classList.toggle('on',T.shabbat);
+ document.getElementById('ob4btn').innerHTML=editing?'שמירה '+ic('check'):'המשך '+ic('next')}
+function finishTimes(){const T=st.times;['mEnd','fStart','fEnd','nStart'].forEach(k=>T[k]=document.getElementById(k).value||T[k]);T.shabbat=document.getElementById('shabbat').classList.contains('on');save();
+ if(editing)return doneEditing();go('ob5')}
+function finishConnect(ok){if(ok)st.connected=true;const first=!st.setup;st.setup=true;save();
+ if(pendingApp){const a=pendingApp;pendingApp=null;startPause(a);return}
+ if(first&&!ok)toast('אפשר לחבר מתי שרוצים, מההגדרות');go('home')}
 
 /* ---------- pause ---------- */
 let curApp='instagram',curPerson=null,pendingApp=null,isTest=false,lastSrc='',lastNight=false,timers=[];
 async function startPause(app,test){curApp=APPS[app]?app:'instagram';isTest=!!test;curPerson=null;
- const m=mode();let title,idea,pic,greet;
+ const m=mode();let title,idea,pic,greet,lbl='במקום:';
  if(m==='family'){const p=pick(st.people);curPerson=p.id;const r=REL[p.rel];title=PEOPLE_TITLES[r.k](p.name,r.g);idea=pick(PEOPLE_IDEAS[r.k])(p.name,r.g);pic=pick(p.pics)||pick(st.general);greet='שעות משפחה'}
  else if(m==='morning'){title='בוקר טוב.';idea=pick(MORNING);pic=pick(st.general)||pick(st.people.flatMap(p=>p.pics));greet='היום מתחיל ממך, לא מהפיד'}
- else if(m==='night'){const n=pick(NIGHT);title=n[0];idea=n[1];pic=pick(st.general)||pick(st.people.flatMap(p=>p.pics));greet='לילה'}
+ else if(m==='night'){const n=pick(NIGHT);title=n[0];idea=n[1];pic=pick(st.general)||pick(st.people.flatMap(p=>p.pics));greet='לילה';lbl='ועכשיו:'}
  else{title=pick(DAY_TITLES);const pool=[...st.cats.flatMap(c=>IDEAS[c]||[]),...st.custom,...st.custom];idea=pick(pool.length?pool:IDEAS.breath);pic=pick([...st.general,...st.people.flatMap(p=>p.pics)]);greet=`רגע לפני ${APPS[curApp].n}`}
  lastSrc=await photo(pic)||'';lastNight=m==='night';
  setBg(document.getElementById('pBg'),lastSrc,lastNight);
  document.getElementById('pGreet').textContent=greet;document.getElementById('pTitle').textContent=title;
- document.getElementById('pIdea').textContent=idea;
+ document.getElementById('pIdea').textContent=idea;document.getElementById('pIdeaLbl').textContent=lbl;
  document.getElementById('anyway').textContent=`לפתוח את ${APPS[curApp].n} בכל זאת`;
  document.getElementById('pMsg').classList.remove('on');
  go('pause');runBreath()}
-function runBreath(){timers.forEach(clearTimeout);const s=document.getElementById('pause'),t=document.getElementById('orbTxt');s.classList.remove('in','out','ready');t.innerHTML='נשימה<br>פנימה';
+function runBreath(){timers.forEach(clearTimeout);const s=document.getElementById('pause'),t=document.getElementById('orbTxt'),h=document.getElementById('hint');s.classList.remove('in','out','ready');t.innerHTML='נשימה<br>פנימה';h.textContent='נושמים יחד עם העיגול';
  if(navigator.vibrate)navigator.vibrate(20);
  requestAnimationFrame(()=>requestAnimationFrame(()=>s.classList.add('in')));
  timers=[setTimeout(()=>{s.classList.replace('in','out');t.innerHTML='ועכשיו<br>החוצה'},3000),
  setTimeout(()=>document.getElementById('pMsg').classList.add('on'),5200),
- setTimeout(()=>{s.classList.remove('out');s.classList.add('in','ready');t.innerHTML='אני<br>כאן'},6600)]}
+ setTimeout(()=>{s.classList.remove('out');s.classList.add('in','ready');t.innerHTML='אני<br>כאן';h.textContent='לחיצה על העיגול: נשארים כאן'},6600)]}
 function choose(kind){if(!isTest){st.log.push({t:Date.now(),k:kind,app:curApp,p:curPerson});st.log=st.log.slice(-2000);save()}
- if(kind==='here'){const today=countDay(new Date());document.getElementById('dTitle').innerHTML='יפה.<br><span style="color:var(--amber)">בחרת להיות כאן.</span>';
-  const p=st.people.find(x=>x.id===curPerson);document.getElementById('dSub').textContent=p?`עכשיו רק ${p.name}.`:`זו הפעם ה-${today.here||1} היום.`;
-  setBg(document.getElementById('dBg'),lastSrc,lastNight);go('done');if(isTest)setTimeout(()=>go('home'),2400);return}
- if(isTest){go('home');return}
+ if(kind==='here'){const today=countDay(new Date());document.getElementById('dTitle').innerHTML='יפה.<br><span class="a">בחרת להיות כאן.</span>';
+  const p=st.people.find(x=>x.id===curPerson);document.getElementById('dSub').textContent=p?`עכשיו רק ${p.name}.`:(isTest?'ככה זה ייראה כשפותחים אינסטגרם.':`זו הפעם ה-${today.here||1} היום.`);
+  document.getElementById('dFoot').textContent=isTest?'חוזרים למסך הבית…':'אפשר לסגור את המסך הזה.';
+  setBg(document.getElementById('dBg'),lastSrc,lastNight);go('done');if(isTest)setTimeout(()=>go('home'),2600);return}
+ if(isTest){toast('בניסיון לא נפתחת אפליקציה');go('home');return}
  location.href='shortcuts://run-shortcut?name='+encodeURIComponent('Look Up Pass')+'&input=text&text='+encodeURIComponent(APPS[curApp].u)}
 
-/* ---------- stats ---------- */
+/* ---------- home ---------- */
 const dayKey=d=>d.toDateString();
 function countDay(d){const k=dayKey(d),r={here:0,open:0};st.log.forEach(e=>{if(dayKey(new Date(e.t))===k)r[e.k]++});return r}
-async function renderHome(){const now=new Date();document.getElementById('hDate').textContent=now.toLocaleDateString('he-IL',{weekday:'long',day:'numeric',month:'long'});
- const firstPic=st.general[0]||st.people.flatMap(p=>p.pics)[0];setBg(document.getElementById('homeBg'),await photo(firstPic),false);
- document.getElementById('tHere').textContent=countDay(now).here;
+async function renderHome(){const now=new Date();
+ document.getElementById('hDate').textContent=now.toLocaleDateString('he-IL',{weekday:'long',day:'numeric',month:'long'});
+ const firstPic=st.general[0]||st.people.flatMap(p=>p.pics)[0];const src=await photo(firstPic);document.getElementById('hcard').style.backgroundImage=src?`url(${src})`:'';
+ const today=countDay(now).here;document.getElementById('tHere').textContent=today;
+ document.getElementById('tLbl').textContent=today===1?'פעם אחת בחרת להיות כאן היום':'פעמים בחרת להיות כאן היום';
+ document.getElementById('connectStatus').innerHTML=st.connected?'':`<div class="status"><span class="tx"><b>עוד לא מחובר לאינסטגרם</b><small>בלי זה ההפסקה לא תופיע. 3 דקות.</small></span><button class="go" onclick="go('ob5')">לחבר עכשיו</button></div>`;
  const days=[...Array(7)].map((_,i)=>{const d=new Date(now);d.setDate(now.getDate()-6+i);return{d,c:countDay(d)}});const max=Math.max(1,...days.map(x=>x.c.here));
- document.getElementById('week').innerHTML=days.map(x=>`<div><i style="height:100%;--h:${x.c.here/max*100}%"></i><span>${x.d.toLocaleDateString('he-IL',{weekday:'narrow'})}</span></div>`).join('');
+ document.getElementById('week').innerHTML=days.map((x,i)=>`<div class="${i===6?'today':''}"><em>${x.c.here||''}</em><i style="--h:${x.c.here/max*100}%"></i><span>${i===6?'היום':x.d.toLocaleDateString('he-IL',{weekday:'short'}).replace('יום ','')}</span></div>`).join('');
  const wk=st.log.filter(e=>e.t>now-7*864e5);document.getElementById('wHere').textContent=wk.filter(e=>e.k==='here').length;document.getElementById('wOpen').textContent=wk.filter(e=>e.k==='open').length;
- const box=document.getElementById('pplStats');box.innerHTML='';document.getElementById('pplTitle').style.display=st.people.length?'':'none';
- const counts=st.people.map(p=>wk.filter(e=>e.k==='here'&&e.p===p.id).length);const pmax=Math.max(1,...counts);
- st.people.forEach((p,i)=>{const n=counts[i];const el=document.createElement('div');el.className='track';el.innerHTML=`<div class="lbl">${ic('heart')}${esc(p.name)}</div><div class="line"><div class="rail" style="--w:${Math.max(6,n/pmax*100)}%"><b></b><em></em></div><span class="val">${n===1?'פעם אחת':n+' פעמים'}</span></div>`;box.appendChild(el)});
- renderGuide()}
+ document.getElementById('pplWrap').style.display=st.people.length?'':'none';
+ const counts=st.people.map(p=>wk.filter(e=>e.k==='here'&&e.p===p.id).length);const pmax=Math.max(1,...counts);let h='';
+ for(let i=0;i<st.people.length;i++){const p=st.people[i],n=counts[i],s=await photo(p.pics[0]);
+  h+=`<div class="row"><span class="av" style="${s?`background-image:url(${s})`:''}">${s?'':esc(p.name[0])}</span><span class="tx"><b>${esc(p.name)}</b><div class="bar"><b style="--w:${n/pmax*100}%"></b></div></span><span class="end" style="color:var(--ink);font-weight:600;font-size:15px;min-width:64px;justify-content:flex-end">${n===1?'פעם אחת':n+' פעמים'}</span></div>`}
+ document.getElementById('pplStats').innerHTML=h}
+
+/* ---------- connect guide ---------- */
 function renderGuide(){const base=location.origin+location.pathname;const u=a=>`${base}#pause&app=${a}`;
+ document.getElementById('ob5prog').style.display=st.setup?'none':'';document.getElementById('ob5later').textContent=st.setup?'חזרה למסך הבית':'אעשה את זה אחר כך';
  document.getElementById('guideCard').innerHTML=`
- <div class="step"><span class="k">1</span><div><p>באפליקציית <b>קיצורים</b>, צרו קיצור בשם <b>Look Up Pass</b> עם 3 פעולות:<br>• "תאריך נוכחי"<br>• "שמירת קובץ" (בתיקיית Shortcuts, שם: <b>lookup.txt</b>, החלפה: מופעל)<br>• "פתיחת כתובות URL" עם <b>קלט הקיצור</b></p></div></div>
- <div class="step"><span class="k">2</span><div><p>בלשונית <b>אוטומציה</b> ← "אפליקציה" ← בחרו <b>Instagram</b> ← "נפתחת" ← <b>הפעלה מיידית</b>.</p></div></div>
- <div class="step"><span class="k">3</span><div><p>פעולות האוטומציה:<br>• "קבלת קובץ" lookup.txt מתיקיית Shortcuts (לכבות "הצג שגיאה")<br>• "קבלת זמן בין תאריכים" מהקובץ ועד התאריך הנוכחי, ב<b>שניות</b><br>• "אם" התוצאה <b>קטנה מ-60</b> ← "עצירת קיצור זה"<br>• "פתיחת כתובות URL":</p><code id="u1">${u('instagram')}</code><button class="copy" onclick="cp('${u('instagram')}')">העתקה</button></div></div>
- <div class="step"><span class="k">4</span><div><p>לטיקטוק: לשכפל את האוטומציה, לבחור TikTok ולהחליף את הכתובת:</p><code>${u('tiktok')}</code><button class="copy" onclick="cp('${u('tiktok')}')">העתקה</button></div></div>`}
-function cp(t){navigator.clipboard.writeText(t).then(()=>toast('הועתק'))}
+ <div class="step"><span class="k">1</span><div><p>באפליקציית <b>קיצורים</b> ← לשונית <b>קיצורים</b> ← <b>+</b>. לקרוא לקיצור בדיוק <b>Look Up Pass</b> ולהוסיף 3 פעולות:</p><ul><li>תאריך נוכחי</li><li>שמירת קובץ: תיקייה Shortcuts, שם <b>lookup.txt</b>, החלפה מופעלת</li><li>פתיחת כתובות URL ← קלט הקיצור</li></ul></div></div>
+ <div class="step"><span class="k">2</span><div><p>לשונית <b>אוטומציה</b> ← <b>+</b> ← אפליקציה ← לבחור <b>Instagram</b> ← "נפתחת" ← <b>הפעלה מיידית</b>.</p></div></div>
+ <div class="step"><span class="k">3</span><div><p>פעולות האוטומציה:</p><ul><li>קבלת קובץ lookup.txt מתיקיית Shortcuts (לכבות "הצג שגיאה")</li><li>זמן בין תאריכים: מהקובץ ועד עכשיו, ב<b>שניות</b></li><li>אם התוצאה <b>קטנה מ-60</b> ← עצירת קיצור זה</li><li>פתיחת כתובת URL:</li></ul><code>${u('instagram')}</code><button class="copy" onclick="cp('${u('instagram')}')">${ic('link')}העתקת הכתובת</button></div></div>
+ <div class="step"><span class="k">4</span><div><p>לטיקטוק: לשכפל את האוטומציה, לבחור TikTok ולהחליף את הכתובת:</p><code>${u('tiktok')}</code><button class="copy" onclick="cp('${u('tiktok')}')">${ic('link')}העתקת הכתובת</button></div></div>`}
+function cp(t){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הכתובת הועתקה')).catch(()=>toast('לא הצלחתי להעתיק. אפשר לסמן ולהעתיק ידנית'))}
 
 /* ---------- settings ---------- */
-function openSettings(){renderCustom();document.getElementById('sSheet').classList.add('on')}
-function addCustom(){const i=document.getElementById('customIdea');const v=i.value.trim();if(!v)return;st.custom.push(v);save();i.value='';renderCustom();toast('נוסף')}
-function renderCustom(){document.getElementById('customList').innerHTML=st.custom.map((c,i)=>`<div class="person"><span>${esc(c)}</span><button class="x" onclick="st.custom.splice(${i},1);save();renderCustom()">×</button></div>`).join('')}
-async function resetAll(){if(!confirm('למחוק הכול?'))return;await DB.clear();localStorage.removeItem('lu');location.hash='';location.reload()}
+function openSettings(){const T=st.times;
+ document.getElementById('sPeople').textContent=st.people.length?st.people.map(p=>p.name).join(', '):'עוד לא נוספו';
+ document.getElementById('sIdeas').textContent=`${st.general.length} תמונות · ${st.cats.length+st.custom.length} סוגי רעיונות`;
+ document.getElementById('sTimes').textContent=`משפחה ${T.fStart}–${T.fEnd} · לילה מ-${T.nStart}`;
+ document.getElementById('sConn').textContent=st.connected?'מחובר':'עוד לא מחובר';
+ document.getElementById('sSheet').classList.add('on')}
+async function resetAll(){if(!confirm('למחוק את כל האנשים, התמונות וההיסטוריה? אי אפשר לבטל.'))return;await DB.clear();localStorage.removeItem('lu');location.hash='';location.reload()}
 
 /* ---------- boot ---------- */
 function boot(){const h=location.hash.slice(1),q=new URLSearchParams(h.replace(/^pause&?/,''));
  if(h.startsWith('pause')){const app=q.get('app')||'instagram';history.replaceState(null,'',location.pathname);
-  if(!st.setup){pendingApp=app;go('ob1');return}startPause(app);return}
+  if(!st.setup){pendingApp=app;go('ob1');return}st.connected=true;save();startPause(app);return}
  go(st.setup?'home':'ob1')}
 boot();
 </script>
