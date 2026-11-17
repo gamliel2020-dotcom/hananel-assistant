@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Look Up v31: logo only on Home like Cal AI (saved v30 in Archive) · v30: app icon = 10d "head rising" · v29: wordmark app icon + removed the icon→Safari "Test mode" screen · v28: idea options as Cal AI-style rows (v27 tiles looked "AI") · v27: back to the regular v25 flow (v26 test flow removed) + clean idea tiles on "What makes you feel good?" · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
+/* Look Up v32: Opal-style Screen Time primer (saved v31 = /saved-v31/) · v31: logo only on Home like Cal AI (saved v30 in Archive) · v30: app icon = 10d "head rising" · v29: wordmark app icon + removed the icon→Safari "Test mode" screen · v28: idea options as Cal AI-style rows (v27 tiles looked "AI") · v27: back to the regular v25 flow (v26 test flow removed) + clean idea tiles on "What makes you feel good?" · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
    Apple Screen Time style picker with real app icons, demo home screen, tab bar (Today / Progress / Settings), one onboarding progress bar */
 /* earlier v9: Cal AI onboarding patterns · v8: any app + categories · v7: Steven Cravotta blueprint · design: Passion Finder + Stress glass */
 :root{
@@ -256,6 +256,26 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .hbrand{display:flex;align-items:center;gap:8px;font-size:22px;font-weight:700;letter-spacing:-.2px}
 .hmark{width:30px;height:30px;border-radius:8px;display:block}
 .ptitle{text-align:start!important;font-size:32px!important;margin-top:6px!important}
+/* v32: Opal-style Screen Time primer: a copy of Apple's alert, glowing frame, arrow to "Continue", privacy line */
+.optitle{font-size:27px!important;line-height:1.2;margin-top:18px;padding:0 6px}
+.opwrap{position:relative;width:min(300px,82vw);margin:0 auto}
+.opring{position:absolute;inset:-14px;border-radius:40px;border:1.5px solid rgba(255,248,241,.35);pointer-events:none}
+.opring.r2{inset:-30px;border-radius:52px;border-color:rgba(255,248,241,.6);box-shadow:0 0 40px rgba(255,214,170,.35),inset 0 0 30px rgba(255,214,170,.15);animation:opGlow 2.6s ease-in-out infinite}
+@keyframes opGlow{50%{box-shadow:0 0 70px rgba(255,214,170,.6),inset 0 0 40px rgba(255,214,170,.25)}}
+.opcard{position:relative;background:rgba(250,246,242,.97);color:#000;border-radius:30px;padding:22px 18px 16px;text-align:start;font-family:-apple-system,system-ui,Heebo,"Noto Sans Arabic",sans-serif;box-shadow:0 24px 50px -20px rgba(60,20,0,.55)}
+.opcard b{display:block;font-size:18px;font-weight:600;line-height:1.28}
+.opcard p{font-size:14px;line-height:1.4;color:rgba(60,60,67,.75);margin-top:6px}
+.opbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.opbtns button{height:46px;border-radius:23px;font-size:16px;font-weight:500;font-family:inherit}
+.opbtns .c{background:rgba(120,120,128,.18);color:#000}
+.opbtns .b{background:#3D9BF5;color:#fff}
+.oparrow{position:absolute;top:calc(100% + 6px);inset-inline-start:6%;width:96px;height:104px;fill:none;stroke:#FFF8F1;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;animation:bob 1.3s ease-in-out infinite}
+[dir=rtl] .oparrow{transform:scaleX(-1)}
+[dir=rtl] .oparrow{animation:none}
+.opsafe{display:flex;gap:8px;align-items:flex-start;justify-content:center;text-align:center;font-size:15px;line-height:1.4;color:var(--w90,#fff);max-width:330px;margin:0 auto}
+.opsafe svg{width:18px;height:18px;flex:none;margin-top:2px}
+.lmh{font-size:22px;font-weight:700;margin:6px 0 4px}
+.lmv{margin:12px 0 0;max-width:none}.lmv svg{color:var(--ink)}
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .pgrid .pt{aspect-ratio:1;border-radius:20px;background:rgba(255,255,255,.2) center/cover;position:relative;border:1px solid var(--gline)}
 .pgrid .pt button{position:absolute;top:6px;inset-inline-end:6px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center}
@@ -757,14 +777,19 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 <!-- ============ SCREEN TIME PERMISSION (what the real app asks; primer + system alert, like Opal / one sec) ============ -->
 <section class="screen" id="perm">
   <div class="top"><span></span><span></span><span></span></div>
-  <div class="grow" style="min-height:10px"></div>
-  <div class="round" style="width:92px;height:92px"><svg class="i" style="width:40px;height:40px"><use href="#i-clock"/></svg></div>
-  <h1 class="t" data-t="perm_t"></h1>
-  <p class="d" data-t="perm_d"></p>
-  <div class="vals" style="margin-top:22px"><div><svg class="i"><use href="#i-lock"/></svg><span data-t="perm_b1"></span></div><div><svg class="i"><use href="#i-check"/></svg><span data-t="perm_b2"></span></div><div><svg class="i"><use href="#i-gear"/></svg><span data-t="perm_b3"></span></div></div>
-  <div class="grow" style="min-height:16px"></div>
-  <div class="duo"><button class="pill white" onclick="openAlert()" data-t="perm_cta"></button></div>
-  <button class="pill link" onclick="permLater()" data-t="perm_later"></button>
+  <h1 class="t optitle" data-t="op_t"></h1>
+  <div class="grow" style="min-height:24px"></div>
+  <div class="opwrap">
+    <div class="opring"></div><div class="opring r2"></div>
+    <div class="opcard">
+      <b data-t="al_t"></b><p data-t="al_d"></p>
+      <div class="opbtns"><button class="c" onclick="hap();permYes()" data-t="al_c"></button><button class="b" onclick="permLater()" data-t="al_n"></button></div>
+    </div>
+    <svg class="oparrow" viewBox="0 0 120 130" aria-hidden="true"><path d="M14 124 C 40 112, 66 80, 70 14"/><path d="M54 30 L70 12 L84 32"/></svg>
+  </div>
+  <div class="grow" style="min-height:40px"></div>
+  <p class="opsafe"><svg class="i"><use href="#i-lock"/></svg><span data-t="op_safe"></span></p>
+  <button class="pill link" onclick="$('lmSheet').classList.add('on')" data-t="op_more"></button>
 </section>
 
 <!-- ============ CONNECT (test mode: Shortcuts, prototype only) ============ -->
@@ -894,10 +919,16 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
   <p class="pkf" data-t="pk_foot"></p>
 </div></div>
 
+<div class="sheet" id="lmSheet" onclick="if(event.target===this)closeSheet()"><div>
+  <div class="grab"></div>
+  <h3 class="lmh" data-t="op_more_t"></h3>
+  <div class="vals lmv"><div><svg class="i"><use href="#i-lock"/></svg><span data-t="perm_b1"></span></div><div><svg class="i"><use href="#i-check"/></svg><span data-t="perm_b2"></span></div><div><svg class="i"><use href="#i-gear"/></svg><span data-t="perm_b3"></span></div></div>
+  <button class="pill ink" style="margin-top:22px;width:100%" onclick="closeSheet()" data-t="op_ok"></button>
+</div></div>
 <!-- iOS-style system alert (demo of Apple's Screen Time permission) -->
 <div class="sheet al" id="alSheet"><div>
   <div class="alb"><b data-t="al_t"></b><p data-t="al_d"></p></div>
-  <div class="alr"><button onclick="permNo()" data-t="al_n"></button><button class="b" onclick="permYes()" data-t="al_c"></button></div>
+  <div class="alr"><button onclick="permYes()" data-t="al_c"></button><button class="b" onclick="permNo()" data-t="al_n"></button></div>
   <p class="alhint"><span>↑</span><span data-t="al_hint"></span></p>
 </div></div>
 
@@ -1358,6 +1389,12 @@ const GS={en:['<b>Important for testing:</b> the automation opens Look Up in <b>
  es:['<b>Importante para probar:</b> la automatización abre Look Up en <b>Safari</b>. Un icono de inicio añadido como app web guarda datos aparte, así que su contador se queda en 0. Solución: usa Look Up en Safari (o borra el icono y añádelo de nuevo desde Safari con <b>Abrir como app web</b> desactivado) y añade allí a tu gente una vez.','Modo de prueba: las pausas de Atajos se cuentan en Look Up en Safari, no en este icono.'],
  fr:['<b>Important pour tester :</b> l’automatisation ouvre Look Up dans <b>Safari</b>. Une icône d’accueil ajoutée comme app web garde ses propres données, donc son compteur reste à 0. Solution : utilise Look Up dans Safari (ou supprime l’icône et ajoute-la de nouveau depuis Safari avec <b>Ouvrir comme app web</b> désactivé), et ajoute tes proches là-bas une fois.','Mode test : les pauses des Raccourcis sont comptées dans Look Up sur Safari, pas dans cette icône.'],
  ar:['<b>مهم للاختبار:</b> تفتح الأتمتة Look Up في <b>سفاري</b>. أيقونة الشاشة الرئيسية المضافة كتطبيق ويب تحتفظ ببيانات منفصلة، لذلك يبقى عدّادها 0. الحل: استخدم Look Up في سفاري (أو احذف الأيقونة وأضفها مجددًا من سفاري مع إيقاف <b>الفتح كتطبيق ويب</b>)، وأضف أحبّاءك هناك مرة واحدة.','وضع الاختبار: تُحتسب الاستراحات من الاختصارات في Look Up على سفاري، لا في هذه الأيقونة.']};
+const OP={en:{op_t:'Let’s connect Look Up to Screen Time. Securely.',op_safe:'Your information is protected by Apple and stays 100% on your phone.',op_more:'Learn more',op_more_t:'What Look Up can and can’t do',op_ok:'Got it'},
+ he:{op_t:'בואו נחבר את Look Up לזמן מסך. בצורה מאובטחת.',op_safe:'המידע מוגן על ידי Apple ונשאר 100% בטלפון.',op_more:'מידע נוסף',op_more_t:'מה Look Up יכולה ומה לא',op_ok:'הבנתי'},
+ es:{op_t:'Conectemos Look Up a Tiempo de uso. De forma segura.',op_safe:'Tu información está protegida por Apple y se queda 100% en tu teléfono.',op_more:'Más información',op_more_t:'Lo que Look Up puede y no puede hacer',op_ok:'Entendido'},
+ fr:{op_t:'Connectons Look Up à Temps d’écran. En toute sécurité.',op_safe:'Vos données sont protégées par Apple et restent à 100 % sur votre téléphone.',op_more:'En savoir plus',op_more_t:'Ce que Look Up peut faire, et ne peut pas faire',op_ok:'Compris'},
+ ar:{op_t:'لنربط Look Up بمدة استخدام الجهاز. بأمان.',op_safe:'معلوماتك محمية من Apple وتبقى 100% على هاتفك.',op_more:'معرفة المزيد',op_more_t:'ما يمكن لـ Look Up فعله وما لا يمكنه',op_ok:'فهمت'}};
+for(const l in OP)Object.assign(V[l],OP[l]);
 for(const l in PM){Object.assign(V[l],PM[l]);V[l].perm_test=PT2[l];V[l].g_safari=GS[l][0];V[l].g_safari_short=GS[l][1]}
 for(const l in W){Object.assign(V[l],W[l]);V[l].w_restore=RS[l];V[l].w_lead=WL[l][0];V[l].w_rot=WL[l][1];V[l].w_mock=WL[l][2]}
 for(const l in V){const{Q,...rest}=V[l];Object.assign(STR[l],rest);Object.assign(STR[l].Q,Q)}})();
