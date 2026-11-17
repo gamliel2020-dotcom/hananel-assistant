@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Look Up v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
+/* Look Up v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
    Apple Screen Time style picker with real app icons, demo home screen, tab bar (Today / Progress / Settings), one onboarding progress bar */
 /* earlier v9: Cal AI onboarding patterns · v8: any app + categories · v7: Steven Cravotta blueprint · design: Passion Finder + Stress glass */
 :root{
@@ -1334,7 +1334,8 @@ const PM={en:{perm_t:'Let Look Up pause your apps',perm_d:'Your iPhone will ask 
  es:{perm_t:'Deja que Look Up pause tus apps',perm_d:'El iPhone te pedirá permitir el acceso a Tiempo de uso. Es lo que permite que la pausa aparezca justo antes de las apps que elegiste.',perm_b1:'Look Up no puede ver lo que haces dentro de las apps',perm_b2:'Solo las apps que elegiste tendrán pausa',perm_b3:'Desactívalo cuando quieras en Ajustes del iPhone',perm_cta:'Continuar',perm_later:'Ahora no',al_t:'«Look Up» quiere acceder a Tiempo de uso',al_d:'Permitir el acceso puede dejarle ver datos de actividad, restringir contenido y limitar el uso de apps y webs.',al_c:'Continuar',al_n:'No permitir',al_hint:'Toca Continuar',perm_no:'Sin acceso la pausa no puede aparecer. Puedes permitirlo luego en Ajustes.',set_perm:'Acceso a Tiempo de uso',perm_on:'Permitido (demo)',perm_off:'Aún no permitido',set_test:'Modo de prueba (Atajos)',set_test_s:'solo para probar este prototipo',nc_t:'El acceso a Tiempo de uso está desactivado',nc_s:'Sin él la pausa no puede aparecer.',nc_go:'Permitir'},
  fr:{perm_t:'Laisse Look Up mettre tes apps en pause',perm_d:'L’iPhone va te demander d’autoriser l’accès à Temps d’écran. C’est ce qui permet à la pause d’apparaître juste avant les apps choisies.',perm_b1:'Look Up ne voit pas ce que tu fais dans les apps',perm_b2:'Seules les apps choisies ont une pause',perm_b3:'Désactivable à tout moment dans les Réglages',perm_cta:'Continuer',perm_later:'Pas maintenant',al_t:'« Look Up » souhaite accéder à Temps d’écran',al_d:'Autoriser l’accès peut lui permettre de voir des données d’activité, de restreindre du contenu et de limiter l’usage d’apps et de sites.',al_c:'Continuer',al_n:'Ne pas autoriser',al_hint:'Touche Continuer',perm_no:'Sans accès, la pause ne peut pas apparaître. Tu pourras l’autoriser plus tard dans les Réglages.',set_perm:'Accès à Temps d’écran',perm_on:'Autorisé (démo)',perm_off:'Pas encore autorisé',set_test:'Mode test (Raccourcis)',set_test_s:'seulement pour tester ce prototype',nc_t:'L’accès à Temps d’écran est désactivé',nc_s:'Sans lui, la pause ne peut pas apparaître.',nc_go:'Autoriser'},
  ar:{perm_t:'اسمح لـ Look Up بإيقاف تطبيقاتك مؤقتًا',perm_d:'سيطلب منك iPhone السماح بالوصول إلى «مدة استخدام الجهاز». هذا ما يتيح ظهور الاستراحة قبل التطبيقات التي اخترتها مباشرة.',perm_b1:'لا يرى Look Up ما تفعله داخل التطبيقات',perm_b2:'فقط التطبيقات التي اخترتها ستحصل على استراحة',perm_b3:'يمكنك إيقافه في أي وقت من إعدادات iPhone',perm_cta:'متابعة',perm_later:'ليس الآن',al_t:'«Look Up» يريد الوصول إلى مدة استخدام الجهاز',al_d:'قد يتيح له السماح بالوصول رؤية بيانات النشاط وتقييد المحتوى والحدّ من استخدام التطبيقات والمواقع.',al_c:'متابعة',al_n:'عدم السماح',al_hint:'اضغط «متابعة»',perm_no:'بدون إذن لن تظهر الاستراحة. يمكنك السماح لاحقًا من الإعدادات.',set_perm:'الوصول إلى مدة الاستخدام',perm_on:'مسموح (تجريبي)',perm_off:'غير مسموح بعد',set_test:'وضع الاختبار (الاختصارات)',set_test_s:'فقط لاختبار هذا النموذج',nc_t:'الوصول إلى مدة الاستخدام متوقف',nc_s:'بدونه لن تظهر الاستراحة.',nc_go:'السماح'}};
-for(const l in PM)Object.assign(V[l],PM[l]);
+const PT2={en:'Active via Shortcuts (test mode)',he:'פעיל דרך קיצורים (מצב בדיקה)',es:'Activo con Atajos (modo de prueba)',fr:'Actif via Raccourcis (mode test)',ar:'نشِط عبر الاختصارات (وضع الاختبار)'};
+for(const l in PM){Object.assign(V[l],PM[l]);V[l].perm_test=PT2[l]}
 for(const l in W){Object.assign(V[l],W[l]);V[l].w_restore=RS[l];V[l].w_lead=WL[l][0];V[l].w_rot=WL[l][1];V[l].w_mock=WL[l][2]}
 for(const l in V){const{Q,...rest}=V[l];Object.assign(STR[l],rest);Object.assign(STR[l].Q,Q)}})();
 let LANG=LANGS[st.lang]?st.lang:'en'; /* English is the default */
@@ -1573,7 +1574,9 @@ function renderCommit(){const ppl=st.people.map(p=>p.name);const z=st.quiz||{};
  const arc=$('holdArc');arc.style.transition='none';arc.style.strokeDashoffset=820;$('holdLbl').innerHTML=t('hold');setupHold()}
 /* Screen Time permission (demo of AuthorizationCenter.requestAuthorization(for: .individual)) */
 function openAlert(){$('alSheet').classList.add('on')}
-function permYes(){closeSheet();st.perm=true;const first=!st.setup;st.setup=true;save();hap();go(first?'home':'settings',{anim:first?'up':'pop'})}
+function permYes(){closeSheet();st.perm=true;const first=!st.setup;st.setup=true;save();hap();
+ if(pendingApp){const a=pendingApp;pendingApp=null;st.connected=true;save();startPause(a);return} /* came in from a shortcut before setup: show that pause now */
+ go(first?'home':'settings',{anim:first?'up':'pop'})}
 function permNo(){closeSheet();toast(t('perm_no'))}
 function permLater(){const first=!st.setup;st.setup=true;save();toast(t('perm_no'));go(first?'home':'settings',{anim:first?'up':'pop'})}
 function finishConnect(ok){if(ok)st.connected=true;const first=!st.setup;st.setup=true;save();
@@ -1664,7 +1667,8 @@ function renderHome(){const now=new Date();
  $('hDate').textContent=now.toLocaleDateString(LANGS[LANG].loc,{weekday:'long',day:'numeric',month:'numeric'});
  const today=countDay(now).here;$('tHere').innerHTML=`${today}<small>${t('times',today)}</small>`;drawGauge(today/GOAL);
  $('streak').innerHTML=`${ic('flame')}<b>${streakDays()}</b>`;
- $('connectStatus').innerHTML=st.perm?'':`<div class="status"><span class="tx"><b>${t('nc_t')}</b><small>${t('nc_s')}</small></span><button class="go" onclick="go('perm')">${t('nc_go')}</button></div>`;
+ /* prototype: the Shortcuts automation (test mode) counts as connected, same as Screen Time access in the App Store build */
+ $('connectStatus').innerHTML=(st.perm||st.connected)?'':`<div class="status"><span class="tx"><b>${t('nc_t')}</b><small>${t('nc_s')}</small></span><button class="go" onclick="go('perm')">${t('nc_go')}</button></div>`;
  const wk=st.log.filter(e=>e.t>now-7*864e5);$('wHere').textContent=wk.filter(e=>e.k==='here').length;$('wOpen').textContent=wk.filter(e=>e.k==='open').length;
  $('homeApps').innerHTML=selCardHTML(selApps(),t('h_apps'))}
 
@@ -1698,7 +1702,7 @@ function renderSettings(){const T=st.times,B=selApps();
   +srow('users','#E0842F',t('set_ppl'),st.people.length?st.people.map(p=>p.name).join(', '):t('none_yet'),"edit('ob2')")
   +srow('bulb','#C9A227',t('set_ideas'),t('ideas_s',st.general.length,st.cats.length+st.custom.length),"edit('ob3')")
   +srow('clock','#8A6E8C',t('set_times'),t('times_s',T),"edit('ob4')")
-  +srow('clock','#3E8E6A',t('set_perm'),st.perm?t('perm_on'):t('perm_off'),"go('perm')");
+  +srow('clock','#3E8E6A',t('set_perm'),st.connected?t('perm_test'):st.perm?t('perm_on'):t('perm_off'),st.connected?"go('ob5')":"go('perm')");
  $('setList2').innerHTML=srow('globe','#2F80ED',t('set_lang'),LANGS[LANG].name,'openLang()')
   +srow('card','#5E4E42',t('set_plan'),t('plan_s',st.trial&&st.trial.plan),"toast(t('t_restore'))")
   +srow('link','#8E8E93',t('set_test'),(st.connected?t('conn_y'):t('conn_n'))+' · '+t('set_test_s'),"go('ob5')")}
@@ -1709,6 +1713,9 @@ function boot(){applyLang();const h=location.hash.slice(1),q=new URLSearchParams
  if(h.startsWith('pause')){const app=q.get('app')||'instagram';history.replaceState(null,'',location.pathname);
   if(!st.setup){pendingApp=app;go('ob1',{anim:'none'});return}st.connected=true;save();startPause(app,false,'none');return}
  go(st.setup?'home':'ob1',{anim:'none'})}
+/* the Shortcuts automation opens ROOT#pause&app=… ; if Look Up is already open in the background iOS may only change the hash, so listen for it */
+addEventListener('hashchange',()=>{if(location.hash.startsWith('#pause'))boot()});
+addEventListener('pageshow',e=>{if(e.persisted&&location.hash.startsWith('#pause'))boot()});
 /* real screen height (fixes the strip under the app on iPhone home-screen apps) */
 /* iOS home-screen apps can get a viewport shorter than the screen (the strip at the bottom can't be drawn into).
    So: lay out inside the real viewport, drop the extra bottom padding there, and paint the strip in the matching colour. */
