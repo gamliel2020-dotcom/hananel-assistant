@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Look Up v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
+/* Look Up v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
    Apple Screen Time style picker with real app icons, demo home screen, tab bar (Today / Progress / Settings), one onboarding progress bar */
 /* earlier v9: Cal AI onboarding patterns · v8: any app + categories · v7: Steven Cravotta blueprint · design: Passion Finder + Stress glass */
 :root{
@@ -45,12 +45,19 @@ html{background:#8F5E52}
 .mchip{display:inline-flex;align-items:center;gap:4px;height:20px;padding-inline:3px 8px;border-radius:10px;background:rgba(0,0,0,.25);font-size:8.5px;font-weight:600;white-space:nowrap}
 .mcirc{position:relative;width:74%;aspect-ratio:1;margin-top:10px}
 .mcirc svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
-.marc{stroke-dasharray:820;stroke-dashoffset:820;animation:marc 6s ease-in-out infinite}
-.mph{position:absolute;inset:9%;border-radius:50%;background:var(--photo) center/cover;animation:mbreath 6s ease-in-out infinite}
+.marc{stroke-dasharray:820;stroke-dashoffset:820}
+.mph{position:absolute;inset:9%;border-radius:50%;background:var(--photo) center/cover;display:grid;place-items:center;transition:background .4s}
+.mph svg.i{position:absolute;top:50%;left:50%;width:36px;height:36px;margin:-18px 0 0 -18px;color:#fff;stroke-width:1.6}
+.go .marc{animation:marc 3.4s ease-in-out both}.go .mph{animation:mbreath 3.4s ease-in-out both}.go .mbtn{animation:mtap 3.4s ease-in-out both}
+.go .mtitle,.go .midea{animation:rise .45s var(--ease) both}
+.wh{min-height:2.5em}
+.rot{display:inline-block;color:#FFE2B8}
+.rot.in{animation:rotIn .5s var(--ease) both}
+@keyframes rotIn{from{opacity:0;transform:translateY(60%)}}
 .mtitle{font-size:12.5px;font-weight:700;margin-top:9px;line-height:1.2}
 .midea{font-size:9px;margin-top:4px;padding:5px 7px;border-radius:8px;background:rgba(255,255,255,.18);line-height:1.25}
 .mgrow{flex:1}
-.mbtn{width:100%;height:24px;border-radius:12px;background:#fff;color:var(--ink);font-size:10px;font-weight:700;display:grid;place-items:center;animation:mtap 6s ease-in-out infinite}
+.mbtn{width:100%;height:24px;border-radius:12px;background:#fff;color:var(--ink);font-size:10px;font-weight:700;display:grid;place-items:center}
 .mbtn2{font-size:8.5px;opacity:.85;margin-top:5px}
 @keyframes marc{0%{stroke-dashoffset:820}65%,100%{stroke-dashoffset:0}}
 @keyframes mbreath{0%,100%{transform:scale(.9)}45%{transform:scale(1)}}
@@ -499,9 +506,8 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
     <div class="mbtn" id="mBtn"></div><div class="mbtn2" id="mBtn2"></div>
   </div></div>
   <div class="grow" style="min-height:10px"></div>
-  <h1 class="t" data-t="w_title" style="margin-top:10px"></h1>
-  <p class="d" data-t="w_desc"></p>
-  <p class="proof"><svg class="i"><use href="#i-check"/></svg><span data-t="w_proof"></span></p>
+  <!-- one fixed lead + one rotating reason (different people stop scrolling for different reasons); the demo phone above shows the same reason -->
+  <h1 class="t wh" style="margin-top:16px"><span data-t="w_lead"></span><br><span class="rot" id="wRot"></span></h1>
   <div class="duo"><button class="pill white" onclick="qi=0;go('quiz')" data-t="w_cta"></button></div>
   <p class="foot" data-t="w_foot"></p>
   <button class="pill link" style="height:36px;font-size:14.5px;margin-top:2px" onclick="toast(t('t_restore'))"><span data-t="w_restore"></span></button>
@@ -1248,7 +1254,13 @@ const W={en:{w_title:'Less scrolling.<br>More of your people.',w_desc:'A short p
  fr:{w_title:'Moins de scroll.<br>Plus de tes proches.',w_desc:'Une courte pause avec la photo de quelqu’un que tu aimes, juste avant Instagram, TikTok ou toute app que tu choisis.',w_proof:'Dans une étude de Heidelberg et Max Planck, une courte pause avant d’ouvrir une app a réduit les ouvertures de 57 %.',w_foot:'2 minutes · Sans compte · Reste sur ton téléphone',mock_name:'Léa'},
  ar:{w_title:'تصفّح أقل.<br>وقت أكثر مع أحبّائك.',w_desc:'استراحة قصيرة مع صورة من تحب، قبل إنستغرام أو تيك توك أو أي تطبيق تختاره مباشرة.',w_proof:'في دراسة لهايدلبرغ وماكس بلانك، أدّت استراحة قصيرة قبل فتح التطبيق إلى فتحه أقل بنسبة 57%.',w_foot:'دقيقتان · بلا حساب · يبقى على هاتفك',mock_name:'نور'}};
 const RS={en:'Already subscribed? <u>Restore purchase</u>',he:'כבר יש לך מנוי? <u>שחזור רכישה</u>',es:'¿Ya tienes suscripción? <u>Restaurar compra</u>',fr:'Déjà abonné ? <u>Restaurer l’achat</u>',ar:'لديك اشتراك؟ <u>استعادة الشراء</u>'};
-for(const l in W){Object.assign(V[l],W[l]);V[l].w_restore=RS[l]}
+/* v15 welcome: lead + rotating reasons + demo-phone lines for the 3 non-family scenes */
+const WL={en:['Before the scroll,',['see your people.','finish what you put off.','rest for a few minutes.','take one deep breath.'],[['That task you keep putting off?','Do it now, 5 minutes'],['Your eyes need a break.','Close them for 2 minutes'],['One breath, then decide.','Breathe in… and out']]],
+ he:['רגע לפני הגלילה,',['לראות את האנשים שלך.','לסיים את מה שדחית.','לנוח כמה דקות.','לנשום נשימה אחת עמוקה.'],[['המשימה שכל הזמן נדחית?','לעשות אותה עכשיו, 5 דקות'],['העיניים צריכות הפסקה.','לעצום אותן לשתי דקות'],['נשימה אחת, ואז מחליטים.','פנימה… והחוצה']]],
+ es:['Antes del scroll,',['mira a tu gente.','termina lo que aplazas.','descansa unos minutos.','respira hondo una vez.'],[['¿Esa tarea que sigues aplazando?','Hazla ahora, 5 minutos'],['Tus ojos necesitan un descanso.','Ciérralos 2 minutos'],['Una respiración y luego decides.','Inspira… y suelta']]],
+ fr:['Avant le scroll,',['regarde tes proches.','finis ce que tu repousses.','repose-toi quelques minutes.','respire un grand coup.'],[['Cette tâche que tu repousses ?','Fais-la maintenant, 5 minutes'],['Tes yeux ont besoin d’une pause.','Ferme-les 2 minutes'],['Une respiration, puis tu décides.','Inspire… et expire']]],
+ ar:['قبل التصفّح،',['انظر إلى أحبّائك.','أنجز ما تؤجّله.','استرح بضع دقائق.','خذ نفسًا عميقًا.'],[['المهمّة التي تؤجّلها دائمًا؟','أنجزها الآن، 5 دقائق'],['عيناك تحتاجان إلى راحة.','أغمضهما دقيقتين'],['نَفَس واحد، ثم قرّر.','شهيق… وزفير']]]};
+for(const l in W){Object.assign(V[l],W[l]);V[l].w_restore=RS[l];V[l].w_lead=WL[l][0];V[l].w_rot=WL[l][1];V[l].w_mock=WL[l][2]}
 for(const l in V){const{Q,...rest}=V[l];Object.assign(STR[l],rest);Object.assign(STR[l].Q,Q)}})();
 let LANG=LANGS[st.lang]?st.lang:'en'; /* English is the default */
 const t=(k,...a)=>{let v=STR[LANG][k];if(v===undefined)v=STR.en[k];return typeof v==='function'?v(...a):(v===undefined?k:v)};
@@ -1371,8 +1383,18 @@ async function renderPeople(){let h='';const sizes=[112,100,92,104,96];
  if(editing){n.textContent=t('save');n.onclick=doneEditing;s.style.display='none'}
  else if(!st.people.length){n.innerHTML=ic('plus')+t('ps_t');n.onclick=openPerson;s.style.display=''}
  else{n.textContent=t('cont');n.onclick=()=>go('ob3');s.style.display='none'}}
-function renderWelcome(){const n=t('mock_name');$('mChip').innerHTML=appIcon('instagram',15)+esc(t('g_before','Instagram'));
- $('mTitle').textContent=t('PT').kid(n,'f');$('mIdea').textContent=t('PI').kid[2](n,'f');$('mBtn').textContent=t('here');$('mBtn2').textContent=t('anyway','Instagram')}
+/* welcome: 4 reasons rotate every 3.4s, the demo phone shows the matching pause */
+let wT=null,wI=0;
+const WSC=[{app:'instagram'},{app:'tiktok',ic:'check',bg:'linear-gradient(160deg,#F3B24B,#D9652A)'},{app:'youtube',ic:'moon',bg:'linear-gradient(160deg,#6E5A9E,#2E2650)'},{app:'netflix',ic:'leaf',bg:'linear-gradient(160deg,#5DBB8A,#2C7A5A)'}];
+function wScene(){if(!$('ob1').classList.contains('on')){clearInterval(wT);wT=null;return}
+ const i=wI%WSC.length,S=WSC[i],n=t('mock_name');
+ $('mChip').innerHTML=appIcon(S.app,15)+esc(t('g_before',APPS[S.app].en));
+ if(i===0){$('mTitle').textContent=t('PT').kid(n,'f');$('mIdea').textContent=t('PI').kid[2](n,'f')}else{const M=t('w_mock')[i-1];$('mTitle').textContent=M[0];$('mIdea').textContent=M[1]}
+ const ph=document.querySelector('.mph');ph.style.background=S.bg||'';ph.innerHTML=S.ic?ic(S.ic):'';
+ $('mBtn').textContent=t('here');$('mBtn2').textContent=t('anyway',APPS[S.app].en);
+ const r=$('wRot');r.textContent=t('w_rot')[i];r.classList.remove('in');void r.offsetWidth;r.classList.add('in');
+ const m=document.querySelector('.mscreen');m.classList.remove('go');void m.offsetWidth;m.classList.add('go');wI++}
+function renderWelcome(){wI=0;clearInterval(wT);wScene();wT=setInterval(wScene,3400)}
 function skipPeople(){if(confirm(t('o2_skipq')))go('ob3')}
 
 /* ---------- photos & idea kinds ---------- */
