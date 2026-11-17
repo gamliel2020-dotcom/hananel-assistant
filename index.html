@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Look Up v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
+/* Look Up v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
    Apple Screen Time style picker with real app icons, demo home screen, tab bar (Today / Progress / Settings), one onboarding progress bar */
 /* earlier v9: Cal AI onboarding patterns · v8: any app + categories · v7: Steven Cravotta blueprint · design: Passion Finder + Stress glass */
 :root{
@@ -441,6 +441,19 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .lrow:last-child{border:0}
 .lrow small{font-size:14px;color:#8A7B6E;font-weight:400;margin-inline-start:6px}
 .lrow .c{margin-inline-start:auto;color:#D9652A;opacity:0}.lrow.on .c{opacity:1}
+.sheet.al{align-items:center;justify-content:center;background:rgba(0,0,0,.35)}
+.sheet.al>div{background:none;padding:0;width:280px;border-radius:0;overflow:visible;animation:alIn .3s cubic-bezier(.2,.9,.3,1.2)}
+.sheet.al>div::before{display:none}
+@keyframes alIn{from{opacity:0;transform:scale(1.15)}}
+.alb{background:rgba(242,242,247,.96);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-radius:14px 14px 0 0;padding:20px 16px 18px;text-align:center;color:#000;font-family:-apple-system,system-ui,Heebo,"Noto Sans Arabic",sans-serif}
+.alb b{display:block;font-size:17px;font-weight:600;line-height:1.3}.alb p{font-size:13px;line-height:1.4;margin-top:6px}
+.alr{display:grid;grid-template-columns:1fr 1fr;background:rgba(242,242,247,.96);border-radius:0 0 14px 14px;border-top:.5px solid rgba(60,60,67,.3);overflow:hidden}
+.alr button{height:46px;font-size:17px;color:#007AFF;font-family:-apple-system,system-ui,Heebo,"Noto Sans Arabic",sans-serif}
+.alr button+button{border-inline-start:.5px solid rgba(60,60,67,.3)}.alr button.b{font-weight:600}
+.alhint{display:flex;flex-direction:column;align-items:center;margin-top:10px;font-size:16px;font-weight:700;color:#fff;text-align:center;text-shadow:0 1px 8px rgba(0,0,0,.6)}
+.alhint span:first-child{font-size:26px;line-height:1;animation:bob 1.2s ease-in-out infinite}
+.alhint{margin-inline-start:50%}
+@keyframes bob{50%{transform:translateY(-6px)}}
 .toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 12px);transform:translate(-50%,-20px);background:#fff;color:var(--ink);padding:12px 20px;border-radius:16px;font-size:15px;font-weight:500;opacity:0;transition:.3s;z-index:40;pointer-events:none;box-shadow:0 10px 30px -10px rgba(0,0,0,.3);width:max-content;max-width:88vw;text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 </style>
@@ -689,7 +702,20 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
   <div class="sbdock" id="sbDock"></div>
 </section>
 
-<!-- ============ CONNECT ============ -->
+<!-- ============ SCREEN TIME PERMISSION (what the real app asks; primer + system alert, like Opal / one sec) ============ -->
+<section class="screen" id="perm">
+  <div class="top"><span></span><div class="brand sm">Look Up</div><span></span></div>
+  <div class="grow" style="min-height:10px"></div>
+  <div class="round" style="width:92px;height:92px"><svg class="i" style="width:40px;height:40px"><use href="#i-clock"/></svg></div>
+  <h1 class="t" data-t="perm_t"></h1>
+  <p class="d" data-t="perm_d"></p>
+  <div class="vals" style="margin-top:22px"><div><svg class="i"><use href="#i-lock"/></svg><span data-t="perm_b1"></span></div><div><svg class="i"><use href="#i-check"/></svg><span data-t="perm_b2"></span></div><div><svg class="i"><use href="#i-gear"/></svg><span data-t="perm_b3"></span></div></div>
+  <div class="grow" style="min-height:16px"></div>
+  <div class="duo"><button class="pill white" onclick="openAlert()" data-t="perm_cta"></button></div>
+  <button class="pill link" onclick="permLater()" data-t="perm_later"></button>
+</section>
+
+<!-- ============ CONNECT (test mode: Shortcuts, prototype only) ============ -->
 <section class="screen" id="ob5">
   <div class="top"><button class="gbtn navback" onclick="back(st.setup?'settings':'first')"><svg class="i fl"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
   <h1 class="t" data-t="c5_t" style="margin-top:22px"></h1>
@@ -814,6 +840,13 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
   <label class="pks"><svg class="i"><use href="#i-search"/></svg><input id="pkQ" data-tp="pk_search" oninput="renderPk()"></label>
   <div id="pkList"></div>
   <p class="pkf" data-t="pk_foot"></p>
+</div></div>
+
+<!-- iOS-style system alert (demo of Apple's Screen Time permission) -->
+<div class="sheet al" id="alSheet"><div>
+  <div class="alb"><b data-t="al_t"></b><p data-t="al_d"></p></div>
+  <div class="alr"><button onclick="permNo()" data-t="al_n"></button><button class="b" onclick="permYes()" data-t="al_c"></button></div>
+  <p class="alhint"><span>↑</span><span data-t="al_hint"></span></p>
 </div></div>
 
 <div class="toast" id="toast"></div>
@@ -1260,6 +1293,13 @@ const WL={en:['Before the scroll,',['see your people.','finish what you put off.
  es:['Antes del scroll,',['mira a tu gente.','termina lo que aplazas.','descansa unos minutos.','respira hondo una vez.'],[['¿Esa tarea que sigues aplazando?','Hazla ahora, 5 minutos'],['Tus ojos necesitan un descanso.','Ciérralos 2 minutos'],['Una respiración y luego decides.','Inspira… y suelta']]],
  fr:['Avant le scroll,',['regarde tes proches.','finis ce que tu repousses.','repose-toi quelques minutes.','respire un grand coup.'],[['Cette tâche que tu repousses ?','Fais-la maintenant, 5 minutes'],['Tes yeux ont besoin d’une pause.','Ferme-les 2 minutes'],['Une respiration, puis tu décides.','Inspire… et expire']]],
  ar:['قبل التصفّح،',['انظر إلى أحبّائك.','أنجز ما تؤجّله.','استرح بضع دقائق.','خذ نفسًا عميقًا.'],[['المهمّة التي تؤجّلها دائمًا؟','أنجزها الآن، 5 دقائق'],['عيناك تحتاجان إلى راحة.','أغمضهما دقيقتين'],['نَفَس واحد، ثم قرّر.','شهيق… وزفير']]]};
+/* v16: Screen Time permission step (real-app flow); Shortcuts moved to Settings as test mode */
+const PM={en:{perm_t:'Let Look Up pause your apps',perm_d:'Your iPhone will ask you to allow Screen Time access. That’s what lets the pause appear right before the apps you chose.',perm_b1:'Look Up can’t see what you do inside apps',perm_b2:'Only the apps you chose get a pause',perm_b3:'Turn it off anytime in iPhone Settings',perm_cta:'Continue',perm_later:'Not now',al_t:'“Look Up” Would Like to Access Screen Time',al_d:'Allowing access may let it see your activity data, restrict content and limit the use of apps and websites.',al_c:'Continue',al_n:'Don’t Allow',al_hint:'Tap Continue',perm_no:'Without access the pause can’t appear. You can allow it later in Settings.',set_perm:'Screen Time access',perm_on:'Allowed (demo)',perm_off:'Not allowed yet',set_test:'Test mode (Shortcuts)',set_test_s:'only for testing this prototype',nc_t:'Screen Time access is off',nc_s:'Without it the pause can’t appear.',nc_go:'Allow'},
+ he:{perm_t:'לאפשר ל-Look Up לעצור אפליקציות',perm_d:'האייפון יבקש לאשר גישה לזמן מסך. זה מה שמאפשר להפסקה להופיע רגע לפני האפליקציות שבחרת.',perm_b1:'Look Up לא רואה מה עושים בתוך האפליקציות',perm_b2:'רק האפליקציות שבחרת יקבלו הפסקה',perm_b3:'אפשר לבטל בכל רגע בהגדרות האייפון',perm_cta:'המשך',perm_later:'לא עכשיו',al_t:'"Look Up" מבקשת גישה לזמן מסך',al_d:'מתן גישה עשוי לאפשר לה לראות נתוני פעילות, להגביל תוכן ולהגביל שימוש באפליקציות ובאתרים.',al_c:'המשך',al_n:'אל תאפשר',al_hint:'לוחצים על "המשך"',perm_no:'בלי גישה ההפסקה לא תופיע. אפשר לאשר אחר כך מההגדרות.',set_perm:'גישה לזמן מסך',perm_on:'מאושר (הדגמה)',perm_off:'עוד לא מאושר',set_test:'מצב בדיקה (קיצורים)',set_test_s:'רק לבדיקת הגרסה הזו',nc_t:'הגישה לזמן מסך כבויה',nc_s:'בלעדיה ההפסקה לא תופיע.',nc_go:'לאשר'},
+ es:{perm_t:'Deja que Look Up pause tus apps',perm_d:'El iPhone te pedirá permitir el acceso a Tiempo de uso. Es lo que permite que la pausa aparezca justo antes de las apps que elegiste.',perm_b1:'Look Up no puede ver lo que haces dentro de las apps',perm_b2:'Solo las apps que elegiste tendrán pausa',perm_b3:'Desactívalo cuando quieras en Ajustes del iPhone',perm_cta:'Continuar',perm_later:'Ahora no',al_t:'«Look Up» quiere acceder a Tiempo de uso',al_d:'Permitir el acceso puede dejarle ver datos de actividad, restringir contenido y limitar el uso de apps y webs.',al_c:'Continuar',al_n:'No permitir',al_hint:'Toca Continuar',perm_no:'Sin acceso la pausa no puede aparecer. Puedes permitirlo luego en Ajustes.',set_perm:'Acceso a Tiempo de uso',perm_on:'Permitido (demo)',perm_off:'Aún no permitido',set_test:'Modo de prueba (Atajos)',set_test_s:'solo para probar este prototipo',nc_t:'El acceso a Tiempo de uso está desactivado',nc_s:'Sin él la pausa no puede aparecer.',nc_go:'Permitir'},
+ fr:{perm_t:'Laisse Look Up mettre tes apps en pause',perm_d:'L’iPhone va te demander d’autoriser l’accès à Temps d’écran. C’est ce qui permet à la pause d’apparaître juste avant les apps choisies.',perm_b1:'Look Up ne voit pas ce que tu fais dans les apps',perm_b2:'Seules les apps choisies ont une pause',perm_b3:'Désactivable à tout moment dans les Réglages',perm_cta:'Continuer',perm_later:'Pas maintenant',al_t:'« Look Up » souhaite accéder à Temps d’écran',al_d:'Autoriser l’accès peut lui permettre de voir des données d’activité, de restreindre du contenu et de limiter l’usage d’apps et de sites.',al_c:'Continuer',al_n:'Ne pas autoriser',al_hint:'Touche Continuer',perm_no:'Sans accès, la pause ne peut pas apparaître. Tu pourras l’autoriser plus tard dans les Réglages.',set_perm:'Accès à Temps d’écran',perm_on:'Autorisé (démo)',perm_off:'Pas encore autorisé',set_test:'Mode test (Raccourcis)',set_test_s:'seulement pour tester ce prototype',nc_t:'L’accès à Temps d’écran est désactivé',nc_s:'Sans lui, la pause ne peut pas apparaître.',nc_go:'Autoriser'},
+ ar:{perm_t:'اسمح لـ Look Up بإيقاف تطبيقاتك مؤقتًا',perm_d:'سيطلب منك iPhone السماح بالوصول إلى «مدة استخدام الجهاز». هذا ما يتيح ظهور الاستراحة قبل التطبيقات التي اخترتها مباشرة.',perm_b1:'لا يرى Look Up ما تفعله داخل التطبيقات',perm_b2:'فقط التطبيقات التي اخترتها ستحصل على استراحة',perm_b3:'يمكنك إيقافه في أي وقت من إعدادات iPhone',perm_cta:'متابعة',perm_later:'ليس الآن',al_t:'«Look Up» يريد الوصول إلى مدة استخدام الجهاز',al_d:'قد يتيح له السماح بالوصول رؤية بيانات النشاط وتقييد المحتوى والحدّ من استخدام التطبيقات والمواقع.',al_c:'متابعة',al_n:'عدم السماح',al_hint:'اضغط «متابعة»',perm_no:'بدون إذن لن تظهر الاستراحة. يمكنك السماح لاحقًا من الإعدادات.',set_perm:'الوصول إلى مدة الاستخدام',perm_on:'مسموح (تجريبي)',perm_off:'غير مسموح بعد',set_test:'وضع الاختبار (الاختصارات)',set_test_s:'فقط لاختبار هذا النموذج',nc_t:'الوصول إلى مدة الاستخدام متوقف',nc_s:'بدونه لن تظهر الاستراحة.',nc_go:'السماح'}};
+for(const l in PM)Object.assign(V[l],PM[l]);
 for(const l in W){Object.assign(V[l],W[l]);V[l].w_restore=RS[l];V[l].w_lead=WL[l][0];V[l].w_rot=WL[l][1];V[l].w_mock=WL[l][2]}
 for(const l in V){const{Q,...rest}=V[l];Object.assign(STR[l],rest);Object.assign(STR[l].Q,Q)}})();
 let LANG=LANGS[st.lang]?st.lang:'en'; /* English is the default */
@@ -1354,7 +1394,7 @@ function doneEditing(){editing=false;toast(t('t_saved'));go('settings',{back:1})
   if(dx>80&&dy<70&&!document.querySelector('.sheet.on')){const b=document.querySelector('.screen.on .navback');if(b)b.click()}},{passive:true})})();
 /* drag a sheet down to close it */
 (()=>{let y0=null,dy=0,box=null;
- document.addEventListener('touchstart',e=>{const b=e.target.closest('.sheet>div');if(!b||b.scrollTop>0||e.target.closest('input'))return;box=b;y0=e.touches[0].clientY;dy=0;b.style.transition='none'},{passive:true});
+ document.addEventListener('touchstart',e=>{const b=e.target.closest('.sheet>div');if(!b||b.parentElement.classList.contains('al')||b.scrollTop>0||e.target.closest('input'))return;box=b;y0=e.touches[0].clientY;dy=0;b.style.transition='none'},{passive:true});
  document.addEventListener('touchmove',e=>{if(y0===null)return;dy=Math.max(0,e.touches[0].clientY-y0);if(dy>0&&box.scrollTop<=0)box.style.transform=`translateY(${dy}px)`},{passive:true});
  document.addEventListener('touchend',()=>{if(y0===null)return;box.style.transition='';if(dy>110){if(box.parentElement.id==='pkSheet')pkCancel();else closeSheet()}else box.style.transform='';y0=null;box=null},{passive:true})})();
 
@@ -1490,6 +1530,11 @@ function setupHold(){const el=$('holdBtn'),arc=$('holdArc');if(el.dataset.ok)ret
 function renderCommit(){const ppl=st.people.map(p=>p.name);const z=st.quiz||{};
  $('commitTxt').textContent=t('c_txt',ppl.length?ppl.join(t('and')):(z.want&&z.want.length?t('Q').want.o[z.want[0]]:''));
  const arc=$('holdArc');arc.style.transition='none';arc.style.strokeDashoffset=820;$('holdLbl').innerHTML=t('hold');setupHold()}
+/* Screen Time permission (demo of AuthorizationCenter.requestAuthorization(for: .individual)) */
+function openAlert(){$('alSheet').classList.add('on')}
+function permYes(){closeSheet();st.perm=true;const first=!st.setup;st.setup=true;save();hap();go(first?'home':'settings',{anim:first?'up':'pop'})}
+function permNo(){closeSheet();toast(t('perm_no'))}
+function permLater(){const first=!st.setup;st.setup=true;save();toast(t('perm_no'));go(first?'home':'settings',{anim:first?'up':'pop'})}
 function finishConnect(ok){if(ok)st.connected=true;const first=!st.setup;st.setup=true;save();
  if(pendingApp){const a=pendingApp;pendingApp=null;startPause(a);return}
  if(first&&!ok)toast(t('t_later'));go(first?'home':'settings',{anim:first?'up':'pop'})}
@@ -1528,9 +1573,9 @@ function runBreath(){timers.forEach(clearTimeout);const s=$('pause'),c=$('cue'),
 function choose(kind){if(!isTest){st.log.push({t:Date.now(),k:kind,app:curApp,p:curPerson});st.log=st.log.slice(-2000);save()}
  if(kind==='here'){const today=countDay(new Date());$('dTitle').innerHTML=t('d_title');
   const p=st.people.find(x=>x.id===curPerson);$('dSub').textContent=p?t('d_person',p.name):(isTest?t('d_test'):t('d_nth',today.here||1));
-  const after=firstRun?'ob5':'home';
+  const after=firstRun?'perm':'home';
   $('dFoot').textContent=isTest?(firstRun?t('d_first'):t('d_home')):t('d_close');go('done',{anim:'fade'});if(isTest)doneT=setTimeout(()=>{firstRun=false;go(after,{anim:'up'})},2600);return}
- if(isTest){toast(t('t_noopen'));const a=firstRun?'ob5':'home';firstRun=false;go(a,{anim:'up'});return}
+ if(isTest){toast(t('t_noopen'));const a=firstRun?'perm':'home';firstRun=false;go(a,{anim:'up'});return}
  const u=(APPS[curApp]||{}).u;if(!u){toast(t('t_opennow'));return}
  location.href='shortcuts://run-shortcut?name='+encodeURIComponent('Look Up Pass')+'&input=text&text='+encodeURIComponent(u)}
 
@@ -1578,7 +1623,7 @@ function renderHome(){const now=new Date();
  $('hDate').textContent=now.toLocaleDateString(LANGS[LANG].loc,{weekday:'long',day:'numeric',month:'numeric'});
  const today=countDay(now).here;$('tHere').innerHTML=`${today}<small>${t('times',today)}</small>`;drawGauge(today/GOAL);
  $('streak').innerHTML=`${ic('flame')}<b>${streakDays()}</b>`;
- $('connectStatus').innerHTML=st.connected?'':`<div class="status"><span class="tx"><b>${t('nc_t')}</b><small>${t('nc_s')}</small></span><button class="go" onclick="go('ob5')">${t('nc_go')}</button></div>`;
+ $('connectStatus').innerHTML=st.perm?'':`<div class="status"><span class="tx"><b>${t('nc_t')}</b><small>${t('nc_s')}</small></span><button class="go" onclick="go('perm')">${t('nc_go')}</button></div>`;
  const wk=st.log.filter(e=>e.t>now-7*864e5);$('wHere').textContent=wk.filter(e=>e.k==='here').length;$('wOpen').textContent=wk.filter(e=>e.k==='open').length;
  $('homeApps').innerHTML=selCardHTML(selApps(),t('h_apps'))}
 
@@ -1612,9 +1657,10 @@ function renderSettings(){const T=st.times,B=selApps();
   +srow('users','#E0842F',t('set_ppl'),st.people.length?st.people.map(p=>p.name).join(', '):t('none_yet'),"edit('ob2')")
   +srow('bulb','#C9A227',t('set_ideas'),t('ideas_s',st.general.length,st.cats.length+st.custom.length),"edit('ob3')")
   +srow('clock','#8A6E8C',t('set_times'),t('times_s',T),"edit('ob4')")
-  +srow('link','#3E8E6A',t('set_conn'),st.connected?t('conn_y'):t('conn_n'),"go('ob5')");
+  +srow('clock','#3E8E6A',t('set_perm'),st.perm?t('perm_on'):t('perm_off'),"go('perm')");
  $('setList2').innerHTML=srow('globe','#2F80ED',t('set_lang'),LANGS[LANG].name,'openLang()')
-  +srow('card','#5E4E42',t('set_plan'),t('plan_s',st.trial&&st.trial.plan),"toast(t('t_restore'))")}
+  +srow('card','#5E4E42',t('set_plan'),t('plan_s',st.trial&&st.trial.plan),"toast(t('t_restore'))")
+  +srow('link','#8E8E93',t('set_test'),(st.connected?t('conn_y'):t('conn_n'))+' · '+t('set_test_s'),"go('ob5')")}
 async function resetAll(){if(!confirm(t('reset_q')))return;await DB.clear();const l=st.lang;localStorage.removeItem('lu');if(l)S.set({lang:l});location.hash='';location.reload()}
 
 /* ---------- boot ---------- */
