@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Look Up v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
+/* Look Up v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
    Apple Screen Time style picker with real app icons, demo home screen, tab bar (Today / Progress / Settings), one onboarding progress bar */
 /* earlier v9: Cal AI onboarding patterns · v8: any app + categories · v7: Steven Cravotta blueprint · design: Passion Finder + Stress glass */
 :root{
@@ -48,6 +48,31 @@ html{background:#8F5E52}
 .marc{stroke-dasharray:820;stroke-dashoffset:820}
 .mph{position:absolute;inset:9%;border-radius:50%;background:var(--photo) center/cover;display:grid;place-items:center;transition:background .4s}
 .mph svg.i{position:absolute;top:50%;left:50%;width:36px;height:36px;margin:-18px 0 0 -18px;color:#fff;stroke-width:1.6}
+/* demo phone: a finger taps "Not now", a ripple spreads and the phone buzzes (shows the haptic tap) */
+.mock{position:relative}
+.mfinger{position:absolute;left:58%;bottom:6px;font-size:30px;opacity:0;pointer-events:none;filter:drop-shadow(0 4px 6px rgba(0,0,0,.35));z-index:3}
+.mrip{position:absolute;left:50%;bottom:34px;width:24px;height:24px;margin-left:-12px;border-radius:50%;border:2px solid #fff;opacity:0;pointer-events:none;z-index:2}
+.go .mfinger{animation:mfinger 3.4s ease-in-out both}
+.go .mrip{animation:mrip 3.4s ease-out both}
+.mock.go{animation:mbuzz 3.4s linear both}
+.mock::before,.mock::after{content:"";position:absolute;top:58%;width:10px;height:26px;border:2.5px solid rgba(255,255,255,.85);border-top-color:transparent;border-bottom-color:transparent;border-radius:50%;opacity:0}
+.mock::before{left:-16px;border-right-color:transparent}.mock::after{right:-16px;border-left-color:transparent}
+.mock.go::before,.mock.go::after{animation:mwaves 3.4s ease-out both}
+@keyframes mfinger{0%,52%{opacity:0;transform:translate(30px,40px)}66%{opacity:1;transform:translate(0,4px)}82%{transform:translate(0,4px)}86%{transform:translate(0,9px) scale(.92)}92%{opacity:1;transform:translate(0,4px)}100%{opacity:0;transform:translate(10px,20px)}}
+@keyframes mrip{0%,85%{opacity:0;transform:scale(.4)}88%{opacity:.9}100%{opacity:0;transform:scale(4.5)}}
+@keyframes mbuzz{0%,85%,95%,100%{transform:none}87%{transform:translateX(-2px) rotate(-.6deg)}89%{transform:translateX(2px) rotate(.6deg)}91%{transform:translateX(-2px)}93%{transform:translateX(1px)}}
+@keyframes mwaves{0%,85%{opacity:0;transform:scale(.6)}89%{opacity:1}100%{opacity:0;transform:scale(1.4)}}
+/* demo home screen: a finger shows where to tap; done screen: a success burst */
+.sbapp{position:relative}
+.sbfinger{position:absolute;left:58%;top:42px;font-size:30px;pointer-events:none;filter:drop-shadow(0 4px 6px rgba(0,0,0,.4));animation:sbfinger 1.8s ease-in-out infinite;z-index:3}
+.sbapp:first-child::after{content:"";position:absolute;top:0;left:50%;width:60px;height:60px;margin-left:-30px;border-radius:15px;border:2px solid #fff;animation:sbring 1.8s ease-out infinite;pointer-events:none}
+@keyframes sbfinger{0%,100%{transform:translate(6px,8px)}45%{transform:translate(0,0) scale(.9)}55%{transform:translate(0,0) scale(.9)}}
+@keyframes sbring{0%,40%{opacity:0;transform:scale(.9)}50%{opacity:.9}100%{opacity:0;transform:scale(1.5)}}
+#done.on .round{animation:donePop .6s cubic-bezier(.2,1.4,.4,1) both;position:relative}
+#done.on .round::before,#done.on .round::after{content:"";position:absolute;inset:0;border-radius:50%;border:3px solid rgba(255,255,255,.9);animation:doneRing 1.2s ease-out .15s both}
+#done.on .round::after{animation-delay:.4s}
+@keyframes donePop{from{transform:scale(.4);opacity:0}}
+@keyframes doneRing{from{transform:scale(1);opacity:.9}to{transform:scale(2.2);opacity:0}}
 .go .marc{animation:marc 3.4s ease-in-out both}.go .mph{animation:mbreath 3.4s ease-in-out both}.go .mbtn{animation:mtap 3.4s ease-in-out both}
 .go .mtitle,.go .midea{animation:rise .45s var(--ease) both}
 .wh{min-height:2.5em}
@@ -80,6 +105,11 @@ svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stro
 /* v17: iPhone home-screen apps can report a viewport shorter than the screen (orange strip at the bottom).
    --H is the real screen height, set from JS; every full-screen layer uses it. */
 .screen,.sheet{bottom:auto!important;height:var(--H,100%)}
+html,body{background:#8C5E58}
+html.tabsbg,html.tabsbg body{background:#5C341E}
+.shortvp .screen{padding-bottom:20px}
+.shortvp .screen.tabbed{padding-bottom:80px}
+.shortvp #tabbar{top:calc(var(--H,100vh) - 58px);height:58px;padding-bottom:0}
 .mesh{bottom:auto!important;height:calc(var(--H,100vh) + 140px)}
 .screen>*{flex-shrink:0;position:relative}
 .screen>.grow{flex:1;flex-shrink:1}
@@ -523,6 +553,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
     <div class="midea" id="mIdea"></div>
     <div class="mgrow"></div>
     <div class="mbtn" id="mBtn"></div><div class="mbtn2" id="mBtn2"></div>
+    <span class="mrip"></span><span class="mfinger">👆</span>
   </div></div>
   <div class="grow" style="min-height:10px"></div>
   <!-- one fixed lead + one rotating reason (different people stop scrolling for different reasons); the demo phone above shows the same reason -->
@@ -1381,7 +1412,7 @@ function go(id,o={}){closeSheet();clearTimeout(doneT);const el=$(id),prev=docume
  el.className=el.className.replace(/\s?a-\S+/g,'');el.classList.add('on');void el.offsetWidth;if(anim!=='none'&&prev!==el)el.classList.add('a-'+anim+'-in');
  navT=setTimeout(()=>{document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('out');s.className=s.className.replace(/\s?a-\S+/g,'')})},520);
  el.scrollTop=0;
- const tb=TABS.includes(id);$('tabbar').classList.toggle('on',tb);document.body.classList.toggle('tabs',tb);
+ const tb=TABS.includes(id);$('tabbar').classList.toggle('on',tb);document.body.classList.toggle('tabs',tb);document.documentElement.classList.toggle('tabsbg',tb);
  document.querySelectorAll('#tabbar button').forEach(b=>b.classList.toggle('on',b.dataset.tab===id));
  const ob=el.querySelector('.obbar');if(ob){const hide=editing||st.setup;ob.style.visibility=hide?'hidden':'';const n=id==='quiz'?qi+1:QZ.length+ONB.indexOf(id)+1;ob.firstElementChild.style.width=(n/OBTOT*100)+'%'}
  ({ob1:renderWelcome,ob2:renderPeople,ob3:renderGeneral,ob4:loadTimes,ob5:renderGuide,home:renderHome,stats:renderStats,settings:renderSettings,build:runBuild,pw3:renderPw3,quiz:renderQuiz,plan:renderPlan,apps:renderApps,commit:renderCommit,spring:renderSpring}[id]||(()=>{}))();
@@ -1439,7 +1470,7 @@ function wScene(){if(!$('ob1').classList.contains('on')){clearInterval(wT);wT=nu
  const ph=document.querySelector('.mph');ph.style.background=S.bg||'';ph.innerHTML=S.ic?ic(S.ic):'';
  $('mBtn').textContent=t('here');$('mBtn2').textContent=t('anyway',APPS[S.app].en);
  const r=$('wRot');r.textContent=t('w_rot')[i];r.classList.remove('in');void r.offsetWidth;r.classList.add('in');
- const m=document.querySelector('.mscreen');m.classList.remove('go');void m.offsetWidth;m.classList.add('go');wI++}
+ const m=document.querySelector('.mscreen'),mk=m.parentElement;[m,mk].forEach(x=>{x.classList.remove('go');void x.offsetWidth;x.classList.add('go')});wI++}
 function renderWelcome(){wI=0;clearInterval(wT);wScene();wT=setInterval(wScene,3400)}
 function skipPeople(){if(confirm(t('o2_skipq')))go('ob3')}
 
@@ -1484,7 +1515,9 @@ function chartSVG(){/* illustration: "time with your people" over 3 months. Will
 let qi=0;
 function renderQuiz(){const Q=QZ[qi],TX=t('Q');st.quiz=st.quiz||{};
  const ob=$('quiz').querySelector('.obbar b');if(ob)ob.style.width=((qi+1)/OBTOT*100)+'%';
- const info=(title,h)=>{$('qTitle').textContent=title;$('qHint').textContent='';$('qOpts').innerHTML=h;const b=$('qNext');b.disabled=false;b.textContent=t('cont')};
+ const info=(title,h)=>{$('qTitle').textContent=title;$('qHint').textContent='';$('qOpts').innerHTML=h;const b=$('qNext');b.disabled=false;b.textContent=t('cont');b.parentElement.style.display=''};
+ /* single-choice: tapping an answer moves on by itself, so no Continue button (only multi-choice and info screens show it) */
+ $('qNext').parentElement.style.display=(Q.k&&!Q.m)?'none':'';
  if(Q.fact){const F=TX[Q.fact];
   if(F.rows)return info(F.q,`<div class="glass fact" style="text-align:start;padding:10px 20px">${F.rows.map(([n,l,x])=>`<div class="frow"><div class="num">${n}</div><div><b>${l}</b><span>${x}</span></div></div>`).join('')}</div><p class="src">${F.src}</p>`);
   return info(F.q,`<div class="glass fact"><div class="num">${Q.n}</div><p>${F.t}</p></div><p class="src">${F.src}</p>`)}
@@ -1548,7 +1581,7 @@ function finishConnect(ok){if(ok)st.connected=true;const first=!st.setup;st.setu
 /* ---------- demo home screen ---------- */
 function renderSpring(){const ks=guideApps().slice(0,16);
  photo(anyPic()).then(s=>{$('sbWall').style.backgroundImage=s?`url(${s})`:'var(--photo)'});
- $('sbGrid').innerHTML=ks.map(k=>`<button class="sbapp" onclick="tapApp(this,'${k}')">${appIcon(k,60)}<span>${APPS[k].en}</span></button>`).join('');
+ $('sbGrid').innerHTML=ks.map((k,i)=>`<button class="sbapp" onclick="tapApp(this,'${k}')">${appIcon(k,60)}<span>${APPS[k].en}</span>${i===0?'<span class="sbfinger">👆</span>':''}</button>`).join('');
  const dock=[['#34C759','call'],['#34C759','bubble'],['safari'],['#8E8E93','camera']];
  $('sbDock').innerHTML=dock.map(d=>d[0]==='safari'?`<button onclick="toast(t('sp_dock'))">${appIcon('safari',60)}</button>`:`<button onclick="toast(t('sp_dock'))"><span class="aic" style="width:60px;height:60px;border-radius:14px;background:linear-gradient(${d[0]}cc,${d[0]})"><svg class="i" style="width:32px;height:32px;color:#fff"><use href="#i-${d[1]}"/></svg></span></button>`).join('')}
 function tapApp(btn,k){const r=btn.querySelector('.aic').getBoundingClientRect();const p=$('pause');p.style.transformOrigin=`${r.left+r.width/2}px ${r.top+r.height/2}px`;setTimeout(()=>startPause(k,true,'zoom'),120)}
@@ -1580,7 +1613,7 @@ function choose(kind){if(!isTest){st.log.push({t:Date.now(),k:kind,app:curApp,p:
  if(kind==='here'){const today=countDay(new Date());$('dTitle').innerHTML=t('d_title');
   const p=st.people.find(x=>x.id===curPerson);$('dSub').textContent=p?t('d_person',p.name):(isTest?t('d_test'):t('d_nth',today.here||1));
   const after=firstRun?'perm':'home';
-  $('dFoot').textContent=isTest?(firstRun?t('d_first'):t('d_home')):t('d_close');go('done',{anim:'fade'});if(isTest)doneT=setTimeout(()=>{firstRun=false;go(after,{anim:'up'})},2600);return}
+  $('dFoot').textContent=isTest?(firstRun?t('d_first'):t('d_home')):t('d_close');go('done',{anim:'fade'});hap();setTimeout(hap,140);if(isTest)doneT=setTimeout(()=>{firstRun=false;go(after,{anim:'up'})},2600);return}
  if(isTest){toast(t('t_noopen'));const a=firstRun?'perm':'home';firstRun=false;go(a,{anim:'up'});return}
  const u=(APPS[curApp]||{}).u;if(!u){toast(t('t_opennow'));return}
  location.href='shortcuts://run-shortcut?name='+encodeURIComponent('Look Up Pass')+'&input=text&text='+encodeURIComponent(u)}
@@ -1675,7 +1708,10 @@ function boot(){applyLang();const h=location.hash.slice(1),q=new URLSearchParams
   if(!st.setup){pendingApp=app;go('ob1',{anim:'none'});return}st.connected=true;save();startPause(app,false,'none');return}
  go(st.setup?'home':'ob1',{anim:'none'})}
 /* real screen height (fixes the strip under the app on iPhone home-screen apps) */
-function fitH(){const sa=navigator.standalone&&screen.height>innerHeight;document.documentElement.style.setProperty('--H',(sa?screen.height:innerHeight)+'px')}
+/* iOS home-screen apps can get a viewport shorter than the screen (the strip at the bottom can't be drawn into).
+   So: lay out inside the real viewport, drop the extra bottom padding there, and paint the strip in the matching colour. */
+function fitH(){const gap=screen.height-innerHeight,sa=(navigator.standalone||matchMedia('(display-mode: standalone)').matches)&&gap>16&&gap<140;
+ document.documentElement.classList.toggle('shortvp',sa);document.documentElement.style.setProperty('--H',innerHeight+'px')}
 fitH();addEventListener('resize',fitH);addEventListener('orientationchange',()=>setTimeout(fitH,300));
 boot();
 if('serviceWorker' in navigator&&!location.pathname.includes('/lookup')){navigator.serviceWorker.register('sw.js').catch(()=>{})}
