@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Look Up v30: app icon = 10d "head rising" · v29: wordmark app icon + removed the icon→Safari "Test mode" screen · v28: idea options as Cal AI-style rows (v27 tiles looked "AI") · v27: back to the regular v25 flow (v26 test flow removed) + clean idea tiles on "What makes you feel good?" · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
+/* Look Up v31: logo only on Home like Cal AI (saved v30 in Archive) · v30: app icon = 10d "head rising" · v29: wordmark app icon + removed the icon→Safari "Test mode" screen · v28: idea options as Cal AI-style rows (v27 tiles looked "AI") · v27: back to the regular v25 flow (v26 test flow removed) + clean idea tiles on "What makes you feel good?" · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
    Apple Screen Time style picker with real app icons, demo home screen, tab bar (Today / Progress / Settings), one onboarding progress bar */
 /* earlier v9: Cal AI onboarding patterns · v8: any app + categories · v7: Steven Cravotta blueprint · design: Passion Finder + Stress glass */
 :root{
@@ -251,6 +251,11 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .itile b{flex:1;font-weight:600}
 .itile.on{background:#fff;color:var(--ink)}
 .itile.on .ico{background:var(--ink,#2A1A10);color:#fff}
+/* v31: logo like Cal AI: only on Home (mark + name, top-left); onboarding, paywall and other tabs have no logo */
+.htop{display:flex;justify-content:space-between;align-items:center}
+.hbrand{display:flex;align-items:center;gap:8px;font-size:22px;font-weight:700;letter-spacing:-.2px}
+.hmark{width:30px;height:30px;border-radius:8px;display:block}
+.ptitle{text-align:start!important;font-size:32px!important;margin-top:6px!important}
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .pgrid .pt{aspect-ratio:1;border-radius:20px;background:rgba(255,255,255,.2) center/cover;position:relative;border:1px solid var(--gline)}
 .pgrid .pt button{position:absolute;top:6px;inset-inline-end:6px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center}
@@ -555,7 +560,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 
 <!-- ============ WELCOME ============ -->
 <section class="screen" id="ob1">
-  <div class="top wtop"><div class="brand sm">Look Up</div><button class="langbtn" onclick="openLang()"><svg class="i"><use href="#i-globe"/></svg><span id="langName"></span></button></div>
+  <div class="top wtop"><span></span><button class="langbtn" onclick="openLang()"><svg class="i"><use href="#i-globe"/></svg><span id="langName"></span></button></div>
   <div class="grow" style="min-height:10px"></div>
   <!-- show the product, not a stock photo: a live mini demo of the pause (Cal AI / Opal style welcome) -->
   <div class="mock" aria-hidden="true"><div class="mscreen">
@@ -641,7 +646,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 
 <!-- ============ BUILDING YOUR PLAN ============ -->
 <section class="screen" id="build">
-  <div class="top"><span></span><div class="brand sm">Look Up</div><span></span></div>
+  <div class="top"><span></span><span></span><span></span></div>
   <div class="grow"></div>
   <div class="num" id="bPct" style="font-size:96px;text-align:center">0%</div>
   <h1 class="t" style="margin-top:6px" data-t="b_title"></h1>
@@ -653,7 +658,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 
 <!-- ============ YOUR PLAN ============ -->
 <section class="screen" id="plan">
-  <div class="top"><button class="gbtn navback" onclick="back('ob4')"><svg class="i fl"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <div class="top"><button class="gbtn navback" onclick="back('ob4')"><svg class="i fl"><use href="#i-back"/></svg></button><span></span><span></span></div>
   <h1 class="t" style="margin-top:18px" data-t="pl_title"></h1>
   <div class="solid phero" id="planHero"></div>
   <div class="glass plan" id="planBox"></div>
@@ -664,7 +669,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 
 <!-- ============ COMMIT (hold) ============ -->
 <section class="screen" id="commit">
-  <div class="top"><button class="gbtn navback" onclick="back('plan')"><svg class="i fl"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <div class="top"><button class="gbtn navback" onclick="back('plan')"><svg class="i fl"><use href="#i-back"/></svg></button><span></span><span></span></div>
   <h1 class="t" style="margin-top:26px" data-t="c_title"></h1>
   <p class="d" id="commitTxt" style="font-size:19px;line-height:1.5;font-weight:500;color:#fff;margin-top:18px"></p>
   <div class="grow" style="min-height:20px"></div>
@@ -678,7 +683,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 
 <!-- ============ PAYWALL 1/3 ============ -->
 <section class="screen" id="pw1">
-  <div class="top"><button class="gbtn navback" onclick="back('commit')"><svg class="i fl"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <div class="top"><button class="gbtn navback" onclick="back('commit')"><svg class="i fl"><use href="#i-back"/></svg></button><span></span><span></span></div>
   <div style="text-align:center;margin-top:10px"><span class="demo" data-t="demo"></span></div>
   <h1 class="t" style="font-size:34px;margin-top:20px" data-t="pw1_t"></h1>
   <p class="d" data-t="pw1_d"></p>
@@ -694,7 +699,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 
 <!-- ============ PAYWALL 2/3 ============ -->
 <section class="screen" id="pw2">
-  <div class="top"><button class="gbtn navback" onclick="back('pw1')"><svg class="i fl"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <div class="top"><button class="gbtn navback" onclick="back('pw1')"><svg class="i fl"><use href="#i-back"/></svg></button><span></span><span></span></div>
   <h1 class="t" style="font-size:32px;margin-top:22px" data-t="pw2_t"></h1>
   <p class="d" data-t="pw2_d"></p>
   <div class="tl">
@@ -709,7 +714,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 
 <!-- ============ PAYWALL 3/3 ============ -->
 <section class="screen" id="pw3">
-  <div class="top"><button class="gbtn navback" onclick="back('pw2')"><svg class="i fl"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><button class="gbtn xbtn" id="pwX" onclick="openOffer()" aria-label="close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="top"><button class="gbtn navback" onclick="back('pw2')"><svg class="i fl"><use href="#i-back"/></svg></button><span></span><button class="gbtn xbtn" id="pwX" onclick="openOffer()" aria-label="close"><svg class="i"><use href="#i-x"/></svg></button></div>
   <div style="text-align:center;margin-top:8px"><span class="demo" data-t="demo"></span></div>
   <h1 class="t" style="margin-top:12px" data-t="pw3_t"></h1>
   <div class="goalchip" id="pwGoal"></div>
@@ -726,7 +731,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 
 <!-- ============ FIRST PAUSE (aha) ============ -->
 <section class="screen" id="first">
-  <div class="top"><span></span><div class="brand sm">Look Up</div><span></span></div>
+  <div class="top"><span></span><span></span><span></span></div>
   <h1 class="t" style="margin-top:26px" data-t="f_t"></h1>
   <p class="d" data-t="f_d"></p>
   <div class="grow" style="min-height:16px"></div>
@@ -751,7 +756,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 
 <!-- ============ SCREEN TIME PERMISSION (what the real app asks; primer + system alert, like Opal / one sec) ============ -->
 <section class="screen" id="perm">
-  <div class="top"><span></span><div class="brand sm">Look Up</div><span></span></div>
+  <div class="top"><span></span><span></span><span></span></div>
   <div class="grow" style="min-height:10px"></div>
   <div class="round" style="width:92px;height:92px"><svg class="i" style="width:40px;height:40px"><use href="#i-clock"/></svg></div>
   <h1 class="t" data-t="perm_t"></h1>
@@ -764,7 +769,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 
 <!-- ============ CONNECT (test mode: Shortcuts, prototype only) ============ -->
 <section class="screen" id="ob5">
-  <div class="top"><button class="gbtn navback" onclick="back(st.setup?'settings':'first')"><svg class="i fl"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <div class="top"><button class="gbtn navback" onclick="back(st.setup?'settings':'first')"><svg class="i fl"><use href="#i-back"/></svg></button><span></span><span></span></div>
   <h1 class="t" data-t="c5_t" style="margin-top:22px"></h1>
   <p class="d" data-t="c5_d"></p>
   <div class="glass" style="margin-top:18px" id="guideCard"></div>
@@ -774,7 +779,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 
 <!-- ============ TODAY (home) ============ -->
 <section class="screen tabbed" id="home">
-  <div class="top"><span class="streak" id="streak" onclick="go('stats',{anim:'fade'})"></span><div class="brand sm">Look Up</div><span></span></div>
+  <div class="top htop"><div class="hbrand"><svg class="hmark" viewBox="0 0 1024 1024" aria-hidden="true"><defs><radialGradient id="hmo" cx="50%" cy="60%" r="75%"><stop offset="0" stop-color="#F2A15C"/><stop offset=".55" stop-color="#D9762F"/><stop offset="1" stop-color="#9C6550"/></radialGradient><clipPath id="hmc"><rect width="1024" height="640"/></clipPath></defs><rect width="1024" height="1024" fill="url(#hmo)"/><circle cx="512" cy="600" r="190" fill="#FFF8F1" clip-path="url(#hmc)"/><rect x="202" y="640" width="620" height="70" rx="35" fill="#FFF8F1"/></svg><span>Look Up</span></div><span class="streak" id="streak" onclick="go('stats',{anim:'fade'})"></span></div>
   <div class="gauge glass">
     <div class="h"><span data-t="h_today"></span><span id="hDate" style="font-size:14px;opacity:.85"></span></div>
     <div class="num" id="tHere">0</div>
@@ -793,8 +798,8 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 
 <!-- ============ PROGRESS ============ -->
 <section class="screen tabbed" id="stats">
-  <div class="top"><span></span><div class="brand sm">Look Up</div><span></span></div>
-  <h1 class="t" style="margin-top:10px;font-size:28px" data-t="s_title"></h1>
+  <div class="top"><span></span><span></span><span></span></div>
+  <h1 class="t ptitle" data-t="s_title"></h1>
   <div class="glass" style="padding:18px;margin-top:16px">
     <div style="display:flex;align-items:center;gap:14px"><svg class="i" style="width:46px;height:46px;color:#FFD08A;fill:#FFD08A;stroke:none"><use href="#i-flame"/></svg><div><div class="num" id="sStreak" style="font-size:54px">0</div><div style="font-size:15px;font-weight:500" data-t="s_streak"></div></div></div>
     <div class="miles" id="sMiles"></div>
@@ -809,8 +814,8 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 
 <!-- ============ SETTINGS ============ -->
 <section class="screen tabbed" id="settings">
-  <div class="top"><span></span><div class="brand sm">Look Up</div><span></span></div>
-  <h1 class="t" style="margin-top:10px;font-size:28px" data-t="set_t"></h1>
+  <div class="top"><span></span><span></span><span></span></div>
+  <h1 class="t ptitle" data-t="set_t"></h1>
   <div class="shead" data-t="set_pause"></div>
   <div class="slist" id="setList1"></div>
   <div class="shead" data-t="set_app"></div>
