@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Look Up v32: Opal-style Screen Time primer (saved v31 = /saved-v31/) · v31: logo only on Home like Cal AI (saved v30 in Archive) · v30: app icon = 10d "head rising" · v29: wordmark app icon + removed the icon→Safari "Test mode" screen · v28: idea options as Cal AI-style rows (v27 tiles looked "AI") · v27: back to the regular v25 flow (v26 test flow removed) + clean idea tiles on "What makes you feel good?" · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
+/* Look Up v33: welcome research laurel, plan "moments a year with your people", personal paywall (saved v32 = /saved-v32/) · v32: Opal-style Screen Time primer (saved v31 = /saved-v31/) · v31: logo only on Home like Cal AI (saved v30 in Archive) · v30: app icon = 10d "head rising" · v29: wordmark app icon + removed the icon→Safari "Test mode" screen · v28: idea options as Cal AI-style rows (v27 tiles looked "AI") · v27: back to the regular v25 flow (v26 test flow removed) + clean idea tiles on "What makes you feel good?" · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
    Apple Screen Time style picker with real app icons, demo home screen, tab bar (Today / Progress / Settings), one onboarding progress bar */
 /* earlier v9: Cal AI onboarding patterns · v8: any app + categories · v7: Steven Cravotta blueprint · design: Passion Finder + Stress glass */
 :root{
@@ -256,6 +256,19 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .hbrand{display:flex;align-items:center;gap:8px;font-size:22px;font-weight:700;letter-spacing:-.2px}
 .hmark{width:30px;height:30px;border-radius:8px;display:block}
 .ptitle{text-align:start!important;font-size:32px!important;margin-top:6px!important}
+/* v33: welcome research laurel, plan "moments a year" hero, personal paywall */
+.laurel{display:flex;align-items:center;justify-content:center;gap:6px;margin:14px auto 0;max-width:320px;color:#FFE2B8;font-size:13.5px;font-weight:600;line-height:1.3;text-align:center}
+.laurel .lr{width:18px;height:36px;flex:none;fill:currentColor}.laurel .rr{transform:scaleX(-1)}
+.phero.mom{padding:20px 18px 16px}
+.phero.mom .num{font-size:62px;line-height:1;margin-top:6px;letter-spacing:-1px}
+.phero.mom .ml{display:block;font-size:18px;color:var(--ink);margin-top:4px}
+.phero.mom>span{font-size:14.5px}
+.gl2{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(80,40,10,.12);font-size:14px;font-weight:600;color:#C2541C}
+.gl2 svg{width:16px;height:16px}
+.avs{display:flex;justify-content:center}
+.avs i{width:52px;height:52px;border-radius:50%;background:#E9D6C4 center/cover;border:3px solid #fff;margin-inline-start:-12px;box-shadow:0 6px 14px -6px rgba(60,20,0,.45)}
+.avs i:first-child{margin-inline-start:0}
+.phero .avs{margin-bottom:8px}
 /* v32: Opal-style Screen Time primer: a copy of Apple's alert, glowing frame, arrow to "Continue", privacy line */
 .optitle{font-size:27px!important;line-height:1.2;margin-top:18px;padding:0 6px}
 .opwrap{position:relative;width:min(300px,82vw);margin:0 auto}
@@ -592,7 +605,8 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
     <div class="mbtn" id="mBtn"></div><div class="mbtn2" id="mBtn2"></div>  </div></div>
   <div class="grow" style="min-height:10px"></div>
   <!-- one fixed lead + one rotating reason (different people stop scrolling for different reasons); the demo phone above shows the same reason -->
-  <h1 class="t wh" style="margin-top:16px"><span data-t="w_lead"></span><br><span class="rot" id="wRot"></span></h1>
+  <div class="laurel"><svg class="lr" viewBox="0 0 26 52" aria-hidden="true"><path d="M20 50C9 41 5 24 13 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><ellipse cx="8" cy="40" rx="3.2" ry="6.5" transform="rotate(-35 8 40)"/><ellipse cx="6" cy="29" rx="3.2" ry="6.5" transform="rotate(-15 6 29)"/><ellipse cx="7" cy="18" rx="3" ry="6" transform="rotate(10 7 18)"/><ellipse cx="12" cy="8" rx="2.8" ry="5.5" transform="rotate(30 12 8)"/></svg><span data-t="w_badge"></span><svg class="lr rr" viewBox="0 0 26 52" aria-hidden="true"><path d="M20 50C9 41 5 24 13 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><ellipse cx="8" cy="40" rx="3.2" ry="6.5" transform="rotate(-35 8 40)"/><ellipse cx="6" cy="29" rx="3.2" ry="6.5" transform="rotate(-15 6 29)"/><ellipse cx="7" cy="18" rx="3" ry="6" transform="rotate(10 7 18)"/><ellipse cx="12" cy="8" rx="2.8" ry="5.5" transform="rotate(30 12 8)"/></svg></div>
+  <h1 class="t wh" style="margin-top:10px"><span data-t="w_lead"></span><br><span class="rot" id="wRot"></span></h1>
   <div class="duo"><button class="pill white" onclick="qi=0;go('quiz')" data-t="w_cta"></button></div>
   <p class="foot" data-t="w_foot"></p>
   <button class="pill link" style="height:36px;font-size:14.5px;margin-top:2px" onclick="toast(t('t_restore'))"><span data-t="w_restore"></span></button>
@@ -680,7 +694,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 <section class="screen" id="plan">
   <div class="top"><button class="gbtn navback" onclick="back('ob4')"><svg class="i fl"><use href="#i-back"/></svg></button><span></span><span></span></div>
   <h1 class="t" style="margin-top:18px" data-t="pl_title"></h1>
-  <div class="solid phero" id="planHero"></div>
+  <div class="solid phero mom" id="planHero"></div>
   <div class="glass plan" id="planBox"></div>
   <p class="science" data-t="science"></p>
   <div class="grow" style="min-height:16px"></div>
@@ -736,7 +750,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 <section class="screen" id="pw3">
   <div class="top"><button class="gbtn navback" onclick="back('pw2')"><svg class="i fl"><use href="#i-back"/></svg></button><span></span><button class="gbtn xbtn" id="pwX" onclick="openOffer()" aria-label="close"><svg class="i"><use href="#i-x"/></svg></button></div>
   <div style="text-align:center;margin-top:8px"><span class="demo" data-t="demo"></span></div>
-  <h1 class="t" style="margin-top:12px" data-t="pw3_t"></h1>
+  <div class="avs" id="pwAvs" style="margin-top:6px"></div><h1 class="t" style="margin-top:10px" id="pw3T"></h1>
   <div class="goalchip" id="pwGoal"></div>
   <div class="vals"><div><svg class="i"><use href="#i-heart"/></svg><span data-t="v1"></span></div><div><svg class="i"><use href="#i-sun"/></svg><span data-t="v2"></span></div><div><svg class="i"><use href="#i-target"/></svg><span data-t="v3"></span></div></div>
   <div class="plans">
@@ -1389,6 +1403,12 @@ const GS={en:['<b>Important for testing:</b> the automation opens Look Up in <b>
  es:['<b>Importante para probar:</b> la automatización abre Look Up en <b>Safari</b>. Un icono de inicio añadido como app web guarda datos aparte, así que su contador se queda en 0. Solución: usa Look Up en Safari (o borra el icono y añádelo de nuevo desde Safari con <b>Abrir como app web</b> desactivado) y añade allí a tu gente una vez.','Modo de prueba: las pausas de Atajos se cuentan en Look Up en Safari, no en este icono.'],
  fr:['<b>Important pour tester :</b> l’automatisation ouvre Look Up dans <b>Safari</b>. Une icône d’accueil ajoutée comme app web garde ses propres données, donc son compteur reste à 0. Solution : utilise Look Up dans Safari (ou supprime l’icône et ajoute-la de nouveau depuis Safari avec <b>Ouvrir comme app web</b> désactivé), et ajoute tes proches là-bas une fois.','Mode test : les pauses des Raccourcis sont comptées dans Look Up sur Safari, pas dans cette icône.'],
  ar:['<b>مهم للاختبار:</b> تفتح الأتمتة Look Up في <b>سفاري</b>. أيقونة الشاشة الرئيسية المضافة كتطبيق ويب تحتفظ ببيانات منفصلة، لذلك يبقى عدّادها 0. الحل: استخدم Look Up في سفاري (أو احذف الأيقونة وأضفها مجددًا من سفاري مع إيقاف <b>الفتح كتطبيق ويب</b>)، وأضف أحبّاءك هناك مرة واحدة.','وضع الاختبار: تُحتسب الاستراحات من الاختصارات في Look Up على سفاري، لا في هذه الأيقونة.']};
+const NW={en:{w_badge:'Backed by research: a short pause cut app opens by 57%',pl_year:'In one year, that’s',pl_mom:n=>`moments with ${n}`,pl_mom0:'moments for what matters',pl_each:'Every pause before an app is a moment you choose them instead.',pl_each0:'Every pause before an app is a moment back for your life.',pw3_tp:n=>`Be there for ${n},<br>every day`,pw_mom:n=>`That’s ${n} moments a year`},
+ he:{w_badge:'מבוסס מחקר: הפסקה קצרה הפחיתה פתיחות של אפליקציות ב־57%',pl_year:'בשנה אחת זה',pl_mom:n=>`רגעים עם ${n}`,pl_mom0:'רגעים למה שחשוב',pl_each:'כל הפסקה לפני אפליקציה היא רגע שבוחרים בהם במקום.',pl_each0:'כל הפסקה לפני אפליקציה היא רגע שחוזר לחיים.',pw3_tp:n=>`להיות שם בשביל ${n},<br>כל יום`,pw_mom:n=>`זה ${n} רגעים בשנה`},
+ es:{w_badge:'Respaldado por la ciencia: una pausa breve redujo un 57% las aperturas',pl_year:'En un año, son',pl_mom:n=>`momentos con ${n}`,pl_mom0:'momentos para lo que importa',pl_each:'Cada pausa antes de una app es un momento en que los eliges a ellos.',pl_each0:'Cada pausa antes de una app es un momento que recuperas.',pw3_tp:n=>`Estar ahí para ${n},<br>cada día`,pw_mom:n=>`Son ${n} momentos al año`},
+ fr:{w_badge:'Validé par la recherche : une courte pause a réduit de 57 % les ouvertures',pl_year:'En un an, c’est',pl_mom:n=>`moments avec ${n}`,pl_mom0:'moments pour ce qui compte',pl_each:'Chaque pause avant une app, c’est un moment où vous les choisissez.',pl_each0:'Chaque pause avant une app, c’est un moment retrouvé.',pw3_tp:n=>`Être là pour ${n},<br>chaque jour`,pw_mom:n=>`Soit ${n} moments par an`},
+ ar:{w_badge:'مدعوم بالأبحاث: توقف قصير خفّض فتح التطبيقات بنسبة 57%',pl_year:'في سنة واحدة، هذا',pl_mom:n=>`لحظة مع ${n}`,pl_mom0:'لحظة لما يهمّ',pl_each:'كل توقف قبل تطبيق هو لحظة تختارهم فيها.',pl_each0:'كل توقف قبل تطبيق هو لحظة تستعيدها.',pw3_tp:n=>`كن حاضرًا لـ ${n}،<br>كل يوم`,pw_mom:n=>`أي ${n} لحظة في السنة`}};
+for(const l in NW)Object.assign(V[l],NW[l]);
 const OP={en:{op_t:'Let’s connect Look Up to Screen Time. Securely.',op_safe:'Your information is protected by Apple and stays 100% on your phone.',op_more:'Learn more',op_more_t:'What Look Up can and can’t do',op_ok:'Got it'},
  he:{op_t:'בואו נחבר את Look Up לזמן מסך. בצורה מאובטחת.',op_safe:'המידע מוגן על ידי Apple ונשאר 100% בטלפון.',op_more:'מידע נוסף',op_more_t:'מה Look Up יכולה ומה לא',op_ok:'הבנתי'},
  es:{op_t:'Conectemos Look Up a Tiempo de uso. De forma segura.',op_safe:'Tu información está protegida por Apple y se queda 100% en tu teléfono.',op_more:'Más información',op_more_t:'Lo que Look Up puede y no puede hacer',op_ok:'Entendido'},
@@ -1601,7 +1621,7 @@ function quizBack(){if(qi>0){qi--;renderQuiz();quizStep(-1)}else go('ob1',{back:
 /* ---------- plan + paywall (demo) ---------- */
 const goalDate=()=>new Date(Date.now()+21*864e5).toLocaleDateString(LANGS[LANG].loc,{day:'numeric',month:'long'});
 function renderPlan(){const z=st.quiz||{},T=st.times,TX=t('Q');const{now,g}=goalNums();
- $('planHero').innerHTML=`<small>${t('goal_by',goalDate())}</small><div class="num" style="font-size:58px">${g}<small>${t('per_day')}</small></div><span>${t('instead',now)}</span>`;
+ const mom=(now-g)*365,who=whoNames();$('planHero').innerHTML=`<div class="avs" id="plAvs"></div><small>${t('pl_year')}</small><div class="num" id="momN">0</div><b class="ml">${who?t('pl_mom',who):t('pl_mom0')}</b><span>${who?t('pl_each'):t('pl_each0')}</span><div class="gl2">${ic('target')}<span>${t('pw_goal',g,goalDate())}</span></div>`;countUp($('momN'),mom);avatars('plAvs');
  const rows=[],per=OPENS_N[z.opens];
  rows.push(per?['phone',t('pr_now',per),t('pr_now_s')]:['phone',t('pr_unk'),t('pr_unk_s')]);
  if(z.goal!==undefined)rows.push(['target',t('pr_goal'),z.goal===3?t('pr_goal_less'):t('pr_goal_s',TX.goal.o[z.goal])]);
@@ -1610,10 +1630,15 @@ function renderPlan(){const z=st.quiz||{},T=st.times,TX=t('Q');const{now,g}=goal
  rows.push(['clock',t('pr_when'),t('pr_when_s',T)]);
  if(z.when&&z.when.length)rows.push(['sun',t('pr_hard'),t('pr_hard_s',z.when.map(i=>TX.when.o[i]).join(' · '))]);
  $('planBox').innerHTML=rows.map(([i,b,s])=>`<div class="pr"><span class="ic">${ic(i)}</span><span><b>${esc(b)}</b><span>${esc(s)}</span></span></div>`).join('')}
+/* v33 helpers: names of the user's people, avatar stack, count-up number */
+function whoNames(){const n=st.people.map(p=>p.name).filter(Boolean);if(!n.length)return'';const a=n.slice(0,2).map(esc);return n.length>2?a.join(', ')+' +'+(n.length-2):a.join(t('and'))}
+function fmtN(n){return Number(n).toLocaleString(LANGS[LANG].loc)}
+function countUp(el,to){const t0=performance.now(),D=1400;const f=now=>{const p=Math.min(1,(now-t0)/D),e=1-Math.pow(1-p,3);el.textContent=fmtN(Math.round(to*e));if(p<1)requestAnimationFrame(f);else hap()};requestAnimationFrame(f)}
+function avatars(id){const el=$(id);if(!el)return;const ps=st.people.filter(p=>p.pics&&p.pics.length).slice(0,3);el.style.display=ps.length?'':'none';el.innerHTML=ps.map(()=>'<i></i>').join('');ps.forEach((p,k)=>photo(p.pics[0]).then(s=>{if(s&&el.children[k])el.children[k].style.backgroundImage=`url(${s})`}))}
 let plan='year';
 function pickPlan(p){plan=p;document.querySelectorAll('.plancard').forEach(c=>c.classList.toggle('on',c.dataset.p===p));
  $('pwBuy').textContent=p==='year'?t('buy_y'):t('buy_m');$('pwFine').textContent=p==='year'?t('fine_y'):t('fine_m')}
-function renderPw3(){const{g}=goalNums();$('pwGoal').innerHTML=`${ic('target')}<span>${t('pw_goal',g,goalDate())}</span>`;pickPlan(plan);armExit()}
+function renderPw3(){const{now,g}=goalNums(),who=whoNames();$('pw3T').innerHTML=who?t('pw3_tp',who):t('pw3_t');avatars('pwAvs');$('pwGoal').innerHTML=`${ic('heart')}<span>${t('pw_mom',fmtN((now-g)*365))}</span>`;pickPlan(plan);armExit()}
 function startTrial(){st.trial={plan,start:Date.now()};save();toast(t('t_nocharge'));go('first',{anim:'up'})}
 let exitT=null;
 function armExit(){const x=$('pwX');x.classList.remove('show');clearTimeout(exitT);exitT=setTimeout(()=>x.classList.add('show'),2500)}
