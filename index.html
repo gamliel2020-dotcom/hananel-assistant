@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Look Up v34: Settings → "See the intro again" · v33: welcome research laurel, plan "moments a year with your people", personal paywall (saved v32 = /saved-v32/) · v32: Opal-style Screen Time primer (saved v31 = /saved-v31/) · v31: logo only on Home like Cal AI (saved v30 in Archive) · v30: app icon = 10d "head rising" · v29: wordmark app icon + removed the icon→Safari "Test mode" screen · v28: idea options as Cal AI-style rows (v27 tiles looked "AI") · v27: back to the regular v25 flow (v26 test flow removed) + clean idea tiles on "What makes you feel good?" · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
+/* Look Up v35: Cal AI-style week strip on Home (saved v34 = /saved-v34/) · v34: Settings → "See the intro again" · v33: welcome research laurel, plan "moments a year with your people", personal paywall (saved v32 = /saved-v32/) · v32: Opal-style Screen Time primer (saved v31 = /saved-v31/) · v31: logo only on Home like Cal AI (saved v30 in Archive) · v30: app icon = 10d "head rising" · v29: wordmark app icon + removed the icon→Safari "Test mode" screen · v28: idea options as Cal AI-style rows (v27 tiles looked "AI") · v27: back to the regular v25 flow (v26 test flow removed) + clean idea tiles on "What makes you feel good?" · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
    Apple Screen Time style picker with real app icons, demo home screen, tab bar (Today / Progress / Settings), one onboarding progress bar */
 /* earlier v9: Cal AI onboarding patterns · v8: any app + categories · v7: Steven Cravotta blueprint · design: Passion Finder + Stress glass */
 :root{
@@ -256,6 +256,18 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .hbrand{display:flex;align-items:center;gap:8px;font-size:22px;font-weight:700;letter-spacing:-.2px}
 .hmark{width:30px;height:30px;border-radius:8px;display:block}
 .ptitle{text-align:start!important;font-size:32px!important;margin-top:6px!important}
+/* v35: Home week strip (Cal AI pattern) */
+.wstrip{display:flex;justify-content:space-between;margin:10px -4px 4px}
+.wd{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 0 10px;border-radius:22px}
+.wd.today{background:rgba(255,255,255,.2);border:1px solid var(--gline)}
+.wd .wl{font-size:13px;font-weight:600;opacity:.85}
+.wd .wc{position:relative;width:36px;height:36px;display:grid;place-items:center}
+.wd svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.wd .bg{fill:none;stroke:rgba(255,255,255,.35);stroke-width:2.2;stroke-dasharray:3 3.3}
+.wd .fg{fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round}
+.wd b{font-size:14px;font-weight:600}
+.wd.has .bg{stroke-dasharray:none}
+.wd.fut{opacity:.45}
 /* v33: welcome research laurel, plan "moments a year" hero, personal paywall */
 .laurel{display:flex;align-items:center;justify-content:center;gap:6px;margin:14px auto 0;max-width:320px;color:#FFE2B8;font-size:13.5px;font-weight:600;line-height:1.3;text-align:center}
 .laurel .lr{width:18px;height:36px;flex:none;fill:currentColor}.laurel .rr{transform:scaleX(-1)}
@@ -819,6 +831,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 <!-- ============ TODAY (home) ============ -->
 <section class="screen tabbed" id="home">
   <div class="top htop"><div class="hbrand"><svg class="hmark" viewBox="0 0 1024 1024" aria-hidden="true"><defs><radialGradient id="hmo" cx="50%" cy="60%" r="75%"><stop offset="0" stop-color="#F2A15C"/><stop offset=".55" stop-color="#D9762F"/><stop offset="1" stop-color="#9C6550"/></radialGradient><clipPath id="hmc"><rect width="1024" height="640"/></clipPath></defs><rect width="1024" height="1024" fill="url(#hmo)"/><circle cx="512" cy="600" r="190" fill="#FFF8F1" clip-path="url(#hmc)"/><rect x="202" y="640" width="620" height="70" rx="35" fill="#FFF8F1"/></svg><span>Look Up</span></div><span class="streak" id="streak" onclick="go('stats',{anim:'fade'})"></span></div>
+  <div class="wstrip" id="wStrip"></div>
   <div class="gauge glass">
     <div class="h"><span data-t="h_today"></span><span id="hDate" style="font-size:14px;opacity:.85"></span></div>
     <div class="num" id="tHere">0</div>
@@ -1750,10 +1763,15 @@ function drawGauge(v){const cx=150,cy=145,R=120,L=!isRTL();let x='';const ang=f=
   x+=`<line x1="${(cx+r1*Math.cos(a)).toFixed(1)}" y1="${(cy-r1*Math.sin(a)).toFixed(1)}" x2="${(cx+R*Math.cos(a)).toFixed(1)}" y2="${(cy-R*Math.sin(a)).toFixed(1)}" stroke="${i/40<=v?'#fff':'rgba(255,255,255,.35)'}" stroke-width="${long?2:1.4}" stroke-linecap="round"/>`}
  const a=ang(Math.min(1,v)),R2=R-26;x+=`<path d="M${cx-R2} ${cy} A${R2} ${R2} 0 0 1 ${cx+R2} ${cy}" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="2" stroke-dasharray="3 6"/>`;
  x+=`<circle cx="${(cx+R2*Math.cos(a)).toFixed(1)}" cy="${(cy-R2*Math.sin(a)).toFixed(1)}" r="6" fill="#fff"/>`;$('gauge').innerHTML=x}
+/* v35: Cal AI-style week strip on Home: this week's days, a ring fills with the pauses you took that day */
+function renderWeekStrip(now){const s=new Date(now);s.setHours(0,0,0,0);s.setDate(s.getDate()-s.getDay());let h='';
+ for(let i=0;i<7;i++){const d=new Date(s);d.setDate(s.getDate()+i);const fut=d>now&&dayKey(d)!==dayKey(now),today=dayKey(d)===dayKey(now),n=fut?0:countDay(d).here,f=Math.min(1,n/GOAL),C=94.2;
+  h+=`<div class="wd ${today?'today':''} ${fut?'fut':''} ${n?'has':''}"><span class="wl">${d.toLocaleDateString(LANGS[LANG].loc,{weekday:'narrow'})}</span><span class="wc"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" class="bg"/><circle cx="18" cy="18" r="15" class="fg" style="stroke-dasharray:${(C*f).toFixed(1)} ${C}"/></svg><b>${d.getDate()}</b></span></div>`}
+ $('wStrip').innerHTML=h}
 function renderHome(){const now=new Date();
  $('hDate').textContent=now.toLocaleDateString(LANGS[LANG].loc,{weekday:'long',day:'numeric',month:'numeric'});
  const today=countDay(now).here;$('tHere').innerHTML=`${today}<small>${t('times',today)}</small>`;drawGauge(today/GOAL);
- $('streak').innerHTML=`${ic('flame')}<b>${streakDays()}</b>`;
+ $('streak').innerHTML=`${ic('flame')}<b>${streakDays()}</b>`;renderWeekStrip(now);
  /* prototype: the Shortcuts automation (test mode) counts as connected, same as Screen Time access in the App Store build */
  const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;
  $('connectStatus').innerHTML=(st.perm||st.connected)?(st.connected&&standalone?`<p class="foot" style="margin-top:10px">${t('g_safari_short')}</p>`:''):`<div class="status"><span class="tx"><b>${t('nc_t')}</b><small>${t('nc_s')}</small></span><button class="go" onclick="go('perm')">${t('nc_go')}</button></div>`;
