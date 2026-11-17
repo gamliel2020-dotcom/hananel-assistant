@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&display=swap" rel="stylesheet">
 <style>
-/* Look Up v5 — direction: "Passion Finder" (warm gradient, bubbles, photo-in-circle, glass score rows)
+/* Look Up v6 (quiz + plan + 3-step demo paywall) — direction: "Passion Finder" (warm gradient, bubbles, photo-in-circle, glass score rows)
    + "Stress" premium glass (big thin numerals, glass/white tiles, arc gauge). Built for readability. */
 :root{
   --ink:#231A14; --white:#FFFFFF; --w90:rgba(255,255,255,.92); --w70:rgba(255,255,255,.78);
@@ -187,6 +187,46 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 #pause .anyway{opacity:0;pointer-events:none;transition:opacity .6s;margin-top:12px;width:auto;padding:0 20px;height:46px;flex:none;align-self:center;font-size:15.5px;font-weight:500}
 #pause.ready .anyway{opacity:1;pointer-events:auto}
 
+/* quiz options + plan + paywall */
+.opts{display:flex;flex-direction:column;gap:8px;margin-top:22px}
+.opt{display:flex;align-items:center;gap:12px;width:100%;min-height:58px;padding:0 18px;border-radius:20px;background:var(--glass);border:1px solid var(--gline);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);font-size:17px;font-weight:500;text-align:right;transition:background .15s}
+.opt .ck{width:24px;height:24px;border-radius:50%;border:1.5px solid rgba(255,255,255,.7);margin-inline-start:auto;display:grid;place-items:center;flex-shrink:0}
+.opt .ck svg{width:14px;height:14px;stroke-width:3;opacity:0}
+.opt.on{background:#FFF8F1;color:var(--ink);border-color:#fff}
+.opt.on .ck{background:#D9652A;border-color:#D9652A;color:#fff}
+.opt.on .ck svg{opacity:1}
+.opt.multi .ck{border-radius:8px}
+.qhint{text-align:center;font-size:14px;color:var(--w90);margin-top:10px}
+.plan{padding:6px 18px;margin-top:20px}
+.plan .pr{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.2)}
+.plan .pr:last-child{border:0}
+.plan .pr .ic{width:36px;height:36px;border-radius:50%;background:#fff;color:#D9652A;display:grid;place-items:center;flex-shrink:0}
+.plan .pr .ic svg{width:18px;height:18px}
+.plan .pr b{display:block;font-size:16.5px;font-weight:600}
+.plan .pr span{display:block;font-size:15px;color:var(--w90);line-height:1.45;margin-top:2px}
+.science{font-size:13.5px;line-height:1.5;color:var(--w90);text-align:center;margin-top:14px;padding:0 6px}
+.tl{margin:26px auto 0;max-width:330px;position:relative;padding-inline-start:4px}
+.tl::before{content:"";position:absolute;top:22px;bottom:22px;right:21px;width:2px;background:linear-gradient(#fff,rgba(255,255,255,.3))}
+.tl .st{display:flex;gap:14px;align-items:flex-start;padding:10px 0;position:relative}
+.tl .dot{width:40px;height:40px;border-radius:50%;background:#fff;color:#D9652A;display:grid;place-items:center;flex-shrink:0}
+.tl .dot svg{width:20px;height:20px}
+.tl .dot.dim{background:rgba(255,255,255,.3);color:#fff}
+.tl b{display:block;font-size:17px;font-weight:600}
+.tl span{display:block;font-size:15px;color:var(--w90);margin-top:2px;line-height:1.4}
+.plans{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.plancard{position:relative;display:flex;align-items:center;gap:12px;width:100%;padding:16px 18px;border-radius:22px;background:var(--glass);border:1.5px solid var(--gline);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);text-align:right}
+.plancard.on{background:#FFF8F1;color:var(--ink);border-color:#fff}
+.plancard .tx{flex:1}
+.plancard b{display:block;font-size:18px;font-weight:600}
+.plancard small{display:block;font-size:14px;opacity:.85;margin-top:2px}
+.plancard .price{text-align:left;direction:ltr}
+.plancard .price b{font-size:20px}
+.plancard .tag{position:absolute;top:-11px;right:18px;background:#3E9B5F;color:#fff;font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:10px}
+.fine{text-align:center;font-size:13.5px;line-height:1.5;color:var(--w90);margin-top:10px}
+.links{display:flex;justify-content:center;gap:18px;margin-top:6px;font-size:13.5px;color:var(--w90)}
+.links button{text-decoration:underline;text-underline-offset:3px}
+.demo{display:inline-block;margin:0 auto;font-size:12.5px;font-weight:600;background:rgba(0,0,0,.25);padding:4px 10px;border-radius:10px}
+
 /* sheets (solid, dark text = easiest to read for forms) */
 .sheet{position:fixed;inset:0;background:rgba(40,15,0,.4);display:none;align-items:flex-end;z-index:20}
 .sheet.on{display:flex;animation:fade .25s}
@@ -235,6 +275,10 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
   <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12h10l1-12M9 7V4h6v3"/></symbol>
   <symbol id="i-chev" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r=".8"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M11 18h2"/></symbol>
 </svg>
 
 <!-- ============ 1. WELCOME ============ -->
@@ -248,13 +292,24 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
     <div class="ph"></div>
   </div>
   <div class="grow" style="min-height:16px"></div>
-  <div class="duo"><button class="pill white" onclick="go('ob2')">בואו נתחיל</button></div>
-  <p class="foot">פחות מדקה · בלי הרשמה · הכול נשאר בטלפון</p>
+  <div class="duo"><button class="pill white" onclick="qi=0;go('quiz')">בואו נתחיל</button></div>
+  <p class="foot">שתי דקות · בלי הרשמה · הכול נשאר בטלפון</p>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section class="screen" id="quiz">
+  <div class="top"><button class="gbtn" onclick="quizBack()" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <div class="stepof" id="qStep" style="margin-top:14px"></div><div class="prog" id="qProg"></div>
+  <h1 class="t" id="qTitle"></h1>
+  <p class="qhint" id="qHint"></p>
+  <div class="opts" id="qOpts"></div>
+  <div class="grow" style="min-height:16px"></div>
+  <div class="duo"><button class="pill white" id="qNext" onclick="quizNext()" disabled>המשך</button></div>
 </section>
 
 <!-- ============ 2. PEOPLE ============ -->
 <section class="screen" id="ob2">
-  <div class="top"><button class="gbtn" onclick="back('ob1')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <div class="top"><button class="gbtn" onclick="back('quiz')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
   <div class="stepof" data-step="1" style="margin-top:14px"></div><div class="prog" data-step="1"></div>
   <h1 class="t">בשביל מי חשוב לך<br>להיות יותר כאן?</h1>
   <p class="d">ילדים, בן או בת זוג, הורים, חברים. בשעות המשפחה יופיעו התמונה שלהם ורעיון קטן איתם.</p>
@@ -297,9 +352,66 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
   <div class="duo"><button class="pill white" id="ob4btn" onclick="finishTimes()">המשך</button></div>
 </section>
 
+<!-- ============ YOUR PLAN ============ -->
+<section class="screen" id="plan">
+  <div class="top"><button class="gbtn" onclick="go('ob4')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <h1 class="t" style="margin-top:22px">התוכנית שלך מוכנה</h1>
+  <p class="d">בנינו אותה לפי מה שסיפרת.</p>
+  <div class="glass plan" id="planBox"></div>
+  <p class="science">מחקר של אוניברסיטת היידלברג ומכון מקס פלאנק על הפסקה קצרה לפני פתיחת אפליקציה מצא ירידה של 57% בשימוש בה.</p>
+  <div class="grow" style="min-height:16px"></div>
+  <div class="duo"><button class="pill white" onclick="go('pw1')">זה מתאים לי</button></div>
+</section>
+
+<!-- ============ PAYWALL 1/3: free ============ -->
+<section class="screen" id="pw1">
+  <div class="top"><button class="gbtn" onclick="go('plan')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <div style="text-align:center;margin-top:10px"><span class="demo">הדגמה · אין חיוב אמיתי</span></div>
+  <h1 class="t" style="font-size:34px;margin-top:20px">אנחנו רוצים<br>שתנסו בחינם</h1>
+  <p class="d">7 ימים מלאים, בלי לשלם כלום עכשיו.</p>
+  <div class="grow" style="min-height:16px"></div>
+  <div class="circ" style="--len:820;width:min(62vw,240px)">
+    <svg class="arc" viewBox="0 0 280 280"><circle class="bgc" cx="140" cy="140" r="130"/><circle class="fg" cx="140" cy="140" r="130" style="stroke-dashoffset:0"/></svg>
+    <div class="ph" id="pw1ph"></div>
+  </div>
+  <div class="grow" style="min-height:16px"></div>
+  <div class="duo"><button class="pill white" onclick="go('pw2')">לנסות ב-0 ₪</button></div>
+  <p class="foot">אפשר לבטל בכל רגע</p>
+</section>
+
+<!-- ============ PAYWALL 2/3: reminder ============ -->
+<section class="screen" id="pw2">
+  <div class="top"><button class="gbtn" onclick="go('pw1')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <h1 class="t" style="font-size:32px;margin-top:22px">נזכיר לך יומיים<br>לפני שהניסיון נגמר</h1>
+  <p class="d">בלי הפתעות בחיוב. ככה זה עובד:</p>
+  <div class="tl">
+    <div class="st"><span class="dot"><svg class="i"><use href="#i-check"/></svg></span><span><b>היום</b><span>גישה מלאה לכל Look Up</span></span></div>
+    <div class="st"><span class="dot"><svg class="i"><use href="#i-bell"/></svg></span><span><b>יום 5</b><span>נשלח לך תזכורת שהניסיון עומד להסתיים</span></span></div>
+    <div class="st"><span class="dot dim"><svg class="i"><use href="#i-star"/></svg></span><span><b>יום 7</b><span>מתחיל המנוי. אפשר לבטל עד אז בלי לשלם</span></span></div>
+  </div>
+  <div class="grow" style="min-height:16px"></div>
+  <div class="duo"><button class="pill white" onclick="go('pw3')">המשך</button></div>
+</section>
+
+<!-- ============ PAYWALL 3/3: plans ============ -->
+<section class="screen" id="pw3">
+  <div class="top"><button class="gbtn" onclick="go('pw2')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <div style="text-align:center;margin-top:10px"><span class="demo">הדגמה · אין חיוב אמיתי</span></div>
+  <h1 class="t" style="margin-top:16px">לבחור מסלול</h1>
+  <p class="d">מחיר אחד ברור. בלי הפתעות.</p>
+  <div class="plans" id="plans">
+    <button class="plancard on" data-p="year" onclick="pickPlan('year')"><span class="tag">7 ימים בחינם</span><span class="tx"><b>שנתי</b><small>בערך $2.50 לחודש</small></span><span class="price"><b>$29.99</b><small>לשנה</small></span></button>
+    <button class="plancard" data-p="life" onclick="pickPlan('life')"><span class="tx"><b>לכל החיים</b><small>תשלום אחד, בלי מנוי</small></span><span class="price"><b>$59.99</b><small>פעם אחת</small></span></button>
+  </div>
+  <div class="grow" style="min-height:16px"></div>
+  <div class="duo"><button class="pill white" id="pwBuy" onclick="startTrial()">להתחיל 7 ימים בחינם</button></div>
+  <p class="fine" id="pwFine">היום 0 ₪. אחרי 7 ימים $29.99 לשנה. תזכורת יומיים לפני. ביטול בכל רגע בהגדרות האייפון.</p>
+  <div class="links"><button onclick="toast('בהדגמה אין רכישות לשחזר')">שחזור רכישה</button><button onclick="toast('בגרסה האמיתית: דף תנאי שימוש')">תנאים</button><button onclick="toast('בגרסה האמיתית: דף פרטיות')">פרטיות</button></div>
+</section>
+
 <!-- ============ 5. CONNECT ============ -->
 <section class="screen" id="ob5">
-  <div class="top"><button class="gbtn" onclick="back(st.setup?'home':'ob4')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <div class="top"><button class="gbtn" onclick="back(st.setup?'home':'pw3')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
   <div class="stepof" data-step="4" style="margin-top:14px"></div><div class="prog" data-step="4"></div>
   <h1 class="t">חיבור לאינסטגרם</h1>
   <p class="d">פעם אחת, בערך 3 דקות, באפליקציית <b>קיצורים</b> של האייפון. אחרי זה ההפסקה תופיע לבד כשפותחים אינסטגרם.</p>
@@ -431,7 +543,9 @@ const TOTAL=4;let editing=false;
 function go(id){closeSheet();document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));const el=document.getElementById(id);el.classList.add('on');el.scrollTop=0;
  el.querySelectorAll('[data-step]').forEach(x=>{const n=+x.dataset.step;if(editing||st.setup){x.style.display='none';return}x.style.display='';
   if(x.classList.contains('prog'))x.innerHTML=[...Array(TOTAL)].map((_,i)=>`<i class="${i<n?'on':''}"></i>`).join('');else x.textContent=`שלב ${n} מתוך ${TOTAL}`});
- if(id==='ob2')renderPeople();if(id==='ob3')renderGeneral();if(id==='ob4')loadTimes();if(id==='ob5')renderGuide();if(id==='home')renderHome()}
+ if(id==='ob2')renderPeople();if(id==='ob3')renderGeneral();if(id==='ob4')loadTimes();if(id==='ob5')renderGuide();if(id==='home')renderHome();
+ if(id==='quiz')renderQuiz();if(id==='plan')renderPlan();
+ if(id==='pw1')photo(st.general[0]||st.people.flatMap(p=>p.pics)[0]).then(s=>{if(s)document.getElementById('pw1ph').style.backgroundImage=`url(${s})`})}
 function back(id){if(editing){editing=false;go('home')}else go(id)}
 function edit(id){editing=true;go(id)}
 function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),1800)}
@@ -472,7 +586,42 @@ function renderCustom(){document.getElementById('customList').innerHTML=st.custo
 
 /* ---------- times ---------- */
 function loadTimes(){const T=st.times;['mEnd','fStart','fEnd','nStart'].forEach(k=>document.getElementById(k).value=T[k]);document.getElementById('shabbat').classList.toggle('on',T.shabbat);document.getElementById('ob4btn').textContent=editing?'שמירה':'המשך'}
-function finishTimes(){const T=st.times;['mEnd','fStart','fEnd','nStart'].forEach(k=>T[k]=document.getElementById(k).value||T[k]);T.shabbat=document.getElementById('shabbat').classList.contains('on');save();if(editing)return doneEditing();go('ob5')}
+function finishTimes(){const T=st.times;['mEnd','fStart','fEnd','nStart'].forEach(k=>T[k]=document.getElementById(k).value||T[k]);T.shabbat=document.getElementById('shabbat').classList.contains('on');save();if(editing)return doneEditing();go('plan')}
+
+/* ---------- quiz ---------- */
+const QUIZ=[
+ {k:'opens',q:'כמה פעמים ביום, בערך, פותחים אינסטגרם או טיקטוק?',o:['פחות מ-10','10–30','30–60','יותר מ-60','אין לי מושג']},
+ {k:'feel',q:'איך מרגישים אחרי גלילה ארוכה?',o:['עייפות','קצת אשמה','בזבוז זמן','בסדר גמור','תלוי ביום']},
+ {k:'want',q:'מה הכי חשוב לך להחזיר?',h:'אפשר לבחור כמה',m:1,o:['זמן עם הילדים','זמן זוגי','שינה טובה','ריכוז בעבודה','תנועה וכושר','שקט בראש']},
+ {k:'when',q:'מתי זה הכי קורה?',h:'אפשר לבחור כמה',m:1,o:['בבוקר, עוד במיטה','בארוחות','בערב עם המשפחה','לפני השינה','בהפסקות בעבודה']}];
+let qi=0;
+function renderQuiz(){const Q=QUIZ[qi];st.quiz=st.quiz||{};const a=st.quiz[Q.k]||(Q.m?[]:null);
+ document.getElementById('qStep').textContent=`שאלה ${qi+1} מתוך ${QUIZ.length}`;
+ document.getElementById('qProg').innerHTML=QUIZ.map((_,i)=>`<i class="${i<=qi?'on':''}"></i>`).join('');
+ document.getElementById('qTitle').textContent=Q.q;document.getElementById('qHint').textContent=Q.h||'';
+ document.getElementById('qOpts').innerHTML=Q.o.map((o,i)=>{const on=Q.m?a.includes(o):a===o;return`<button class="opt ${Q.m?'multi':''} ${on?'on':''}" onclick="quizPick(${i})">${o}<span class="ck"><svg class="i"><use href="#i-check"/></svg></span></button>`}).join('');
+ document.getElementById('qNext').disabled=Q.m?!a.length:!a;document.getElementById('qNext').textContent=qi===QUIZ.length-1?'סיימתי':'המשך'}
+function quizPick(i){const Q=QUIZ[qi],o=Q.o[i];st.quiz=st.quiz||{};
+ if(Q.m){const a=st.quiz[Q.k]||[];st.quiz[Q.k]=a.includes(o)?a.filter(x=>x!==o):[...a,o]}else st.quiz[Q.k]=o;save();renderQuiz();
+ if(!Q.m)setTimeout(quizNext,280)}
+function quizNext(){const Q=QUIZ[qi],a=(st.quiz||{})[Q.k];if(Q.m?!(a&&a.length):!a)return;if(qi<QUIZ.length-1){qi++;renderQuiz();document.getElementById('quiz').scrollTop=0}else go('ob2')}
+function quizBack(){if(qi>0){qi--;renderQuiz()}else go('ob1')}
+
+/* ---------- plan + paywall (demo) ---------- */
+function renderPlan(){const z=st.quiz||{},T=st.times;const per={'פחות מ-10':8,'10–30':20,'30–60':45,'יותר מ-60':70}[z.opens];
+ const rows=[];
+ if(per)rows.push(['phone','היום: בערך '+per+' פתיחות ביום','עם הפסקה קצרה לפני כל פתיחה, הרבה מהן פשוט לא יקרו.']);
+ else rows.push(['phone','נגלה יחד כמה פעמים ביום','במסך הבית יופיע כמה פעמים בחרת להיות כאן.']);
+ if(z.want&&z.want.length)rows.push(['target','המטרה שלך',z.want.join(' · ')]);
+ if(st.people.length)rows.push(['heart','האנשים שלך',st.people.map(p=>p.name).join(', ')+'. יופיעו בשעות המשפחה.']);
+ rows.push(['clock','מתי ההפסקה תהיה שונה',`בוקר שקט עד ${T.mEnd} · משפחה מ-${T.fStart} עד ${T.fEnd}${T.shabbat?' · שבת':''} · לילה מ-${T.nStart}`]);
+ if(z.when&&z.when.length)rows.push(['sun','הרגעים הכי קשים',z.when.join(' · ')+'. שם ההפסקה תעזור הכי הרבה.']);
+ document.getElementById('planBox').innerHTML=rows.map(([i,b,s])=>`<div class="pr"><span class="ic">${ic(i)}</span><span><b>${esc(b)}</b><span>${esc(s)}</span></span></div>`).join('')}
+let plan='year';
+function pickPlan(p){plan=p;document.querySelectorAll('.plancard').forEach(c=>c.classList.toggle('on',c.dataset.p===p));
+ document.getElementById('pwBuy').textContent=p==='year'?'להתחיל 7 ימים בחינם':'לקנות לכל החיים';
+ document.getElementById('pwFine').textContent=p==='year'?'היום 0 ₪. אחרי 7 ימים $29.99 לשנה. תזכורת יומיים לפני. ביטול בכל רגע בהגדרות האייפון.':'תשלום אחד של $59.99. בלי מנוי ובלי חיובים נוספים.'}
+async function startTrial(){st.trial={plan,start:Date.now()};save();toast('הדגמה: לא בוצע חיוב');go('ob5')}
 function finishConnect(ok){if(ok)st.connected=true;const first=!st.setup;st.setup=true;save();
  if(pendingApp){const a=pendingApp;pendingApp=null;startPause(a);return}
  if(first&&!ok)toast('אפשר לחבר מתי שרוצים, מההגדרות');go('home')}
@@ -544,7 +693,7 @@ function cp(t){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.rej
 function openSettings(){const T=st.times;
  document.getElementById('sPeople').textContent=st.people.length?st.people.map(p=>p.name).join(', '):'עוד לא נוספו';
  document.getElementById('sIdeas').textContent=`${st.general.length} תמונות · ${st.cats.length+st.custom.length} סוגי רעיונות`;
- document.getElementById('sTimes').textContent=`משפחה ${T.fStart}–${T.fEnd} · לילה מ-${T.nStart}`;
+ document.getElementById('sTimes').textContent=`משפחה מ-${T.fStart} עד ${T.fEnd} · לילה מ-${T.nStart}`;
  document.getElementById('sConn').textContent=st.connected?'מחובר':'עוד לא מחובר';
  document.getElementById('sSheet').classList.add('on')}
 async function resetAll(){if(!confirm('למחוק את כל האנשים, התמונות וההיסטוריה? אי אפשר לבטל.'))return;await DB.clear();localStorage.removeItem('lu');location.hash='';location.reload()}
@@ -555,7 +704,7 @@ function boot(){const h=location.hash.slice(1),q=new URLSearchParams(h.replace(/
   if(!st.setup){pendingApp=app;go('ob1');return}st.connected=true;save();startPause(app);return}
  go(st.setup?'home':'ob1')}
 boot();
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+if('serviceWorker' in navigator&&!location.pathname.includes('/lookup')){navigator.serviceWorker.register('sw.js').catch(()=>{})}
 </script>
 </body>
 </html>
