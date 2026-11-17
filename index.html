@@ -15,7 +15,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&display=swap" rel="stylesheet">
 <style>
-/* Look Up v7 (pain quiz + facts + goal + plan + hold-to-commit + 3-step demo paywall + first pause) */
+/* Look Up v8: any app — Screen Time categories + individual apps picker, per-app open counter */
+/* earlier v7 (pain quiz + facts + goal + plan + hold-to-commit + 3-step demo paywall + first pause) */
 /* earlier: v6 (quiz + plan + 3-step demo paywall) — direction: "Passion Finder" (warm gradient, bubbles, photo-in-circle, glass score rows)
    + "Stress" premium glass (big thin numerals, glass/white tiles, arc gauge). Built for readability. */
 :root{
@@ -226,6 +227,23 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .fine{text-align:center;font-size:13.5px;line-height:1.5;color:var(--w90);margin-top:10px}
 .links{display:flex;justify-content:center;gap:18px;margin-top:6px;font-size:13.5px;color:var(--w90)}
 .links button{text-decoration:underline;text-underline-offset:3px}
+.presets{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.presets button{height:36px;padding:0 14px;border-radius:18px;background:rgba(255,255,255,.18);border:1px solid var(--gline);font-size:14px;font-weight:500}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:16px;background:rgba(0,0,0,.15);margin-top:14px}
+.seg button{height:42px;border-radius:12px;font-size:16px;font-weight:600;color:var(--w90)}
+.seg button.on{background:#fff;color:var(--ink)}
+.cdot{width:14px;height:14px;border-radius:50%;flex-shrink:0;box-shadow:0 0 0 3px rgba(255,255,255,.35)}
+.agrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 6px}
+.atile{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12.5px;font-weight:500;line-height:1.2;text-align:center}
+.aic{width:58px;height:58px;border-radius:15px;display:grid;place-items:center;color:#fff;font-size:24px;font-weight:700;box-shadow:0 6px 14px -8px rgba(0,0,0,.5);transition:transform .15s,opacity .15s}
+.atile:not(.on) .aic{opacity:.55}
+.atile.on .aic{box-shadow:0 0 0 3px #fff,0 6px 14px -8px rgba(0,0,0,.5)}
+.atile em{position:absolute;top:-6px;left:6px;width:22px;height:22px;border-radius:50%;background:#3E9B5F;color:#fff;display:grid;place-items:center}
+.atile em svg{width:13px;height:13px;stroke-width:3}
+.atile.viacat em{background:#fff;color:#3E9B5F}
+.gapp{display:flex;align-items:center;gap:10px;margin-top:10px}
+.gapp .aic{width:36px;height:36px;border-radius:10px;font-size:16px}
+.gapp b{font-size:15.5px;font-weight:500}
 .fact{padding:26px 22px;text-align:center}
 .fact .num{font-size:88px}
 .fact p{font-size:17.5px;line-height:1.55;margin-top:10px;color:#fff}
@@ -297,7 +315,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 <section class="screen" id="ob1">
   <div class="brand" style="margin-top:2vh">Look<br>Up</div>
   <h1 class="t">הטלפון שלך יחזיר אותך<br>לאנשים שלך</h1>
-  <p class="d">רגע לפני שאינסטגרם או טיקטוק נפתחים: נשימה אחת, תמונה שאוהבים, ודבר קטן לעשות במקום.</p>
+  <p class="d">רגע לפני שנכנסים לרשתות, לסרטונים, למשחקים או לקניות: נשימה אחת, תמונה שאוהבים, ודבר קטן לעשות במקום.</p>
   <div class="grow" style="min-height:16px"></div>
   <div class="circ" style="--len:820">
     <svg class="arc" viewBox="0 0 280 280"><circle class="bgc" cx="140" cy="140" r="130"/><circle class="fg" cx="140" cy="140" r="130" style="stroke-dashoffset:520"/></svg>
@@ -319,10 +337,25 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
   <div class="duo"><button class="pill white" id="qNext" onclick="quizNext()" disabled>המשך</button></div>
 </section>
 
-<!-- ============ 2. PEOPLE ============ -->
-<section class="screen" id="ob2">
+<!-- ============ 1. APPS & CATEGORIES ============ -->
+<section class="screen" id="apps">
   <div class="top"><button class="gbtn" onclick="back('quiz')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
   <div class="stepof" data-step="1" style="margin-top:14px"></div><div class="prog" data-step="1"></div>
+  <h1 class="t">מה גוזל לך הכי<br>הרבה זמן?</h1>
+  <p class="d">אפשר לבחור קטגוריה שלמה, כמו כל המשחקים, או אפליקציות מסוימות. ההפסקה תופיע לפני כל אחת מהן.</p>
+  <div class="presets"><button onclick="preset('social')">רק רשתות</button><button onclick="preset('video')">סרטונים ורשתות</button><button onclick="preset('all')">כל מה שמסיח</button></div>
+  <div class="seg"><button data-t="cats" onclick="pickTab='cats';renderPicker()">קטגוריות</button><button data-t="apps" onclick="pickTab='apps';renderPicker()">אפליקציות</button></div>
+  <input class="field" id="pickSearch" placeholder="חיפוש אפליקציה" oninput="renderPicker(this.value)" style="margin-top:12px">
+  <div id="pickList" style="margin-top:12px"></div>
+  <div class="grow" style="min-height:16px"></div>
+  <p class="qhint" id="pickSum" style="margin-bottom:-4px"></p>
+  <div class="duo"><button class="pill white" id="appsBtn" onclick="appsDone()">המשך</button></div>
+</section>
+
+<!-- ============ 2. PEOPLE ============ -->
+<section class="screen" id="ob2">
+  <div class="top"><button class="gbtn" onclick="back('apps')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <div class="stepof" data-step="2" style="margin-top:14px"></div><div class="prog" data-step="2"></div>
   <h1 class="t">בשביל מי חשוב לך<br>להיות יותר כאן?</h1>
   <p class="d">ילדים, בן או בת זוג, הורים, חברים. בשעות המשפחה יופיעו התמונה שלהם ורעיון קטן איתם.</p>
   <div class="bubbles" id="peopleList" style="margin-top:18px"></div>
@@ -333,7 +366,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 <!-- ============ 3. PHOTOS + IDEAS ============ -->
 <section class="screen" id="ob3">
   <div class="top"><button class="gbtn" onclick="back('ob2')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
-  <div class="stepof" data-step="2" style="margin-top:14px"></div><div class="prog" data-step="2"></div>
+  <div class="stepof" data-step="3" style="margin-top:14px"></div><div class="prog" data-step="3"></div>
   <h1 class="t">מה עושה לך טוב?</h1>
   <p class="d">תמונות ורעיונות שיופיעו בהפסקה בשאר שעות היום.</p>
   <div class="lbl">מה לעשות במקום לגלול?<small>לחיצה בוחרת</small></div>
@@ -350,7 +383,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 <!-- ============ 4. TIMES ============ -->
 <section class="screen" id="ob4">
   <div class="top"><button class="gbtn" onclick="back('ob3')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
-  <div class="stepof" data-step="3" style="margin-top:14px"></div><div class="prog" data-step="3"></div>
+  <div class="stepof" data-step="4" style="margin-top:14px"></div><div class="prog" data-step="4"></div>
   <h1 class="t">מתי הכי חשוב לך<br>להיות כאן?</h1>
   <p class="d">לפי השעה ההפסקה מציגה דברים אחרים. לחיצה על שעה משנה אותה.</p>
   <div style="margin-top:20px">
@@ -393,7 +426,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 <section class="screen" id="first">
   <div class="top"><span></span><div class="brand sm">Look Up</div><span></span></div>
   <h1 class="t" style="margin-top:26px">ההפסקה הראשונה שלך</h1>
-  <p class="d">ככה זה ייראה רגע לפני שאינסטגרם נפתח. נשימה אחת, 10 שניות, ואז מחליטים.</p>
+  <p class="d">ככה זה ייראה רגע לפני שאחת האפליקציות שבחרת נפתחת. נשימה אחת, 10 שניות, ואז מחליטים.</p>
   <div class="grow" style="min-height:16px"></div>
   <div class="circ" style="--len:820;width:min(62vw,240px)">
     <svg class="arc" viewBox="0 0 280 280"><circle class="bgc" cx="140" cy="140" r="130"/><circle class="fg" cx="140" cy="140" r="130" style="stroke-dashoffset:820"/></svg>
@@ -440,7 +473,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
   <div style="text-align:center;margin-top:10px"><span class="demo">הדגמה · אין חיוב אמיתי</span></div>
   <h1 class="t" style="margin-top:14px">להיות יותר כאן,<br>כל יום</h1>
   <div class="vals">
-    <div><svg class="i"><use href="#i-heart"/></svg>הפסקה עם האנשים שלך, לפני כל אינסטגרם</div>
+    <div><svg class="i"><use href="#i-heart"/></svg>הפסקה עם האנשים שלך, לפני כל אפליקציה שבחרת</div>
     <div><svg class="i"><use href="#i-sun"/></svg>בוקר שקט, ערבי משפחה ושבת</div>
     <div><svg class="i"><use href="#i-target"/></svg>רואים כל שבוע כמה פעמים בחרת בהם</div>
   </div>
@@ -458,9 +491,9 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 <!-- ============ 5. CONNECT ============ -->
 <section class="screen" id="ob5">
   <div class="top"><button class="gbtn" onclick="back(st.setup?'home':'pw3')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
-  <div class="stepof" data-step="4" style="margin-top:14px"></div><div class="prog" data-step="4"></div>
-  <h1 class="t">חיבור לאינסטגרם</h1>
-  <p class="d">פעם אחת, בערך 3 דקות, באפליקציית <b>קיצורים</b> של האייפון. אחרי זה ההפסקה תופיע לבד כשפותחים אינסטגרם.</p>
+  <div class="stepof" data-step="5" style="margin-top:14px"></div><div class="prog" data-step="5"></div>
+  <h1 class="t">חיבור לאפליקציות</h1>
+  <p class="d">בגרסת הניסיון החיבור נעשה פעם אחת באפליקציית <b>קיצורים</b>, אוטומציה לכל אפליקציה. באפליקציה מהאפסטור זה יקרה לבד, כולל קטגוריות שלמות.</p>
   <div class="glass" style="margin-top:18px" id="guideCard"></div>
   <div class="grow" style="min-height:16px"></div>
   <div class="duo"><button class="pill glassb" id="ob5later" onclick="finishConnect(false)">אחר כך</button><button class="pill white" onclick="finishConnect(true)">סיימתי לחבר</button></div>
@@ -531,10 +564,11 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 <div class="sheet" id="sSheet" onclick="if(event.target===this)closeSheet()"><div>
   <h2>הגדרות</h2>
   <div style="margin-top:10px">
+    <button class="srow" onclick="closeSheet();edit('apps')"><span class="ic"><svg class="i"><use href="#i-phone"/></svg></span><span class="tx"><b>אפליקציות להשהיה</b><small id="sApps"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
     <button class="srow" onclick="closeSheet();edit('ob2')"><span class="ic"><svg class="i"><use href="#i-users"/></svg></span><span class="tx"><b>האנשים שלי</b><small id="sPeople"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
     <button class="srow" onclick="closeSheet();edit('ob3')"><span class="ic"><svg class="i"><use href="#i-bulb"/></svg></span><span class="tx"><b>תמונות ורעיונות</b><small id="sIdeas"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
     <button class="srow" onclick="closeSheet();edit('ob4')"><span class="ic"><svg class="i"><use href="#i-clock"/></svg></span><span class="tx"><b>שעות</b><small id="sTimes"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
-    <button class="srow" onclick="closeSheet();go('ob5')"><span class="ic"><svg class="i"><use href="#i-link"/></svg></span><span class="tx"><b>חיבור לאינסטגרם וטיקטוק</b><small id="sConn"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
+    <button class="srow" onclick="closeSheet();go('ob5')"><span class="ic"><svg class="i"><use href="#i-link"/></svg></span><span class="tx"><b>חיבור לאפליקציות</b><small id="sConn"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
   </div>
   <button class="pill link" style="color:#B5462A;margin-top:12px" onclick="resetAll()"><svg class="i"><use href="#i-trash"/></svg>מחיקת כל הנתונים</button>
 </div></div>
@@ -571,7 +605,43 @@ const IDEAS={body:['5 שכיבות סמיכה','לקום ולמתוח את הג�
 const MORNING=['כוס מים לפני הכול','למתוח את הגוף דקה','להגיד בוקר טוב למישהו','לפתוח את התריס ולתת לאור להיכנס'];
 const DAY_TITLES=['רגע לעצמך.','מה קורה סביבך עכשיו?','נשימה אחת, ואז מחליטים.','הפיד יחכה. העולם כאן.'];
 const NIGHT=[['עשית מספיק היום.','המיטה מחכה. הפיד יחכה למחר.'],['לילה טוב.','מחר בבוקר זה ירגיש טוב.']];
-const APPS={instagram:{n:'אינסטגרם',u:'instagram://'},tiktok:{n:'טיקטוק',u:'snssdk1233://'},youtube:{n:'יוטיוב',u:'youtube://'},facebook:{n:'פייסבוק',u:'fb://'},x:{n:'X',u:'twitter://'}};
+/* App categories = Apple Screen Time / App Store categories (what FamilyActivityPicker shows in the native app) */
+const ACATS=[
+ {k:'social',l:'רשתות חברתיות',e:'Instagram, TikTok, Facebook, X',c:'#E1306C'},
+ {k:'ent',l:'בידור וסרטונים',e:'YouTube, Netflix, Twitch',c:'#E5483B'},
+ {k:'games',l:'משחקים',e:'כל המשחקים בטלפון',c:'#7A5AF8'},
+ {k:'shop',l:'קניות ואוכל',e:'AliExpress, Amazon, Shein, Wolt',c:'#F08A24'},
+ {k:'news',l:'מידע וקריאה',e:'חדשות, Reddit, פורומים',c:'#2F80ED'},
+ {k:'creative',l:'יצירה',e:'עריכת תמונות ווידאו',c:'#1FA67A'},
+ {k:'productivity',l:'פרודוקטיביות וכספים',e:'מייל, בנקים, קבצים',c:'#5B6B7F'},
+ {k:'other',l:'כל השאר',e:'אפליקציות בלי קטגוריה',c:'#8C8C8C'}];
+/* popular apps (prototype list; the real app uses Apple's picker with every installed app) */
+const APPS={
+ instagram:{n:'אינסטגרם',en:'Instagram',u:'instagram://',c:'social',col:'#D62976'},
+ tiktok:{n:'טיקטוק',en:'TikTok',u:'snssdk1233://',c:'social',col:'#111111'},
+ facebook:{n:'פייסבוק',en:'Facebook',u:'fb://',c:'social',col:'#1877F2'},
+ x:{n:'X',en:'X',u:'twitter://',c:'social',col:'#000000'},
+ snapchat:{n:'סנאפצ׳ט',en:'Snapchat',u:'snapchat://',c:'social',col:'#E8C900'},
+ threads:{n:'Threads',en:'Threads',u:'barcelona://',c:'social',col:'#222222'},
+ pinterest:{n:'פינטרסט',en:'Pinterest',u:'pinterest://',c:'social',col:'#E60023'},
+ whatsapp:{n:'וואטסאפ',en:'WhatsApp',u:'whatsapp://',c:'social',col:'#25D366'},
+ telegram:{n:'טלגרם',en:'Telegram',u:'tg://',c:'social',col:'#2AABEE'},
+ youtube:{n:'יוטיוב',en:'YouTube',u:'youtube://',c:'ent',col:'#FF0000'},
+ netflix:{n:'נטפליקס',en:'Netflix',u:'nflx://',c:'ent',col:'#B20710'},
+ twitch:{n:'טוויץ׳',en:'Twitch',u:'twitch://',c:'ent',col:'#9146FF'},
+ reddit:{n:'רדיט',en:'Reddit',u:'reddit://',c:'news',col:'#FF4500'},
+ ynet:{n:'ynet',en:'ynet',u:'',c:'news',col:'#D3141C'},
+ aliexpress:{n:'עליאקספרס',en:'AliExpress',u:'aliexpress://',c:'shop',col:'#E43225'},
+ amazon:{n:'אמזון',en:'Amazon',u:'com.amazon.mobile.shopping://',c:'shop',col:'#232F3E'},
+ shein:{n:'שיין',en:'SHEIN',u:'',c:'shop',col:'#222222'},
+ temu:{n:'טמו',en:'Temu',u:'',c:'shop',col:'#FB7701'},
+ wolt:{n:'וולט',en:'Wolt',u:'',c:'shop',col:'#00C2E8'},
+ candycrush:{n:'קנדי קראש',en:'Candy Crush',u:'',c:'games',col:'#F2789F'},
+ roblox:{n:'רובלוקס',en:'Roblox',u:'roblox://',c:'games',col:'#3D3D3D'},
+ clashroyale:{n:'קלאש רויאל',en:'Clash Royale',u:'',c:'games',col:'#2F6FD8'},
+ subway:{n:'סאבווי סרפרס',en:'Subway Surfers',u:'',c:'games',col:'#F6B12B'},
+ safari:{n:'ספארי (אתרים)',en:'Safari',u:'',c:'other',col:'#1E90FF'}};
+const appName=k=>APPS[k]?APPS[k].n:(ACATS.find(c=>c.k===k)||{}).l||decodeURIComponent(k||'האפליקציה');
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const GOAL=5;
 
@@ -585,12 +655,12 @@ function mode(d=new Date()){const T=st.times,now=d.getHours()*60+d.getMinutes(),
  return'day'}
 
 /* ---------- navigation ---------- */
-const TOTAL=4;let editing=false;
+const TOTAL=5;let editing=false;
 function go(id){closeSheet();document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));const el=document.getElementById(id);el.classList.add('on');el.scrollTop=0;
  el.querySelectorAll('[data-step]').forEach(x=>{const n=+x.dataset.step;if(editing||st.setup){x.style.display='none';return}x.style.display='';
   if(x.classList.contains('prog'))x.innerHTML=[...Array(TOTAL)].map((_,i)=>`<i class="${i<n?'on':''}"></i>`).join('');else x.textContent=`שלב ${n} מתוך ${TOTAL}`});
  if(id==='ob2')renderPeople();if(id==='ob3')renderGeneral();if(id==='ob4')loadTimes();if(id==='ob5')renderGuide();if(id==='home')renderHome();
- if(id==='quiz')renderQuiz();if(id==='plan')renderPlan();if(id==='commit')renderCommit();
+ if(id==='quiz')renderQuiz();if(id==='plan')renderPlan();if(id==='apps')renderPicker();if(id==='commit')renderCommit();
  if(id==='first')photo(st.general[0]||st.people.flatMap(p=>p.pics)[0]).then(s=>{if(s)document.getElementById('firstPh').style.backgroundImage=`url(${s})`});
  if(id==='pw1')photo(st.general[0]||st.people.flatMap(p=>p.pics)[0]).then(s=>{if(s)document.getElementById('pw1ph').style.backgroundImage=`url(${s})`})}
 function back(id){if(editing){editing=false;go('home')}else go(id)}
@@ -638,7 +708,7 @@ function finishTimes(){const T=st.times;['mEnd','fStart','fEnd','nStart'].forEac
 /* ---------- quiz ---------- */
 /* onboarding blueprint (Steven Cravotta / Cal AI / Duolingo): pain questions → facts → goal → plan → commit → paywall */
 const QUIZ=[
- {k:'opens',q:'כמה פעמים ביום, בערך, פותחים אינסטגרם או טיקטוק?',o:['פחות מ-10','10–30','30–60','יותר מ-60','אין לי מושג']},
+ {k:'opens',q:'כמה פעמים ביום, בערך, פותחים רשתות, סרטונים או משחקים?',o:['פחות מ-10','10–30','30–60','יותר מ-60','אין לי מושג']},
  {k:'pain',q:'מה הכי מפריע לך בזה?',h:'אפשר לבחור כמה',m:1,o:['לפספס רגעים עם המשפחה','הילדים מבקשים שאניח את הטלפון','קשה להירדם בלילה','קשה להתרכז','תחושה של בזבוז זמן']},
  {fact:1,n:'76%',q:'זה לא רק אצלך',t:'מההורים מרימים את הטלפון בלי לחשוב, לעומת 57% מאלה שאין להם ילדים. הטלפון בנוי לזה, וזו לא חולשה שלך.'},
  {k:'feel',q:'איך מרגישים אחרי גלילה ארוכה?',o:['עייפות','קצת אשמה','בזבוז זמן','בסדר גמור','תלוי ביום']},
@@ -659,7 +729,7 @@ function renderQuiz(){const Q=QUIZ[qi];st.quiz=st.quiz||{};
 function quizPick(i){const Q=QUIZ[qi],o=Q.o[i];st.quiz=st.quiz||{};
  if(Q.m){const a=st.quiz[Q.k]||[];st.quiz[Q.k]=a.includes(o)?a.filter(x=>x!==o):[...a,o]}else st.quiz[Q.k]=o;save();renderQuiz();
  if(!Q.m)setTimeout(quizNext,280)}
-function quizNext(){const Q=QUIZ[qi],a=(st.quiz||{})[Q.k];if(!Q.fact&&(Q.m?!(a&&a.length):!a))return;if(qi<QUIZ.length-1){qi++;renderQuiz();document.getElementById('quiz').scrollTop=0}else go('ob2')}
+function quizNext(){const Q=QUIZ[qi],a=(st.quiz||{})[Q.k];if(!Q.fact&&(Q.m?!(a&&a.length):!a))return;if(qi<QUIZ.length-1){qi++;renderQuiz();document.getElementById('quiz').scrollTop=0}else go('apps')}
 function quizBack(){if(qi>0){qi--;renderQuiz()}else go('ob1')}
 
 /* ---------- plan + paywall (demo) ---------- */
@@ -695,18 +765,20 @@ function finishConnect(ok){if(ok)st.connected=true;const first=!st.setup;st.setu
 
 /* ---------- pause ---------- */
 let firstRun=false,curApp='instagram',curPerson=null,pendingApp=null,isTest=false,lastSrc='',lastNight=false,timers=[];
-async function startPause(app,test){curApp=APPS[app]?app:'instagram';isTest=!!test;curPerson=null;
+async function startPause(app,test){curApp=app||'instagram';isTest=!!test;curPerson=null;
+ const tries=st.log.filter(e=>e.app===curApp&&dayKey(new Date(e.t))===dayKey(new Date())).length+1;
  const m=mode();let title,idea,pic,greet,lbl='במקום:';
  if(m==='family'){const p=pick(st.people);curPerson=p.id;const r=REL[p.rel];title=PEOPLE_TITLES[r.k](p.name,r.g);idea=pick(PEOPLE_IDEAS[r.k])(p.name,r.g);pic=pick(p.pics)||pick(st.general);greet='שעות משפחה'}
  else if(m==='morning'){title='בוקר טוב.';idea=pick(MORNING);pic=pick(st.general)||pick(st.people.flatMap(p=>p.pics));greet='היום מתחיל ממך, לא מהפיד'}
  else if(m==='night'){const n=pick(NIGHT);title=n[0];idea=n[1];pic=pick(st.general)||pick(st.people.flatMap(p=>p.pics));greet='לילה';lbl='ועכשיו:'}
- else{title=pick(DAY_TITLES);const pool=[...st.cats.flatMap(c=>IDEAS[c]||[]),...st.custom,...st.custom];idea=pick(pool.length?pool:IDEAS.breath);pic=pick([...st.general,...st.people.flatMap(p=>p.pics)]);greet=`רגע לפני ${APPS[curApp].n}`}
+ else{title=pick(DAY_TITLES);const pool=[...st.cats.flatMap(c=>IDEAS[c]||[]),...st.custom,...st.custom];idea=pick(pool.length?pool:IDEAS.breath);pic=pick([...st.general,...st.people.flatMap(p=>p.pics)]);greet=`רגע לפני ${appName(curApp)}`}
+ if(!isTest)greet+=` · הפעם ה-${tries} היום`;
  lastSrc=await photo(pic)||'';lastNight=m==='night';
  const bg=lastSrc?`url(${lastSrc})`:(lastNight?'var(--photoNight)':'var(--photo)');
  document.getElementById('pPhoto').style.backgroundImage=bg;document.getElementById('pBgBlur').style.backgroundImage=bg;
  document.getElementById('pGreet').textContent=greet;document.getElementById('pTitle').textContent=title;
  document.getElementById('pIdea').textContent=idea;document.getElementById('pIdeaLbl').textContent=lbl;
- document.getElementById('anyway').textContent=`לפתוח את ${APPS[curApp].n} בכל זאת`;
+ document.getElementById('anyway').textContent=`לפתוח את ${appName(curApp)} בכל זאת`;
  document.getElementById('pMsg').classList.remove('on');
  go('pause');runBreath()}
 function runBreath(){timers.forEach(clearTimeout);const s=document.getElementById('pause'),c=document.getElementById('cue'),a=document.getElementById('pArc');
@@ -718,11 +790,32 @@ function runBreath(){timers.forEach(clearTimeout);const s=document.getElementByI
  setTimeout(()=>{s.classList.remove('out');s.classList.add('in','ready')},6500)]}
 function choose(kind){if(!isTest){st.log.push({t:Date.now(),k:kind,app:curApp,p:curPerson});st.log=st.log.slice(-2000);save()}
  if(kind==='here'){const today=countDay(new Date());document.getElementById('dTitle').innerHTML='יפה.<br>בחרת להיות כאן.';
-  const p=st.people.find(x=>x.id===curPerson);document.getElementById('dSub').textContent=p?`עכשיו רק ${p.name}.`:(isTest?'ככה זה ייראה כשפותחים אינסטגרם.':`זו הפעם ה-${today.here||1} היום.`);
+  const p=st.people.find(x=>x.id===curPerson);document.getElementById('dSub').textContent=p?`עכשיו רק ${p.name}.`:(isTest?'ככה זה ייראה לפני כל אפליקציה שבחרת.':`זו הפעם ה-${today.here||1} היום.`);
   const after=firstRun?'ob5':'home';
-  document.getElementById('dFoot').textContent=isTest?(firstRun?'עכשיו נחבר את זה לאינסטגרם…':'חוזרים למסך הבית…'):'אפשר לסגור את המסך הזה.';go('done');if(isTest)setTimeout(()=>{firstRun=false;go(after)},2600);return}
+  document.getElementById('dFoot').textContent=isTest?(firstRun?'עכשיו נחבר את זה לאפליקציות…':'חוזרים למסך הבית…'):'אפשר לסגור את המסך הזה.';go('done');if(isTest)setTimeout(()=>{firstRun=false;go(after)},2600);return}
  if(isTest){toast('בניסיון לא נפתחת אפליקציה');const a=firstRun?'ob5':'home';firstRun=false;go(a);return}
- location.href='shortcuts://run-shortcut?name='+encodeURIComponent('Look Up Pass')+'&input=text&text='+encodeURIComponent(APPS[curApp].u)}
+ const u=(APPS[curApp]||{}).u;if(!u){toast('אפשר לפתוח את האפליקציה כרגיל עכשיו');return}
+ location.href='shortcuts://run-shortcut?name='+encodeURIComponent('Look Up Pass')+'&input=text&text='+encodeURIComponent(u)}
+
+/* ---------- app & category picker ---------- */
+let pickTab='cats';
+function selApps(){st.block=st.block||{cats:['social','ent'],apps:['instagram','tiktok','youtube']};return st.block}
+const appIcon=k=>{const a=APPS[k];return`<span class="aic" style="background:${a.col}">${esc(a.en[0])}</span>`};
+function renderPicker(q=''){const B=selApps();
+ document.querySelectorAll('#apps .seg button').forEach(b=>b.classList.toggle('on',b.dataset.t===pickTab));
+ document.getElementById('pickSearch').style.display=pickTab==='apps'?'':'none';
+ const L=document.getElementById('pickList');
+ if(pickTab==='cats')L.innerHTML=`<div class="opts" style="margin-top:0">`+ACATS.map(c=>`<button class="opt multi ${B.cats.includes(c.k)?'on':''}" onclick="togCat('${c.k}')"><span class="cdot" style="background:${c.c}"></span><span style="flex:1"><b style="display:block;font-weight:600">${c.l}</b><small style="display:block;font-size:13.5px;font-weight:400;opacity:.8">${c.e}</small></span><span class="ck"><svg class="i"><use href="#i-check"/></svg></span></button>`).join('')+`</div>`;
+ else{const s=q.trim().toLowerCase();const ks=Object.keys(APPS).filter(k=>!s||APPS[k].n.toLowerCase().includes(s)||APPS[k].en.toLowerCase().includes(s));
+  L.innerHTML=`<div class="agrid">`+ks.map(k=>{const inCat=B.cats.includes(APPS[k].c),on=B.apps.includes(k)||inCat;return`<button class="atile ${on?'on':''} ${inCat?'viacat':''}" onclick="togApp('${k}')">${appIcon(k)}<span>${APPS[k].n}</span>${on?`<em>${ic('check')}</em>`:''}</button>`}).join('')+`</div>`+(ks.length?'':'<p class="qhint">לא נמצא. באפליקציה האמיתית יופיעו כל האפליקציות שבטלפון.</p>')}
+ const nApps=Object.keys(APPS).filter(k=>B.apps.includes(k)||B.cats.includes(APPS[k].c)).length;
+ document.getElementById('pickSum').textContent=B.cats.length||B.apps.length?`${B.cats.length?B.cats.length+(B.cats.length===1?' קטגוריה':' קטגוריות'):''}${B.cats.length&&B.apps.length?' + ':''}${B.apps.length?B.apps.length+(B.apps.length===1?' אפליקציה':' אפליקציות'):''} · ההפסקה תופיע לפני ${nApps}+ אפליקציות`:'עוד לא נבחר כלום';
+ const btn=document.getElementById('appsBtn');btn.disabled=!(B.cats.length||B.apps.length);btn.textContent=editing?'שמירה':'המשך'}
+function togCat(k){const B=selApps();B.cats=B.cats.includes(k)?B.cats.filter(x=>x!==k):[...B.cats,k];save();renderPicker()}
+function togApp(k){const B=selApps();if(B.cats.includes(APPS[k].c)){toast(`${APPS[k].n} כבר בפנים דרך הקטגוריה "${ACATS.find(c=>c.k===APPS[k].c).l}"`);return}
+ B.apps=B.apps.includes(k)?B.apps.filter(x=>x!==k):[...B.apps,k];save();renderPicker(document.getElementById('pickSearch').value)}
+function preset(p){const B=selApps();const P={social:{cats:['social'],apps:[]},video:{cats:['ent'],apps:['instagram','tiktok']},all:{cats:['social','ent','games','shop'],apps:[]}}[p];B.cats=[...P.cats];B.apps=[...P.apps];save();renderPicker()}
+function appsDone(){if(editing)return doneEditing();go('ob2')}
 
 /* ---------- home ---------- */
 const dayKey=d=>d.toDateString();
@@ -737,7 +830,7 @@ async function renderHome(){const now=new Date();
  document.getElementById('hDate').textContent=now.toLocaleDateString('he-IL',{weekday:'long',day:'numeric',month:'numeric'});
  const today=countDay(now).here;document.getElementById('tHere').innerHTML=`${today}<small>${today===1?'פעם':'פעמים'}</small>`;
  drawGauge(today/GOAL);
- document.getElementById('connectStatus').innerHTML=st.connected?'':`<div class="status"><span class="tx"><b>עוד לא מחובר לאינסטגרם</b><small>בלי זה ההפסקה לא תופיע. 3 דקות.</small></span><button class="go" onclick="go('ob5')">לחבר</button></div>`;
+ document.getElementById('connectStatus').innerHTML=st.connected?'':`<div class="status"><span class="tx"><b>עוד לא מחובר לאפליקציות</b><small>בלי זה ההפסקה לא תופיע. 3 דקות.</small></span><button class="go" onclick="go('ob5')">לחבר</button></div>`;
  const days=[...Array(7)].map((_,i)=>{const d=new Date(now);d.setDate(now.getDate()-6+i);return{d,c:countDay(d)}});const max=Math.max(1,...days.map(x=>x.c.here));
  document.getElementById('week').innerHTML=days.map((x,i)=>`<div class="${i===6?'today':''}"><em>${x.c.here||''}</em><i style="--h:${x.c.here/max*100}%"></i><span>${i===6?'היום':x.d.toLocaleDateString('he-IL',{weekday:'short'}).replace('יום ','')}</span></div>`).join('');
  const wk=st.log.filter(e=>e.t>now-7*864e5);document.getElementById('wHere').textContent=wk.filter(e=>e.k==='here').length;document.getElementById('wOpen').textContent=wk.filter(e=>e.k==='open').length;
@@ -752,9 +845,10 @@ function renderGuide(){const base=location.origin+location.pathname;const u=a=>`
  document.getElementById('ob5later').textContent=st.setup?'חזרה':'אחר כך';
  document.getElementById('guideCard').innerHTML=`
  <div class="step"><span class="k">1</span><div><p>באפליקציית <b>קיצורים</b> ← <b>+</b>. לקרוא לקיצור בדיוק <b>Look Up Pass</b> ולהוסיף 3 פעולות:</p><ul><li>תאריך נוכחי</li><li>שמירת קובץ: תיקייה Shortcuts, שם <b>lookup.txt</b>, החלפה מופעלת</li><li>פתיחת כתובות URL ← קלט הקיצור</li></ul></div></div>
- <div class="step"><span class="k">2</span><div><p>לשונית <b>אוטומציה</b> ← <b>+</b> ← אפליקציה ← <b>Instagram</b> ← "נפתחת" ← <b>הפעלה מיידית</b>.</p></div></div>
- <div class="step"><span class="k">3</span><div><p>פעולות האוטומציה:</p><ul><li>קבלת קובץ lookup.txt מתיקיית Shortcuts (לכבות "הצג שגיאה")</li><li>זמן בין תאריכים: מהקובץ ועד עכשיו, ב<b>שניות</b></li><li>אם התוצאה <b>קטנה מ-60</b> ← עצירת קיצור זה</li><li>פתיחת כתובת URL:</li></ul><code>${u('instagram')}</code><button class="copy" onclick="cp('${u('instagram')}')">${ic('link')}העתקת הכתובת</button></div></div>
- <div class="step"><span class="k">4</span><div><p>לטיקטוק: לשכפל את האוטומציה, לבחור TikTok ולהחליף את הכתובת:</p><code>${u('tiktok')}</code><button class="copy" onclick="cp('${u('tiktok')}')">${ic('link')}העתקת הכתובת</button></div></div>`}
+ <div class="step"><span class="k">2</span><div><p>לשונית <b>אוטומציה</b> ← <b>+</b> ← אפליקציה ← לבחור <b>את כל האפליקציות שלמטה</b> (אפשר כמה בבת אחת) ← "נפתחת" ← <b>הפעלה מיידית</b>.</p></div></div>
+ <div class="step"><span class="k">3</span><div><p>פעולות האוטומציה:</p><ul><li>קבלת קובץ lookup.txt מתיקיית Shortcuts (לכבות "הצג שגיאה")</li><li>זמן בין תאריכים: מהקובץ ועד עכשיו, ב<b>שניות</b></li><li>אם התוצאה <b>קטנה מ-60</b> ← עצירת קיצור זה</li><li>פתיחת כתובת URL. לכל אפליקציה הכתובת שלה:</li></ul>${guideApps().map(k=>`<div class="gapp">${appIcon(k)}<b>${APPS[k].n}</b><button class="copy" style="margin:0;margin-inline-start:auto" onclick="cp('${u(k)}')">${ic('link')}העתקה</button></div>`).join('')}</div></div>
+ <div class="step"><span class="k">4</span><div><p>אוטומציה אחת לכל אפליקציה, עם הכתובת שלה. בגרסת הניסיון זה לא עובד על קטגוריה שלמה, רק על אפליקציות.</p></div></div>`}
+function guideApps(){const B=selApps();const ks=Object.keys(APPS).filter(k=>B.apps.includes(k)||B.cats.includes(APPS[k].c));return ks.length?ks:['instagram','tiktok']}
 function cp(t){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הכתובת הועתקה')).catch(()=>toast('לא הצלחתי להעתיק. אפשר לסמן ולהעתיק ידנית'))}
 
 /* ---------- settings ---------- */
@@ -762,6 +856,7 @@ function openSettings(){const T=st.times;
  document.getElementById('sPeople').textContent=st.people.length?st.people.map(p=>p.name).join(', '):'עוד לא נוספו';
  document.getElementById('sIdeas').textContent=`${st.general.length} תמונות · ${st.cats.length+st.custom.length} סוגי רעיונות`;
  document.getElementById('sTimes').textContent=`משפחה מ-${T.fStart} עד ${T.fEnd} · לילה מ-${T.nStart}`;
+ {const B=selApps();document.getElementById('sApps').textContent=[...B.cats.map(k=>ACATS.find(c=>c.k===k).l),...B.apps.map(k=>APPS[k].n)].join(', ')||'עוד לא נבחרו'}
  document.getElementById('sConn').textContent=st.connected?'מחובר':'עוד לא מחובר';
  document.getElementById('sSheet').classList.add('on')}
 async function resetAll(){if(!confirm('למחוק את כל האנשים, התמונות וההיסטוריה? אי אפשר לבטל.'))return;await DB.clear();localStorage.removeItem('lu');location.hash='';location.reload()}
