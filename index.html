@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Look Up v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
+/* Look Up v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
    Apple Screen Time style picker with real app icons, demo home screen, tab bar (Today / Progress / Settings), one onboarding progress bar */
 /* earlier v9: Cal AI onboarding patterns · v8: any app + categories · v7: Steven Cravotta blueprint · design: Passion Finder + Stress glass */
 :root{
@@ -504,6 +504,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
   <p class="proof"><svg class="i"><use href="#i-check"/></svg><span data-t="w_proof"></span></p>
   <div class="duo"><button class="pill white" onclick="qi=0;go('quiz')" data-t="w_cta"></button></div>
   <p class="foot" data-t="w_foot"></p>
+  <button class="pill link" style="height:36px;font-size:14.5px;margin-top:2px" onclick="toast(t('t_restore'))"><span data-t="w_restore"></span></button>
 </section>
 
 <!-- ============ QUIZ ============ -->
@@ -1246,7 +1247,8 @@ const W={en:{w_title:'Less scrolling.<br>More of your people.',w_desc:'A short p
  es:{w_title:'Menos scroll.<br>Más de tu gente.',w_desc:'Una pausa corta con la foto de alguien que quieres, justo antes de Instagram, TikTok o cualquier app que elijas.',w_proof:'En un estudio de Heidelberg y Max Planck, una pausa corta antes de abrir una app llevó a un 57% menos de aperturas.',w_foot:'2 minutos · Sin cuenta · Se queda en tu teléfono',mock_name:'Lucía'},
  fr:{w_title:'Moins de scroll.<br>Plus de tes proches.',w_desc:'Une courte pause avec la photo de quelqu’un que tu aimes, juste avant Instagram, TikTok ou toute app que tu choisis.',w_proof:'Dans une étude de Heidelberg et Max Planck, une courte pause avant d’ouvrir une app a réduit les ouvertures de 57 %.',w_foot:'2 minutes · Sans compte · Reste sur ton téléphone',mock_name:'Léa'},
  ar:{w_title:'تصفّح أقل.<br>وقت أكثر مع أحبّائك.',w_desc:'استراحة قصيرة مع صورة من تحب، قبل إنستغرام أو تيك توك أو أي تطبيق تختاره مباشرة.',w_proof:'في دراسة لهايدلبرغ وماكس بلانك، أدّت استراحة قصيرة قبل فتح التطبيق إلى فتحه أقل بنسبة 57%.',w_foot:'دقيقتان · بلا حساب · يبقى على هاتفك',mock_name:'نور'}};
-for(const l in W)Object.assign(V[l],W[l]);
+const RS={en:'Already subscribed? <u>Restore purchase</u>',he:'כבר יש לך מנוי? <u>שחזור רכישה</u>',es:'¿Ya tienes suscripción? <u>Restaurar compra</u>',fr:'Déjà abonné ? <u>Restaurer l’achat</u>',ar:'لديك اشتراك؟ <u>استعادة الشراء</u>'};
+for(const l in W){Object.assign(V[l],W[l]);V[l].w_restore=RS[l]}
 for(const l in V){const{Q,...rest}=V[l];Object.assign(STR[l],rest);Object.assign(STR[l].Q,Q)}})();
 let LANG=LANGS[st.lang]?st.lang:'en'; /* English is the default */
 const t=(k,...a)=>{let v=STR[LANG][k];if(v===undefined)v=STR.en[k];return typeof v==='function'?v(...a):(v===undefined?k:v)};
