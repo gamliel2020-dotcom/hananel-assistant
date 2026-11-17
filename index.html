@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Look Up v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
+/* Look Up v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
    Apple Screen Time style picker with real app icons, demo home screen, tab bar (Today / Progress / Settings), one onboarding progress bar */
 /* earlier v9: Cal AI onboarding patterns · v8: any app + categories · v7: Steven Cravotta blueprint · design: Passion Finder + Stress glass */
 :root{
@@ -374,13 +374,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .hold{cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none}
 .hold .holdin{position:absolute;inset:18px;border-radius:50%;background:#fff;color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:17px;font-weight:600;text-align:center;line-height:1.15;box-shadow:0 16px 36px -14px rgba(70,25,0,.55);transition:transform .3s var(--ease)}
 .hold .holdin svg{width:32px;height:32px;color:#D9652A}
-.hold.down .holdin{transform:scale(.94);animation:tremble .09s linear infinite}
-.hold::before,.hold::after{content:"";position:absolute;inset:18px;border-radius:50%;border:2px solid rgba(255,255,255,.8);opacity:0;pointer-events:none}
-.hold.down::before{animation:holdWave .9s ease-out infinite}.hold.down::after{animation:holdWave .9s ease-out .45s infinite}
-.hold.done::before{animation:holdWave .7s ease-out both}.hold.done::after{animation:holdWave .7s ease-out .15s both}
-.hold.done .holdin{animation:donePop .5s cubic-bezier(.2,1.4,.4,1) both}
-@keyframes tremble{0%{transform:scale(.94) translate(0,0)}25%{transform:scale(.94) translate(-1.5px,1px)}50%{transform:scale(.94) translate(1.5px,-1px)}75%{transform:scale(.94) translate(-1px,-1px)}100%{transform:scale(.94) translate(1px,1px)}}
-@keyframes holdWave{from{opacity:.9;transform:scale(1)}to{opacity:0;transform:scale(1.45)}}
+.hold.down .holdin{transform:scale(.94)}
 .hold svg.arc .fg{stroke-width:6}
 .demo{display:inline-block;margin:0 auto;font-size:12.5px;font-weight:600;background:rgba(0,0,0,.25);padding:4px 10px;border-radius:10px}
 
