@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Look Up v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
+/* Look Up v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
    Apple Screen Time style picker with real app icons, demo home screen, tab bar (Today / Progress / Settings), one onboarding progress bar */
 /* earlier v9: Cal AI onboarding patterns · v8: any app + categories · v7: Steven Cravotta blueprint · design: Passion Finder + Stress glass */
 :root{
@@ -76,7 +76,11 @@ svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stro
 .screen{position:fixed;inset:0;display:none;flex-direction:column;padding:calc(env(safe-area-inset-top) + 14px) 20px calc(env(safe-area-inset-bottom) + 20px);overflow-y:auto;overflow-x:hidden;z-index:1;-webkit-overflow-scrolling:touch}
 .screen.on{display:flex;z-index:2}
 .screen.out{display:flex;pointer-events:none;z-index:1}
-.screen.tabbed{padding-bottom:calc(env(safe-area-inset-bottom) + 100px)}
+.screen.tabbed{padding-bottom:calc(env(safe-area-inset-bottom) + 80px)}
+/* v17: iPhone home-screen apps can report a viewport shorter than the screen (orange strip at the bottom).
+   --H is the real screen height, set from JS; every full-screen layer uses it. */
+.screen,.sheet{bottom:auto!important;height:var(--H,100%)}
+.mesh{bottom:auto!important;height:calc(var(--H,100vh) + 140px)}
 .screen>*{flex-shrink:0;position:relative}
 .screen>.grow{flex:1;flex-shrink:1}
 @keyframes inFromEnd{from{opacity:0;transform:translateX(44px)}}
@@ -413,11 +417,13 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .shead{font-size:13.5px;font-weight:600;color:var(--w90);margin:22px 6px 0;text-transform:uppercase;letter-spacing:.3px}
 
 /* tab bar (floating glass) */
-#tabbar{position:fixed;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom) + 12px);height:66px;border-radius:26px;display:none;grid-template-columns:repeat(3,1fr);z-index:15;background:rgba(70,35,15,.32);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(26px) saturate(1.5);-webkit-backdrop-filter:blur(26px) saturate(1.5);box-shadow:0 14px 34px -16px rgba(40,15,0,.6);padding:6px}
+/* v17: standard iOS tab bar docked to the bottom (solid enough that content behind it doesn't smear through) */
+#tabbar{position:fixed;left:0;right:0;top:calc(var(--H,100vh) - 58px - env(safe-area-inset-bottom));height:calc(58px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);display:none;grid-template-columns:repeat(3,1fr);z-index:15;background:rgba(92,52,30,.94);border-top:1px solid rgba(255,255,255,.14);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 #tabbar.on{display:grid;animation:fadeIn .3s}
-#tabbar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:12px;font-weight:500;color:rgba(255,255,255,.72);border-radius:20px;transition:background .2s,color .2s}
-#tabbar button svg{width:23px;height:23px}
-#tabbar button.on{color:#fff;background:rgba(255,255,255,.2)}
+#tabbar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11.5px;font-weight:500;color:rgba(255,255,255,.55);transition:color .2s}
+#tabbar button svg{width:25px;height:25px}
+#tabbar button.on{color:#fff}
+#tabbar button.on svg{stroke-width:2.2}
 
 /* sheets */
 .sheet{position:fixed;inset:0;background:rgba(40,15,0,.4);display:none;align-items:flex-end;z-index:20}
@@ -1585,7 +1591,7 @@ const coveredApps=B=>Object.keys(APPS).filter(k=>B.apps.includes(k)||B.cats.incl
 function selCardHTML(B,title){const n=B.cats.length+B.apps.length;const cov=coveredApps(B),max=10;
  /* show the real app icons that will be paused (what users recognise), plus the categories as labelled chips */
  return n?`<span class="tx"><b>${title}</b><small>${t('a_sum',B.cats.length,B.apps.length,cov.length)}</small>
-  ${B.cats.length?`<span class="catchips">${B.cats.map(k=>`<span>${catIcon(k,22)}${catL(k)}</span>`).join('')}</span>`:''}
+  ${B.cats.length?`<span class="catchips">${B.cats.map(k=>`<span>${catIcon(k,26)}${catL(k)}</span>`).join('')}</span>`:''}
   <span class="covgrid">${cov.slice(0,max).map(k=>appIcon(k,38)).join('')}${cov.length>max?`<span class="aic" style="width:38px;height:38px;border-radius:9px;background:rgba(255,255,255,.25);font-size:13px;font-weight:700">+${cov.length-max}</span>`:''}</span></span><span style="color:var(--w90)">${ic('chev')}</span>`
   :`<span style="flex-shrink:0;width:48px;height:48px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center">${ic('plus')}</span><span class="tx"><b>${t('a_choose')}</b><small>${t('a_choose_s')}</small></span>`}
 const PRESETS={social:{cats:['social'],apps:[]},video:{cats:['ent'],apps:['instagram','tiktok']},all:{cats:['social','ent','games','shop'],apps:[]}};
@@ -1668,6 +1674,9 @@ function boot(){applyLang();const h=location.hash.slice(1),q=new URLSearchParams
  if(h.startsWith('pause')){const app=q.get('app')||'instagram';history.replaceState(null,'',location.pathname);
   if(!st.setup){pendingApp=app;go('ob1',{anim:'none'});return}st.connected=true;save();startPause(app,false,'none');return}
  go(st.setup?'home':'ob1',{anim:'none'})}
+/* real screen height (fixes the strip under the app on iPhone home-screen apps) */
+function fitH(){const sa=navigator.standalone&&screen.height>innerHeight;document.documentElement.style.setProperty('--H',(sa?screen.height:innerHeight)+'px')}
+fitH();addEventListener('resize',fitH);addEventListener('orientationchange',()=>setTimeout(fitH,300));
 boot();
 if('serviceWorker' in navigator&&!location.pathname.includes('/lookup')){navigator.serviceWorker.register('sw.js').catch(()=>{})}
 </script>
