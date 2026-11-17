@@ -15,7 +15,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&display=swap" rel="stylesheet">
 <style>
-/* Look Up v6 (quiz + plan + 3-step demo paywall) — direction: "Passion Finder" (warm gradient, bubbles, photo-in-circle, glass score rows)
+/* Look Up v7 (pain quiz + facts + goal + plan + hold-to-commit + 3-step demo paywall + first pause) */
+/* earlier: v6 (quiz + plan + 3-step demo paywall) — direction: "Passion Finder" (warm gradient, bubbles, photo-in-circle, glass score rows)
    + "Stress" premium glass (big thin numerals, glass/white tiles, arc gauge). Built for readability. */
 :root{
   --ink:#231A14; --white:#FFFFFF; --w90:rgba(255,255,255,.92); --w70:rgba(255,255,255,.78);
@@ -225,6 +226,17 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .fine{text-align:center;font-size:13.5px;line-height:1.5;color:var(--w90);margin-top:10px}
 .links{display:flex;justify-content:center;gap:18px;margin-top:6px;font-size:13.5px;color:var(--w90)}
 .links button{text-decoration:underline;text-underline-offset:3px}
+.fact{padding:26px 22px;text-align:center}
+.fact .num{font-size:88px}
+.fact p{font-size:17.5px;line-height:1.55;margin-top:10px;color:#fff}
+.vals{display:flex;flex-direction:column;gap:10px;margin:18px auto 0;max-width:330px}
+.vals div{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:500}
+.vals svg{width:20px;height:20px;color:#fff;flex-shrink:0}
+.hold{cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none}
+.hold .holdin{position:absolute;inset:18px;border-radius:50%;background:#fff;color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:17px;font-weight:600;text-align:center;line-height:1.15;box-shadow:0 16px 36px -14px rgba(70,25,0,.55);transition:transform .3s var(--ease)}
+.hold .holdin svg{width:32px;height:32px;color:#D9652A}
+.hold.down .holdin{transform:scale(.94)}
+.hold svg.arc .fg{stroke-width:6}
 .demo{display:inline-block;margin:0 auto;font-size:12.5px;font-weight:600;background:rgba(0,0,0,.25);padding:4px 10px;border-radius:10px}
 
 /* sheets (solid, dark text = easiest to read for forms) */
@@ -360,7 +372,35 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
   <div class="glass plan" id="planBox"></div>
   <p class="science">מחקר של אוניברסיטת היידלברג ומכון מקס פלאנק על הפסקה קצרה לפני פתיחת אפליקציה מצא ירידה של 57% בשימוש בה.</p>
   <div class="grow" style="min-height:16px"></div>
-  <div class="duo"><button class="pill white" onclick="go('pw1')">זה מתאים לי</button></div>
+  <div class="duo"><button class="pill white" onclick="go('commit')">זה מתאים לי</button></div>
+</section>
+
+<!-- ============ COMMIT (hold) ============ -->
+<section class="screen" id="commit">
+  <div class="top"><button class="gbtn" onclick="go('plan')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <h1 class="t" style="margin-top:26px">רגע אחד של החלטה</h1>
+  <p class="d" id="commitTxt" style="font-size:19px;line-height:1.5;font-weight:500;color:#fff;margin-top:18px"></p>
+  <div class="grow" style="min-height:20px"></div>
+  <div class="circ hold" id="holdBtn" style="--len:820;width:200px">
+    <svg class="arc" viewBox="0 0 280 280"><circle class="bgc" cx="140" cy="140" r="130"/><circle class="fg" id="holdArc" cx="140" cy="140" r="130"/></svg>
+    <div class="holdin"><svg class="i"><use href="#i-heart"/></svg><span id="holdLbl">להחזיק<br>לחוץ</span></div>
+  </div>
+  <p class="foot" style="margin-top:16px">להחזיק את העיגול עד שהוא מתמלא</p>
+  <div class="grow" style="min-height:20px"></div>
+</section>
+
+<!-- ============ FIRST PAUSE (aha moment, right after the trial) ============ -->
+<section class="screen" id="first">
+  <div class="top"><span></span><div class="brand sm">Look Up</div><span></span></div>
+  <h1 class="t" style="margin-top:26px">ההפסקה הראשונה שלך</h1>
+  <p class="d">ככה זה ייראה רגע לפני שאינסטגרם נפתח. נשימה אחת, 10 שניות, ואז מחליטים.</p>
+  <div class="grow" style="min-height:16px"></div>
+  <div class="circ" style="--len:820;width:min(62vw,240px)">
+    <svg class="arc" viewBox="0 0 280 280"><circle class="bgc" cx="140" cy="140" r="130"/><circle class="fg" cx="140" cy="140" r="130" style="stroke-dashoffset:820"/></svg>
+    <div class="ph" id="firstPh"></div>
+  </div>
+  <div class="grow" style="min-height:16px"></div>
+  <div class="duo"><button class="pill white" onclick="firstRun=true;startPause('instagram',true)">להתחיל</button></div>
 </section>
 
 <!-- ============ PAYWALL 1/3: free ============ -->
@@ -390,19 +430,25 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
     <div class="st"><span class="dot dim"><svg class="i"><use href="#i-star"/></svg></span><span><b>יום 7</b><span>מתחיל המנוי. אפשר לבטל עד אז בלי לשלם</span></span></div>
   </div>
   <div class="grow" style="min-height:16px"></div>
-  <div class="duo"><button class="pill white" onclick="go('pw3')">המשך</button></div>
+  <div class="duo"><button class="pill white" onclick="askReminder()"><svg class="i"><use href="#i-bell"/></svg>להפעיל תזכורת ולהמשיך</button></div>
+  <button class="pill link" onclick="go('pw3')">להמשיך בלי תזכורת</button>
 </section>
 
 <!-- ============ PAYWALL 3/3: plans ============ -->
 <section class="screen" id="pw3">
   <div class="top"><button class="gbtn" onclick="go('pw2')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
   <div style="text-align:center;margin-top:10px"><span class="demo">הדגמה · אין חיוב אמיתי</span></div>
-  <h1 class="t" style="margin-top:16px">לבחור מסלול</h1>
-  <p class="d">מחיר אחד ברור. בלי הפתעות.</p>
-  <div class="plans" id="plans">
-    <button class="plancard on" data-p="year" onclick="pickPlan('year')"><span class="tag">7 ימים בחינם</span><span class="tx"><b>שנתי</b><small>בערך $2.50 לחודש</small></span><span class="price"><b>$29.99</b><small>לשנה</small></span></button>
-    <button class="plancard" data-p="life" onclick="pickPlan('life')"><span class="tx"><b>לכל החיים</b><small>תשלום אחד, בלי מנוי</small></span><span class="price"><b>$59.99</b><small>פעם אחת</small></span></button>
+  <h1 class="t" style="margin-top:14px">להיות יותר כאן,<br>כל יום</h1>
+  <div class="vals">
+    <div><svg class="i"><use href="#i-heart"/></svg>הפסקה עם האנשים שלך, לפני כל אינסטגרם</div>
+    <div><svg class="i"><use href="#i-sun"/></svg>בוקר שקט, ערבי משפחה ושבת</div>
+    <div><svg class="i"><use href="#i-target"/></svg>רואים כל שבוע כמה פעמים בחרת בהם</div>
   </div>
+  <div class="plans" id="plans">
+    <button class="plancard on" data-p="year" onclick="pickPlan('year')"><span class="tag">7 ימים בחינם · חיסכון של 58%</span><span class="tx"><b>שנתי</b><small>בערך $2.50 לחודש</small></span><span class="price"><b>$29.99</b><small>לשנה</small></span></button>
+    <button class="plancard" data-p="month" onclick="pickPlan('month')"><span class="tx"><b>חודשי</b><small>בלי ניסיון חינם</small></span><span class="price"><b>$5.99</b><small>לחודש</small></span></button>
+  </div>
+  <p class="science" style="margin-top:12px">מבוסס על מחקר: הפסקה קצרה לפני פתיחת אפליקציה הורידה את השימוש בה ב-57% (היידלברג ומקס פלאנק).</p>
   <div class="grow" style="min-height:16px"></div>
   <div class="duo"><button class="pill white" id="pwBuy" onclick="startTrial()">להתחיל 7 ימים בחינם</button></div>
   <p class="fine" id="pwFine">היום 0 ₪. אחרי 7 ימים $29.99 לשנה. תזכורת יומיים לפני. ביטול בכל רגע בהגדרות האייפון.</p>
@@ -544,7 +590,8 @@ function go(id){closeSheet();document.querySelectorAll('.screen').forEach(s=>s.c
  el.querySelectorAll('[data-step]').forEach(x=>{const n=+x.dataset.step;if(editing||st.setup){x.style.display='none';return}x.style.display='';
   if(x.classList.contains('prog'))x.innerHTML=[...Array(TOTAL)].map((_,i)=>`<i class="${i<n?'on':''}"></i>`).join('');else x.textContent=`שלב ${n} מתוך ${TOTAL}`});
  if(id==='ob2')renderPeople();if(id==='ob3')renderGeneral();if(id==='ob4')loadTimes();if(id==='ob5')renderGuide();if(id==='home')renderHome();
- if(id==='quiz')renderQuiz();if(id==='plan')renderPlan();
+ if(id==='quiz')renderQuiz();if(id==='plan')renderPlan();if(id==='commit')renderCommit();
+ if(id==='first')photo(st.general[0]||st.people.flatMap(p=>p.pics)[0]).then(s=>{if(s)document.getElementById('firstPh').style.backgroundImage=`url(${s})`});
  if(id==='pw1')photo(st.general[0]||st.people.flatMap(p=>p.pics)[0]).then(s=>{if(s)document.getElementById('pw1ph').style.backgroundImage=`url(${s})`})}
 function back(id){if(editing){editing=false;go('home')}else go(id)}
 function edit(id){editing=true;go(id)}
@@ -589,22 +636,30 @@ function loadTimes(){const T=st.times;['mEnd','fStart','fEnd','nStart'].forEach(
 function finishTimes(){const T=st.times;['mEnd','fStart','fEnd','nStart'].forEach(k=>T[k]=document.getElementById(k).value||T[k]);T.shabbat=document.getElementById('shabbat').classList.contains('on');save();if(editing)return doneEditing();go('plan')}
 
 /* ---------- quiz ---------- */
+/* onboarding blueprint (Steven Cravotta / Cal AI / Duolingo): pain questions → facts → goal → plan → commit → paywall */
 const QUIZ=[
  {k:'opens',q:'כמה פעמים ביום, בערך, פותחים אינסטגרם או טיקטוק?',o:['פחות מ-10','10–30','30–60','יותר מ-60','אין לי מושג']},
+ {k:'pain',q:'מה הכי מפריע לך בזה?',h:'אפשר לבחור כמה',m:1,o:['לפספס רגעים עם המשפחה','הילדים מבקשים שאניח את הטלפון','קשה להירדם בלילה','קשה להתרכז','תחושה של בזבוז זמן']},
+ {fact:1,n:'76%',q:'זה לא רק אצלך',t:'מההורים מרימים את הטלפון בלי לחשוב, לעומת 57% מאלה שאין להם ילדים. הטלפון בנוי לזה, וזו לא חולשה שלך.'},
  {k:'feel',q:'איך מרגישים אחרי גלילה ארוכה?',o:['עייפות','קצת אשמה','בזבוז זמן','בסדר גמור','תלוי ביום']},
+ {k:'tried',q:'כמה זמן כבר מנסים לצמצם?',o:['עוד לא ניסיתי','כמה שבועות','כמה חודשים','שנים']},
+ {k:'when',q:'מתי זה הכי קורה?',h:'אפשר לבחור כמה',m:1,o:['בבוקר, עוד במיטה','בארוחות','בערב עם המשפחה','לפני השינה','בהפסקות בעבודה']},
+ {fact:1,n:'58%',q:'הם שמים לב',t:'מהילדים בגילי 8–16 היו רוצים שההורים יהיו יותר נוכחים. החדשות הטובות: מספיקים רגעים קטנים.'},
  {k:'want',q:'מה הכי חשוב לך להחזיר?',h:'אפשר לבחור כמה',m:1,o:['זמן עם הילדים','זמן זוגי','שינה טובה','ריכוז בעבודה','תנועה וכושר','שקט בראש']},
- {k:'when',q:'מתי זה הכי קורה?',h:'אפשר לבחור כמה',m:1,o:['בבוקר, עוד במיטה','בארוחות','בערב עם המשפחה','לפני השינה','בהפסקות בעבודה']}];
+ {k:'goal',q:'כמה פתיחות ביום היו מרגישות לך טוב?',o:['פחות מ-10','10–20','20–30','פשוט פחות ממה שיש היום']}];
 let qi=0;
-function renderQuiz(){const Q=QUIZ[qi];st.quiz=st.quiz||{};const a=st.quiz[Q.k]||(Q.m?[]:null);
- document.getElementById('qStep').textContent=`שאלה ${qi+1} מתוך ${QUIZ.length}`;
- document.getElementById('qProg').innerHTML=QUIZ.map((_,i)=>`<i class="${i<=qi?'on':''}"></i>`).join('');
+function renderQuiz(){const Q=QUIZ[qi];st.quiz=st.quiz||{};
+ document.getElementById('qStep').textContent=`${qi+1} מתוך ${QUIZ.length}`;
+ document.getElementById('qProg').innerHTML=QUIZ.map((_,i)=>`<i class="${i<=qi?'on':''}" style="width:${Math.max(10,180/QUIZ.length)}px"></i>`).join('');
  document.getElementById('qTitle').textContent=Q.q;document.getElementById('qHint').textContent=Q.h||'';
+ if(Q.fact){document.getElementById('qOpts').innerHTML=`<div class="glass fact"><div class="num">${Q.n}</div><p>${Q.t}</p></div>`;const b=document.getElementById('qNext');b.disabled=false;b.textContent='המשך';return}
+ const a=st.quiz[Q.k]||(Q.m?[]:null);
  document.getElementById('qOpts').innerHTML=Q.o.map((o,i)=>{const on=Q.m?a.includes(o):a===o;return`<button class="opt ${Q.m?'multi':''} ${on?'on':''}" onclick="quizPick(${i})">${o}<span class="ck"><svg class="i"><use href="#i-check"/></svg></span></button>`}).join('');
  document.getElementById('qNext').disabled=Q.m?!a.length:!a;document.getElementById('qNext').textContent=qi===QUIZ.length-1?'סיימתי':'המשך'}
 function quizPick(i){const Q=QUIZ[qi],o=Q.o[i];st.quiz=st.quiz||{};
  if(Q.m){const a=st.quiz[Q.k]||[];st.quiz[Q.k]=a.includes(o)?a.filter(x=>x!==o):[...a,o]}else st.quiz[Q.k]=o;save();renderQuiz();
  if(!Q.m)setTimeout(quizNext,280)}
-function quizNext(){const Q=QUIZ[qi],a=(st.quiz||{})[Q.k];if(Q.m?!(a&&a.length):!a)return;if(qi<QUIZ.length-1){qi++;renderQuiz();document.getElementById('quiz').scrollTop=0}else go('ob2')}
+function quizNext(){const Q=QUIZ[qi],a=(st.quiz||{})[Q.k];if(!Q.fact&&(Q.m?!(a&&a.length):!a))return;if(qi<QUIZ.length-1){qi++;renderQuiz();document.getElementById('quiz').scrollTop=0}else go('ob2')}
 function quizBack(){if(qi>0){qi--;renderQuiz()}else go('ob1')}
 
 /* ---------- plan + paywall (demo) ---------- */
@@ -612,22 +667,34 @@ function renderPlan(){const z=st.quiz||{},T=st.times;const per={'פחות מ-10'
  const rows=[];
  if(per)rows.push(['phone','היום: בערך '+per+' פתיחות ביום','עם הפסקה קצרה לפני כל פתיחה, הרבה מהן פשוט לא יקרו.']);
  else rows.push(['phone','נגלה יחד כמה פעמים ביום','במסך הבית יופיע כמה פעמים בחרת להיות כאן.']);
- if(z.want&&z.want.length)rows.push(['target','המטרה שלך',z.want.join(' · ')]);
+ if(z.goal)rows.push(['target','היעד שלך',z.goal==='פשוט פחות ממה שיש היום'?'פחות פתיחות ממה שיש היום, בקצב שלך.':z.goal+' פתיחות ביום. ההפסקה תעזור להגיע לשם בהדרגה.']);
+ if(z.want&&z.want.length)rows.push(['star','מה חוזר אליך',z.want.join(' · ')]);
  if(st.people.length)rows.push(['heart','האנשים שלך',st.people.map(p=>p.name).join(', ')+'. יופיעו בשעות המשפחה.']);
  rows.push(['clock','מתי ההפסקה תהיה שונה',`בוקר שקט עד ${T.mEnd} · משפחה מ-${T.fStart} עד ${T.fEnd}${T.shabbat?' · שבת':''} · לילה מ-${T.nStart}`]);
  if(z.when&&z.when.length)rows.push(['sun','הרגעים הכי קשים',z.when.join(' · ')+'. שם ההפסקה תעזור הכי הרבה.']);
  document.getElementById('planBox').innerHTML=rows.map(([i,b,s])=>`<div class="pr"><span class="ic">${ic(i)}</span><span><b>${esc(b)}</b><span>${esc(s)}</span></span></div>`).join('')}
 let plan='year';
 function pickPlan(p){plan=p;document.querySelectorAll('.plancard').forEach(c=>c.classList.toggle('on',c.dataset.p===p));
- document.getElementById('pwBuy').textContent=p==='year'?'להתחיל 7 ימים בחינם':'לקנות לכל החיים';
- document.getElementById('pwFine').textContent=p==='year'?'היום 0 ₪. אחרי 7 ימים $29.99 לשנה. תזכורת יומיים לפני. ביטול בכל רגע בהגדרות האייפון.':'תשלום אחד של $59.99. בלי מנוי ובלי חיובים נוספים.'}
-async function startTrial(){st.trial={plan,start:Date.now()};save();toast('הדגמה: לא בוצע חיוב');go('ob5')}
+ document.getElementById('pwBuy').textContent=p==='year'?'להתחיל 7 ימים בחינם':'להירשם ב-$5.99 לחודש';
+ document.getElementById('pwFine').textContent=p==='year'?'היום 0 ₪. אחרי 7 ימים $29.99 לשנה. תזכורת יומיים לפני. ביטול בכל רגע בהגדרות האייפון.':'$5.99 כל חודש, מהיום. ביטול בכל רגע בהגדרות האייפון.'}
+async function startTrial(){st.trial={plan,start:Date.now()};save();toast('הדגמה: לא בוצע חיוב');go('first')}
+async function askReminder(){try{if('Notification' in window&&Notification.permission==='default')await Notification.requestPermission()}catch(e){}st.remind=true;save();go('pw3')}
+/* hold-to-commit */
+let holdT=null;
+function setupHold(){const el=document.getElementById('holdBtn'),arc=document.getElementById('holdArc');if(el.dataset.ok)return;el.dataset.ok=1;
+ const start=e=>{e.preventDefault();arc.style.transition='stroke-dashoffset 1.6s linear';arc.style.strokeDashoffset=0;el.classList.add('down');if(navigator.vibrate)navigator.vibrate(15);
+  holdT=setTimeout(()=>{if(navigator.vibrate)navigator.vibrate([30,40,60]);document.getElementById('holdLbl').innerHTML='מעולה';st.committed=Date.now();save();setTimeout(()=>go('pw1'),600)},1600)};
+ const stop=()=>{if(!holdT)return;clearTimeout(holdT);holdT=null;el.classList.remove('down');arc.style.transition='stroke-dashoffset .3s';arc.style.strokeDashoffset=820};
+ el.addEventListener('pointerdown',start);['pointerup','pointerleave','pointercancel'].forEach(t=>el.addEventListener(t,stop))}
+function renderCommit(){const ppl=st.people.map(p=>p.name);const z=st.quiz||{};
+ document.getElementById('commitTxt').textContent=`להיות יותר כאן${ppl.length?' בשביל '+ppl.join(' ו'):(z.want&&z.want.length?' בשביל '+z.want[0]:'')}. לעצור לרגע לפני הפיד, ולבחור במה שחשוב באמת.`;
+ const arc=document.getElementById('holdArc');arc.style.transition='none';arc.style.strokeDashoffset=820;document.getElementById('holdLbl').innerHTML='להחזיק<br>לחוץ';setupHold()}
 function finishConnect(ok){if(ok)st.connected=true;const first=!st.setup;st.setup=true;save();
  if(pendingApp){const a=pendingApp;pendingApp=null;startPause(a);return}
  if(first&&!ok)toast('אפשר לחבר מתי שרוצים, מההגדרות');go('home')}
 
 /* ---------- pause ---------- */
-let curApp='instagram',curPerson=null,pendingApp=null,isTest=false,lastSrc='',lastNight=false,timers=[];
+let firstRun=false,curApp='instagram',curPerson=null,pendingApp=null,isTest=false,lastSrc='',lastNight=false,timers=[];
 async function startPause(app,test){curApp=APPS[app]?app:'instagram';isTest=!!test;curPerson=null;
  const m=mode();let title,idea,pic,greet,lbl='במקום:';
  if(m==='family'){const p=pick(st.people);curPerson=p.id;const r=REL[p.rel];title=PEOPLE_TITLES[r.k](p.name,r.g);idea=pick(PEOPLE_IDEAS[r.k])(p.name,r.g);pic=pick(p.pics)||pick(st.general);greet='שעות משפחה'}
@@ -652,8 +719,9 @@ function runBreath(){timers.forEach(clearTimeout);const s=document.getElementByI
 function choose(kind){if(!isTest){st.log.push({t:Date.now(),k:kind,app:curApp,p:curPerson});st.log=st.log.slice(-2000);save()}
  if(kind==='here'){const today=countDay(new Date());document.getElementById('dTitle').innerHTML='יפה.<br>בחרת להיות כאן.';
   const p=st.people.find(x=>x.id===curPerson);document.getElementById('dSub').textContent=p?`עכשיו רק ${p.name}.`:(isTest?'ככה זה ייראה כשפותחים אינסטגרם.':`זו הפעם ה-${today.here||1} היום.`);
-  document.getElementById('dFoot').textContent=isTest?'חוזרים למסך הבית…':'אפשר לסגור את המסך הזה.';go('done');if(isTest)setTimeout(()=>go('home'),2600);return}
- if(isTest){toast('בניסיון לא נפתחת אפליקציה');go('home');return}
+  const after=firstRun?'ob5':'home';
+  document.getElementById('dFoot').textContent=isTest?(firstRun?'עכשיו נחבר את זה לאינסטגרם…':'חוזרים למסך הבית…'):'אפשר לסגור את המסך הזה.';go('done');if(isTest)setTimeout(()=>{firstRun=false;go(after)},2600);return}
+ if(isTest){toast('בניסיון לא נפתחת אפליקציה');const a=firstRun?'ob5':'home';firstRun=false;go(a);return}
  location.href='shortcuts://run-shortcut?name='+encodeURIComponent('Look Up Pass')+'&input=text&text='+encodeURIComponent(APPS[curApp].u)}
 
 /* ---------- home ---------- */
