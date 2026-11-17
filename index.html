@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Look Up v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
+/* Look Up v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
    Apple Screen Time style picker with real app icons, demo home screen, tab bar (Today / Progress / Settings), one onboarding progress bar */
 /* earlier v9: Cal AI onboarding patterns · v8: any app + categories · v7: Steven Cravotta blueprint · design: Passion Finder + Stress glass */
 :root{
@@ -105,7 +105,9 @@ svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stro
 /* v17: iPhone home-screen apps can report a viewport shorter than the screen (orange strip at the bottom).
    --H is the real screen height, set from JS; every full-screen layer uses it. */
 .screen,.sheet{bottom:auto!important;height:var(--H,100%)}
-html,body{background:#8C5E58}
+/* v19: the background fades to one solid colour at the bottom, and the strip below the app uses that same colour, so it looks continuous */
+html,body{background:#A15F40}
+.mesh::before{content:"";position:absolute;left:0;right:0;top:calc(var(--H,100vh) - 170px);bottom:0;background:linear-gradient(rgba(161,95,64,0),#A15F40 170px);z-index:1}
 html.tabsbg,html.tabsbg body{background:#5C341E}
 .shortvp .screen{padding-bottom:20px}
 .shortvp .screen.tabbed{padding-bottom:80px}
