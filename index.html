@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
@@ -15,21 +15,18 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&display=swap" rel="stylesheet">
 <style>
-/* Look Up v9: Cal AI onboarding patterns (source question, realistic target, comparison chart, privacy trust, plan-building loader, goal date, one-time offer, streak) */
-/* earlier v8: any app — Screen Time categories + individual apps picker, per-app open counter */
-/* earlier v7 (pain quiz + facts + goal + plan + hold-to-commit + 3-step demo paywall + first pause) */
-/* earlier: v6 (quiz + plan + 3-step demo paywall) — direction: "Passion Finder" (warm gradient, bubbles, photo-in-circle, glass score rows)
-   + "Stress" premium glass (big thin numerals, glass/white tiles, arc gauge). Built for readability. */
+/* Look Up v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
+   Apple Screen Time style picker with real app icons, demo home screen, tab bar (Today / Progress / Settings), one onboarding progress bar */
+/* earlier v9: Cal AI onboarding patterns · v8: any app + categories · v7: Steven Cravotta blueprint · design: Passion Finder + Stress glass */
 :root{
-  --ink:#231A14; --white:#FFFFFF; --w90:rgba(255,255,255,.92); --w70:rgba(255,255,255,.78);
-  --glass:rgba(255,255,255,.17); --glass2:rgba(255,255,255,.26); --gline:rgba(255,255,255,.32);
+  --ink:#231A14; --w90:rgba(255,255,255,.92); --w70:rgba(255,255,255,.78);
+  --glass:rgba(255,255,255,.17); --gline:rgba(255,255,255,.32);
   --amber:#FFC979; --ease:cubic-bezier(.22,.8,.26,1);
   --photo:url("https://images.unsplash.com/photo-1788094667065-2ffdca7a66fc?w=900&q=80");
   --photoNight:url("https://images.unsplash.com/photo-1581491608595-6dadce30433a?w=900&q=80");
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
-html,body{height:100%;color:#fff;font-family:Heebo,-apple-system,system-ui,sans-serif;font-weight:400;-webkit-font-smoothing:antialiased;overscroll-behavior:none;background:#B9683A}
-/* warm mesh gradient + faint petal lines (Passion Finder) */
+html,body{height:100%;color:#fff;font-family:Heebo,-apple-system,system-ui,sans-serif;font-weight:400;-webkit-font-smoothing:antialiased;overscroll-behavior:none;background:#B9683A;overflow:hidden}
 .mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
    radial-gradient(70% 40% at 90% 0%,#A7A3B4 0%,rgba(167,163,180,0) 70%),
@@ -43,31 +40,57 @@ html,body{height:100%;color:#fff;font-family:Heebo,-apple-system,system-ui,sans-
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 input{font:inherit;color:inherit}
 svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+[dir=ltr] svg.fl{transform:scaleX(-1)}
 
-.screen{position:fixed;inset:0;display:none;flex-direction:column;padding:calc(env(safe-area-inset-top) + 14px) 20px calc(env(safe-area-inset-bottom) + 20px);overflow-y:auto;overflow-x:hidden}
-.screen.on{display:flex;animation:fade .45s var(--ease)}
+/* screens + iOS-like transitions */
+.screen{position:fixed;inset:0;display:none;flex-direction:column;padding:calc(env(safe-area-inset-top) + 14px) 20px calc(env(safe-area-inset-bottom) + 20px);overflow-y:auto;overflow-x:hidden;z-index:1;-webkit-overflow-scrolling:touch}
+.screen.on{display:flex;z-index:2}
+.screen.out{display:flex;pointer-events:none;z-index:1}
+.screen.tabbed{padding-bottom:calc(env(safe-area-inset-bottom) + 100px)}
 .screen>*{flex-shrink:0;position:relative}
 .screen>.grow{flex:1;flex-shrink:1}
-@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes inFromEnd{from{opacity:0;transform:translateX(44px)}}
+@keyframes inFromStart{from{opacity:0;transform:translateX(-44px)}}
+@keyframes outToStart{to{opacity:0;transform:translateX(-30px)}}
+@keyframes outToEnd{to{opacity:0;transform:translateX(30px)}}
+@keyframes fadeIn{from{opacity:0}}
+@keyframes fadeOut{to{opacity:0}}
+@keyframes zoomIn{from{opacity:0;transform:scale(.35)}}
+@keyframes upIn{from{opacity:0;transform:translateY(40px)}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+[dir=ltr] .a-push-in,[dir=rtl] .a-pop-in{animation:inFromEnd .42s var(--ease) .1s both}
+[dir=rtl] .a-push-in,[dir=ltr] .a-pop-in{animation:inFromStart .42s var(--ease) .1s both}
+[dir=ltr] .a-push-out,[dir=rtl] .a-pop-out{animation:outToStart .18s ease both}
+[dir=rtl] .a-push-out,[dir=ltr] .a-pop-out{animation:outToEnd .18s ease both}
+.a-fade-in{animation:fadeIn .28s ease both}.a-fade-out{display:none!important}.a-zoom-out,.a-up-out{animation:fadeOut .16s ease both}
+.a-zoom-in{animation:zoomIn .5s cubic-bezier(.2,.9,.25,1) both}
+.a-up-in{animation:upIn .45s var(--ease) both}
+.a-push-in>*,.a-up-in>*{animation:rise .5s var(--ease) both}
+.a-push-in>:nth-child(2),.a-up-in>:nth-child(2){animation-delay:.03s}.a-push-in>:nth-child(3),.a-up-in>:nth-child(3){animation-delay:.06s}
+.a-push-in>:nth-child(4),.a-up-in>:nth-child(4){animation-delay:.09s}.a-push-in>:nth-child(5),.a-up-in>:nth-child(5){animation-delay:.12s}
+.a-push-in>:nth-child(n+6),.a-up-in>:nth-child(n+6){animation-delay:.15s}
 
 /* type */
 .brand{font-family:Unbounded,Heebo,sans-serif;font-weight:600;font-size:26px;line-height:1;letter-spacing:.5px;text-align:center;direction:ltr;text-transform:uppercase}
 .brand.sm{font-size:16px;letter-spacing:1px}
 h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-align:center;margin-top:18px;text-shadow:0 1px 14px rgba(80,30,0,.25)}
-.d{font-size:16.5px;line-height:1.5;text-align:center;color:var(--w90);margin:10px auto 0;max-width:320px}
-.lbl{font-size:15px;font-weight:600;margin:24px 0 10px;color:#fff}
-.lbl small{font-weight:400;color:var(--w70);font-size:14px;margin-inline-start:6px}
+.d{font-size:16.5px;line-height:1.5;text-align:center;color:var(--w90);margin:10px auto 0;max-width:330px}
+.lbl{font-size:15px;font-weight:600;margin:24px 0 10px;color:#fff;display:flex;align-items:baseline;gap:6px}
+.lbl small{font-weight:400;color:var(--w70);font-size:14px}
+.lbl .end{margin-inline-start:auto;font-size:15px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
 .num{font-weight:300;letter-spacing:-2px;line-height:.95}
 .num small{font-size:.32em;letter-spacing:0;font-weight:400;opacity:.8;margin-inline-start:4px}
 
-/* top bar: glass circle buttons */
-.top{display:grid;grid-template-columns:48px 1fr 48px;align-items:center;min-height:48px}
-.gbtn{width:46px;height:46px;border-radius:50%;background:var(--glass);border:1px solid var(--gline);display:grid;place-items:center;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+/* top bar */
+.top{display:grid;grid-template-columns:48px 1fr 48px;align-items:center;min-height:48px;gap:8px}
+.top>:last-child{justify-self:end}
+.gbtn{width:46px;height:46px;border-radius:50%;background:var(--glass);border:1px solid var(--gline);display:grid;place-items:center;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transition:transform .15s}
+.gbtn:active{transform:scale(.9)}
 .gbtn svg{width:20px;height:20px}
-.stepof{text-align:center;font-size:14px;font-weight:500;color:var(--w90)}
-.prog{display:flex;gap:5px;justify-content:center;margin-top:10px}
-.prog i{width:22px;height:4px;border-radius:2px;background:rgba(255,255,255,.3)}
-.prog i.on{background:#fff}
+.obbar{height:6px;border-radius:3px;background:rgba(255,255,255,.28);overflow:hidden;margin:0 6px}
+.obbar b{display:block;height:100%;width:0;background:#fff;border-radius:3px;transition:width .5s var(--ease)}
+.langbtn{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border-radius:20px;background:var(--glass);border:1px solid var(--gline);font-size:14.5px;font-weight:500;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.langbtn svg{width:18px;height:18px}
 
 /* glass surfaces */
 .glass{background:var(--glass);border:1px solid var(--gline);border-radius:26px;backdrop-filter:blur(24px) saturate(1.2);-webkit-backdrop-filter:blur(24px) saturate(1.2)}
@@ -82,27 +105,27 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .bar b{display:block;height:100%;width:var(--w);background:#fff;border-radius:3px}
 .time{border:0;background:#fff;color:var(--ink);padding:8px 10px;border-radius:12px;font-weight:600;font-size:16px;min-width:78px;text-align:center}
 .tgl{width:52px;height:32px;border-radius:16px;background:rgba(255,255,255,.3);position:relative;transition:.25s;flex-shrink:0}
-.tgl::after{content:"";position:absolute;top:3px;right:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:.25s var(--ease)}
-.tgl.on{background:#3E9B5F}
-.tgl.on::after{right:23px}
+.tgl::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:.25s var(--ease)}
+.tgl.on{background:#34C759}
+.tgl.on::after{inset-inline-start:23px}
 
-/* bubbles (Passion Finder) */
+/* bubbles */
 .bubbles{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:0;padding:6px 0}
-.bub{--s:96px;width:var(--s);height:var(--s);border-radius:50%;margin:-4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:16px;font-weight:500;line-height:1.15;padding:8px;
+.bub{--s:96px;width:var(--s);height:var(--s);border-radius:50%;margin:-4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:16px;font-weight:500;line-height:1.15;padding:8px;position:relative;
   background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:transform .2s var(--ease),background .2s}
-.bub:active{transform:scale(.95)}
+.bub:active{transform:scale(.94)}
 .bub.on{background:#FFF8F1;color:var(--ink);border-color:#fff;box-shadow:0 10px 24px -12px rgba(80,30,0,.45);z-index:1}
 .bub.photo{background:center/cover;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.6);border:3px solid #fff;justify-content:flex-end;padding-bottom:12px}
-.bub .x{position:absolute;top:2px;left:2px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.5);display:grid;place-items:center;color:#fff}
+.bub .x{position:absolute;top:2px;inset-inline-end:2px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.5);display:grid;place-items:center;color:#fff}
 .bub .x svg{width:13px;height:13px;stroke-width:2.6}
 .bub.add{border:1.5px dashed rgba(255,255,255,.7);background:transparent}
 .bub small{font-size:12.5px;font-weight:400;opacity:.85;margin-top:2px}
 .bub svg.i{width:22px;height:22px;margin-bottom:4px}
 
 /* buttons */
-.pill{display:flex;align-items:center;justify-content:center;gap:10px;flex:1;width:100%;height:58px;border-radius:18px;font-size:17.5px;font-weight:600;transition:transform .15s var(--ease)}
-.pill:active{transform:scale(.98)}
-.pill.white{background:#fff;color:var(--ink)}
+.pill{display:flex;align-items:center;justify-content:center;gap:10px;flex:1;width:100%;height:58px;border-radius:18px;font-size:17.5px;font-weight:600;transition:transform .15s var(--ease),opacity .2s}
+.pill:active{transform:scale(.97)}
+.pill.white{background:#fff;color:var(--ink);box-shadow:0 10px 26px -14px rgba(70,25,0,.6)}
 .pill.glassb{background:rgba(255,255,255,.22);border:1px solid var(--gline);color:#fff;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
 .pill.ink{background:var(--ink);color:#fff}
 .pill.link{height:46px;color:var(--w90);font-weight:500;font-size:16px}
@@ -111,54 +134,60 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .duo{display:flex;gap:10px;padding-top:16px}
 .foot{text-align:center;font-size:14.5px;margin-top:12px;color:var(--w90)}
 
-/* photo circle with arc (Passion Finder middle screen) */
+/* photo circle with arc */
 .circ{position:relative;width:min(72vw,280px);aspect-ratio:1;margin:0 auto}
 .circ .ph{position:absolute;inset:14px;border-radius:50%;background:var(--photo) center/cover;box-shadow:0 24px 50px -18px rgba(70,25,0,.6);transition:transform 3s cubic-bezier(.45,0,.35,1)}
 .circ svg.arc{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg) scaleX(-1)}
 .circ svg.arc circle{fill:none;stroke-width:2}
 .circ svg.arc .bgc{stroke:rgba(255,255,255,.25)}
 .circ svg.arc .fg{stroke:#fff;stroke-linecap:round;stroke-dasharray:var(--len);stroke-dashoffset:var(--len)}
-.circ .lab{position:absolute;top:44%;font-size:13px;font-weight:500;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.5)}
-
-/* big white round button */
-.round{width:96px;height:96px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;margin:0 auto;box-shadow:0 16px 36px -14px rgba(70,25,0,.55);font-size:16px;font-weight:600;line-height:1.1;text-align:center}
+.round{width:96px;height:96px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;margin:0 auto;box-shadow:0 16px 36px -14px rgba(70,25,0,.55);font-size:16px;font-weight:600;line-height:1.1;text-align:center;transition:transform .15s}
+.round:active{transform:scale(.93)}
 .round svg{width:30px;height:30px;color:#D9652A}
 .round.big{width:118px;height:118px}
 
-/* tiles (Stress) */
+/* tiles + gauge */
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-.tile{border-radius:30px;padding:18px;min-height:150px;display:flex;flex-direction:column;justify-content:space-between}
+.tile{border-radius:30px;padding:18px;min-height:140px;display:flex;flex-direction:column;justify-content:space-between}
 .tile .h{font-size:15.5px;font-weight:500}
 .tile .num{font-size:52px}
+.tile small.s{font-size:12.5px;opacity:.75;line-height:1.35}
 .solid .h{color:#5E4E42}
 .gauge{position:relative;padding:20px 18px 18px;border-radius:34px;margin-top:14px;text-align:center}
 .gauge .h{display:flex;justify-content:space-between;align-items:baseline;font-size:15.5px;font-weight:500;color:var(--w90)}
-.gauge .num{font-size:84px;margin-top:4px;text-align:right}
+.gauge .num{font-size:84px;margin-top:4px;text-align:start}
 .gauge svg.g{width:100%;max-width:300px;height:auto;display:block;margin:-6px auto 0}
 .gauge .heart{position:absolute;left:50%;bottom:24px;transform:translateX(-50%)}
+.gauge .heart:active{transform:translateX(-50%) scale(.92)}
 .gauge .gl{display:flex;justify-content:space-between;font-size:13px;color:var(--w90);margin-top:-6px;padding:0 10px}
-.week{display:flex;gap:6px;align-items:flex-end;height:108px;padding:6px 0 0}
+.week{display:flex;gap:6px;align-items:flex-end;height:120px;padding:6px 0 0}
 .week div{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}
 .week em{font-style:normal;font-size:13px;font-weight:600;min-height:16px}
 .week i{width:100%;max-width:26px;border-radius:13px;background:rgba(255,255,255,.22);flex:1;position:relative;overflow:hidden}
-.week i::after{content:"";position:absolute;inset:auto 0 0;height:var(--h);background:#fff;border-radius:13px}
+.week i::after{content:"";position:absolute;inset:auto 0 0;height:var(--h);background:#fff;border-radius:13px;transition:height .6s var(--ease)}
 .week span{font-size:13px;color:var(--w90)}
 .week .today span{color:#fff;font-weight:700}
 .status{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:22px;background:#FFF8F1;color:var(--ink);margin-top:12px}
 .status .tx{flex:1}.status b{display:block;font-size:16px;font-weight:600}.status small{font-size:14px;color:#6B5B4E}
 .status .go{height:40px;padding:0 14px;border-radius:12px;background:var(--ink);color:#fff;font-size:14.5px;font-weight:600;white-space:nowrap}
+.streak{display:inline-flex;align-items:center;gap:4px;height:40px;padding:0 12px;border-radius:20px;background:rgba(255,255,255,.2);border:1px solid var(--gline);font-size:16px;justify-self:start}
+.streak svg{width:18px;height:18px;color:#FFD08A;fill:#FFD08A;stroke:none}
+.miles{display:flex;justify-content:space-between;margin-top:14px;gap:6px}
+.miles div{flex:1;text-align:center;font-size:12.5px;color:var(--w90)}
+.miles i{display:grid;place-items:center;width:46px;height:46px;margin:0 auto 5px;border-radius:50%;border:1.5px dashed rgba(255,255,255,.55);font-style:normal;font-weight:600;font-size:16px}
+.miles .ok i{background:#fff;color:#D9652A;border:0}
 
-/* photos grid */
+/* photos + fields */
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .pgrid .pt{aspect-ratio:1;border-radius:20px;background:rgba(255,255,255,.2) center/cover;position:relative;border:1px solid var(--gline)}
-.pgrid .pt button{position:absolute;top:6px;left:6px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center}
+.pgrid .pt button{position:absolute;top:6px;inset-inline-end:6px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center}
 .pgrid .pt button svg{width:14px;height:14px;stroke-width:2.6}
 .pgrid label.pt{display:grid;place-items:center;border:1.5px dashed rgba(255,255,255,.7);background:transparent;font-size:14px;font-weight:500;text-align:center;cursor:pointer}
 .pgrid label.pt svg{width:24px;height:24px;margin:0 auto 4px;display:block}
 .field{width:100%;height:54px;border-radius:16px;border:1px solid var(--gline);background:rgba(255,255,255,.22);padding:0 16px;font-size:17px;outline:none;color:#fff}
 .field::placeholder{color:rgba(255,255,255,.75)}
 .cust{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.cust span{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 8px 0 14px;border-radius:20px;background:#fff;color:var(--ink);font-size:15px;font-weight:500}
+.cust span{display:inline-flex;align-items:center;gap:6px;height:40px;padding-inline:14px 8px;border-radius:20px;background:#fff;color:var(--ink);font-size:15px;font-weight:500}
 .cust button{width:26px;height:26px;display:grid;place-items:center;color:#7A6A5D}
 .cust button svg{width:14px;height:14px}
 
@@ -168,9 +197,10 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .step .k{width:30px;height:30px;border-radius:50%;background:#fff;color:var(--ink);font-size:15px;font-weight:700;display:grid;place-items:center;flex-shrink:0}
 .step p{font-size:16px;line-height:1.55}
 .step ul{margin:6px 0 0;padding-inline-start:18px;font-size:15.5px;line-height:1.6;color:var(--w90)}
-.step code{display:block;margin-top:8px;background:rgba(0,0,0,.2);border-radius:12px;padding:10px;font-size:12.5px;direction:ltr;text-align:left;word-break:break-all}
-.copy{display:inline-flex;align-items:center;gap:6px;margin-top:8px;height:40px;padding:0 14px;border-radius:12px;background:#fff;color:var(--ink);font-size:14.5px;font-weight:600}
+.copy{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border-radius:12px;background:#fff;color:var(--ink);font-size:14.5px;font-weight:600}
 .copy svg{width:16px;height:16px}
+.gapp{display:flex;align-items:center;gap:10px;margin-top:10px}
+.gapp b{font-size:15.5px;font-weight:500}
 
 /* pause */
 #pause .bgph{position:fixed!important;inset:-60px;background:center/cover;filter:blur(50px) saturate(1.2);opacity:.3;z-index:0;mix-blend-mode:soft-light}
@@ -185,14 +215,17 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 #pause .ph{transform:scale(.86)}
 #pause.in .ph{transform:scale(1)}
 #pause.out .ph{transform:scale(.9)}
-#pause .round{opacity:.5;pointer-events:none;transition:opacity .5s}
+#pause .round{opacity:.5;pointer-events:none;transition:opacity .5s,transform .15s}
 #pause.ready .round{opacity:1;pointer-events:auto}
 #pause .anyway{opacity:0;pointer-events:none;transition:opacity .6s;margin-top:12px;width:auto;padding:0 20px;height:46px;flex:none;align-self:center;font-size:15.5px;font-weight:500}
 #pause.ready .anyway{opacity:1;pointer-events:auto}
+.top>.pchip{justify-self:center}
+.pchip{display:inline-flex;align-items:center;gap:8px;height:36px;padding-inline:5px 12px;border-radius:18px;background:rgba(0,0,0,.22);font-size:14.5px;font-weight:500}
 
-/* quiz options + plan + paywall */
+/* quiz, plan, paywall */
 .opts{display:flex;flex-direction:column;gap:8px;margin-top:22px}
-.opt{display:flex;align-items:center;gap:12px;width:100%;min-height:58px;padding:0 18px;border-radius:20px;background:var(--glass);border:1px solid var(--gline);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);font-size:17px;font-weight:500;text-align:right;transition:background .15s}
+.opt{display:flex;align-items:center;gap:12px;width:100%;min-height:58px;padding:0 18px;border-radius:20px;background:var(--glass);border:1px solid var(--gline);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);font-size:17px;font-weight:500;text-align:start;transition:background .15s,transform .15s}
+.opt:active{transform:scale(.98)}
 .opt .ck{width:24px;height:24px;border-radius:50%;border:1.5px solid rgba(255,255,255,.7);margin-inline-start:auto;display:grid;place-items:center;flex-shrink:0}
 .opt .ck svg{width:14px;height:14px;stroke-width:3;opacity:0}
 .opt.on{background:#FFF8F1;color:var(--ink);border-color:#fff}
@@ -200,7 +233,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .opt.on .ck svg{opacity:1}
 .opt.multi .ck{border-radius:8px}
 .qhint{text-align:center;font-size:14px;color:var(--w90);margin-top:10px}
-.plan{padding:6px 18px;margin-top:20px}
+.plan{padding:6px 18px;margin-top:16px}
 .plan .pr{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.2)}
 .plan .pr:last-child{border:0}
 .plan .pr .ic{width:36px;height:36px;border-radius:50%;background:#fff;color:#D9652A;display:grid;place-items:center;flex-shrink:0}
@@ -208,23 +241,26 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .plan .pr b{display:block;font-size:16.5px;font-weight:600}
 .plan .pr span{display:block;font-size:15px;color:var(--w90);line-height:1.45;margin-top:2px}
 .science{font-size:13.5px;line-height:1.5;color:var(--w90);text-align:center;margin-top:14px;padding:0 6px}
-.tl{margin:26px auto 0;max-width:330px;position:relative;padding-inline-start:4px}
-.tl::before{content:"";position:absolute;top:22px;bottom:22px;right:21px;width:2px;background:linear-gradient(#fff,rgba(255,255,255,.3))}
+.tl{margin:26px auto 0;max-width:340px;position:relative}
+.tl::before{content:"";position:absolute;top:22px;bottom:22px;inset-inline-start:19px;width:2px;background:linear-gradient(#fff,rgba(255,255,255,.3))}
 .tl .st{display:flex;gap:14px;align-items:flex-start;padding:10px 0;position:relative}
 .tl .dot{width:40px;height:40px;border-radius:50%;background:#fff;color:#D9652A;display:grid;place-items:center;flex-shrink:0}
 .tl .dot svg{width:20px;height:20px}
 .tl .dot.dim{background:rgba(255,255,255,.3);color:#fff}
 .tl b{display:block;font-size:17px;font-weight:600}
 .tl span{display:block;font-size:15px;color:var(--w90);margin-top:2px;line-height:1.4}
-.plans{display:flex;flex-direction:column;gap:10px;margin-top:22px}
-.plancard{position:relative;display:flex;align-items:center;gap:12px;width:100%;padding:16px 18px;border-radius:22px;background:var(--glass);border:1.5px solid var(--gline);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);text-align:right}
+.plans{display:flex;flex-direction:column;gap:12px;margin-top:22px}
+.plancard{position:relative;display:flex;align-items:center;gap:12px;width:100%;padding:16px 18px;border-radius:22px;background:var(--glass);border:1.5px solid var(--gline);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);text-align:start;transition:transform .15s}
+.plancard:active{transform:scale(.98)}
 .plancard.on{background:#FFF8F1;color:var(--ink);border-color:#fff}
 .plancard .tx{flex:1}
 .plancard b{display:block;font-size:18px;font-weight:600}
 .plancard small{display:block;font-size:14px;opacity:.85;margin-top:2px}
-.plancard .price{text-align:left;direction:ltr}
+.plancard .price{text-align:end}
 .plancard .price b{font-size:20px}
-.plancard .tag{position:absolute;top:-11px;right:18px;background:#3E9B5F;color:#fff;font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:10px}
+.plancard .tag{position:absolute;top:-11px;inset-inline-start:18px;background:#34A853;color:#fff;font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:10px}
+.goalchip{display:flex;align-items:center;justify-content:center;gap:8px;margin:14px auto 0;padding:8px 14px;border-radius:14px;background:rgba(0,0,0,.18);font-size:14.5px;font-weight:500;width:fit-content}
+.goalchip svg{width:18px;height:18px}
 .fine{text-align:center;font-size:13.5px;line-height:1.5;color:var(--w90);margin-top:10px}
 .links{display:flex;justify-content:center;gap:18px;margin-top:6px;font-size:13.5px;color:var(--w90)}
 .links button{text-decoration:underline;text-underline-offset:3px}
@@ -236,41 +272,22 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .bi.ok{opacity:1}
 .bk{width:26px;height:26px;border-radius:50%;border:1.5px solid rgba(255,255,255,.6);display:grid;place-items:center;flex-shrink:0;transition:all .3s}
 .bk svg{width:14px;height:14px;stroke-width:3;opacity:0}
-.bi.ok .bk{background:#fff;color:#3E9B5F;border-color:#fff}
+.bi.ok .bk{background:#fff;color:#34A853;border-color:#fff}
 .bi.ok .bk svg{opacity:1}
 .phero{margin-top:16px;padding:18px 20px;text-align:center;border-radius:26px}
 .phero small{display:block;font-size:14.5px;font-weight:600;color:#C2541C}
 .phero .num{color:var(--ink);margin-top:4px}
 .phero>span{display:block;font-size:15px;color:#6B5B4E;margin-top:6px}
-.xbtn{opacity:0;pointer-events:none;transition:opacity .4s;justify-self:end}
+.xbtn{opacity:0;pointer-events:none;transition:opacity .4s}
 .xbtn.show{opacity:.85;pointer-events:auto}
 .offer{margin-top:16px;padding:18px;border-radius:22px;background:#fff;border:1.5px solid #F2D6BF}
 .offer b{display:block;font-size:18px;font-weight:700}
 .offer span{display:block;font-size:15px;color:#6B5B4E;margin-top:6px}
 .offer span b{display:inline;font-size:16px;color:var(--ink)}
-.streak{display:inline-flex;align-items:center;gap:4px;height:40px;padding:0 12px;border-radius:20px;background:rgba(255,255,255,.2);border:1px solid var(--gline);font-size:16px;justify-self:start}
-.streak svg{width:18px;height:18px;color:#FFD08A;fill:#FFD08A;stroke:none}
-.presets{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
-.presets button{height:36px;padding:0 14px;border-radius:18px;background:rgba(255,255,255,.18);border:1px solid var(--gline);font-size:14px;font-weight:500}
-.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:16px;background:rgba(0,0,0,.15);margin-top:14px}
-.seg button{height:42px;border-radius:12px;font-size:16px;font-weight:600;color:var(--w90)}
-.seg button.on{background:#fff;color:var(--ink)}
-.cdot{width:14px;height:14px;border-radius:50%;flex-shrink:0;box-shadow:0 0 0 3px rgba(255,255,255,.35)}
-.agrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 6px}
-.atile{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12.5px;font-weight:500;line-height:1.2;text-align:center}
-.aic{width:58px;height:58px;border-radius:15px;display:grid;place-items:center;color:#fff;font-size:24px;font-weight:700;box-shadow:0 6px 14px -8px rgba(0,0,0,.5);transition:transform .15s,opacity .15s}
-.atile:not(.on) .aic{opacity:.55}
-.atile.on .aic{box-shadow:0 0 0 3px #fff,0 6px 14px -8px rgba(0,0,0,.5)}
-.atile em{position:absolute;top:-6px;left:6px;width:22px;height:22px;border-radius:50%;background:#3E9B5F;color:#fff;display:grid;place-items:center}
-.atile em svg{width:13px;height:13px;stroke-width:3}
-.atile.viacat em{background:#fff;color:#3E9B5F}
-.gapp{display:flex;align-items:center;gap:10px;margin-top:10px}
-.gapp .aic{width:36px;height:36px;border-radius:10px;font-size:16px}
-.gapp b{font-size:15.5px;font-weight:500}
 .fact{padding:26px 22px;text-align:center}
 .fact .num{font-size:88px}
 .fact p{font-size:17.5px;line-height:1.55;margin-top:10px;color:#fff}
-.vals{display:flex;flex-direction:column;gap:10px;margin:18px auto 0;max-width:330px}
+.vals{display:flex;flex-direction:column;gap:10px;margin:18px auto 0;max-width:340px}
 .vals div{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:500}
 .vals svg{width:20px;height:20px;color:#fff;flex-shrink:0}
 .hold{cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none}
@@ -280,10 +297,88 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .hold svg.arc .fg{stroke-width:6}
 .demo{display:inline-block;margin:0 auto;font-size:12.5px;font-weight:600;background:rgba(0,0,0,.25);padding:4px 10px;border-radius:10px}
 
-/* sheets (solid, dark text = easiest to read for forms) */
+/* app icons (real brand marks, iOS squircle) */
+.aic{display:grid;place-items:center;flex-shrink:0;overflow:hidden;box-shadow:0 4px 12px -5px rgba(0,0,0,.4),inset 0 0 0 .5px rgba(0,0,0,.08);transition:transform .15s,filter .15s}
+.aic svg{display:block}
+.cic{display:grid;place-items:center;color:#fff;flex-shrink:0}
+.cic svg{width:58%;height:58%;stroke-width:2}
+.selcard{display:flex;align-items:center;gap:12px;width:100%;padding:16px;margin-top:22px;text-align:start;transition:transform .15s}
+.selcard:active{transform:scale(.98)}
+.selcard .tx{flex:1;min-width:0}
+.selcard b{display:block;font-size:17px;font-weight:600}
+.selcard small{display:block;font-size:14px;color:var(--w90);margin-top:3px;line-height:1.35}
+.stack{display:flex;align-items:center;margin-top:12px;flex-wrap:wrap;gap:6px 0}
+.stack>.aic,.stack>.cic{margin-inline-end:-9px;border:2px solid #fff}
+.stack>em{font-style:normal;margin-inline-start:16px;font-size:14px;font-weight:600}
+.presets{display:flex;gap:8px;flex-wrap:wrap}
+.presets button{height:40px;padding:0 15px;border-radius:20px;background:rgba(255,255,255,.18);border:1px solid var(--gline);font-size:14.5px;font-weight:500;transition:transform .15s}
+.presets button:active{transform:scale(.95)}
+
+/* Apple-style activity picker (what FamilyActivityPicker looks like in the native app) */
+.sheet.ios>div{background:#F2F2F7;color:#000;font-family:-apple-system,"SF Pro Text",system-ui,Heebo,sans-serif;height:93vh;max-height:none;padding:0 16px calc(env(safe-area-inset-bottom) + 24px);border-radius:14px 14px 0 0}
+.sheet.ios>div::before{display:none}
+.pkh{position:sticky;top:0;background:rgba(242,242,247,.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:14px 0 10px;z-index:3;margin:0 -16px;padding-inline:16px}
+.pkh button{color:#007AFF;font-size:17px;justify-self:start}
+.pkh button.b{font-weight:600;justify-self:end}
+.pkh div{text-align:center}.pkh b{display:block;font-size:17px;font-weight:600}.pkh small{font-size:13px;color:#8E8E93}
+.pks{display:flex;align-items:center;gap:6px;height:36px;border-radius:10px;background:rgba(118,118,128,.12);padding:0 8px;color:#8E8E93;margin:4px 0 20px}
+.pks svg{width:17px;height:17px}
+.pks input{flex:1;border:0;background:none;outline:none;font-size:17px;color:#000;min-width:0}
+.pksec{font-size:13px;color:#6D6D72;text-transform:uppercase;padding:0 16px 7px}
+.pkg{background:#fff;border-radius:12px;overflow:hidden;margin-bottom:24px}
+.pkr{display:flex;align-items:center;gap:12px;width:100%;min-height:50px;padding:5px 12px 5px 16px;padding-inline:16px 8px;position:relative;font-size:17px;cursor:pointer}
+.pkr:active{background:#E5E5EA}
+.pkr+.pkr::before{content:"";position:absolute;top:0;inset-inline-start:58px;inset-inline-end:0;height:.5px;background:#C6C6C8}
+.pkr.sub{padding-inline-start:52px;background:#FAFAFC}
+.pkr.sub+.pkr::before,.pkr+.pkr.sub::before{inset-inline-start:94px}
+.pkc{width:23px;height:23px;border-radius:50%;border:1.5px solid #C7C7CC;display:grid;place-items:center;flex-shrink:0;transition:background .15s}
+.pkc svg{width:13px;height:13px;stroke:#fff;stroke-width:3;opacity:0}
+.pkr.on .pkc{background:#007AFF;border-color:#007AFF}.pkr.on .pkc svg{opacity:1}
+.pkr.via .pkc{background:#9CC6F7;border-color:#9CC6F7}.pkr.via .pkc svg{opacity:1}
+.pkr .tx{flex:1;min-width:0}.pkr .tx small{display:block;font-size:13px;color:#8E8E93;margin-top:1px}
+.pkx{width:40px;height:40px;display:grid;place-items:center;color:#C4C4C7;transition:transform .25s}
+.pkx svg{width:18px;height:18px;stroke-width:2.4}
+.pkx.open{transform:rotate(180deg)}
+.pkf{font-size:13px;color:#8E8E93;text-align:center;padding:0 16px;line-height:1.45}
+
+/* demo iPhone home screen */
+#spring{padding-left:24px;padding-right:24px}
+#spring .wall{position:fixed!important;inset:0;background:center/cover;z-index:0}
+#spring .wall::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.25),rgba(0,0,0,.05) 40%,rgba(0,0,0,.35))}
+.sbgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px 8px;margin-top:22px}
+.sbapp{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.5);font-family:-apple-system,system-ui,Heebo,sans-serif;font-weight:500}
+.sbapp:active .aic{transform:scale(.86);filter:brightness(.75)}
+.sbapp:first-child .aic{animation:nudge 2.2s ease-in-out 1s infinite}
+@keyframes nudge{0%,70%,100%{transform:none}78%{transform:scale(1.1)}86%{transform:scale(.97)}}
+.sbhint{text-align:center;font-size:16px;font-weight:600;margin-bottom:14px;text-shadow:0 1px 8px rgba(0,0,0,.5)}
+.sbdock{display:flex;justify-content:space-around;padding:14px 10px;border-radius:34px;background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(30px) saturate(1.5);-webkit-backdrop-filter:blur(30px) saturate(1.5)}
+.sbdots{display:flex;justify-content:center;gap:7px;margin-bottom:12px}.sbdots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.5)}.sbdots i:first-child{background:#fff}
+
+/* settings list (iOS grouped, warm) */
+.slist{background:#FFF8F1;color:var(--ink);border-radius:24px;overflow:hidden;margin-top:12px}
+.srow{display:flex;align-items:center;gap:12px;width:100%;text-align:start;padding:12px 16px;min-height:62px;position:relative;transition:background .15s}
+.srow:active{background:#F1E6DA}
+.srow+.srow::before{content:"";position:absolute;top:0;inset-inline-start:68px;inset-inline-end:0;height:1px;background:#EFE4D8}
+.srow .ic{width:38px;height:38px;border-radius:11px;background:#D9652A;color:#fff;display:grid;place-items:center;flex-shrink:0}
+.srow .ic svg{width:20px;height:20px}
+.srow .tx{flex:1;min-width:0}.srow b{display:block;font-size:17px;font-weight:500}.srow small{display:block;font-size:14px;color:#7A6A5D;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.srow .end{color:#B3A396}
+.shead{font-size:13.5px;font-weight:600;color:var(--w90);margin:22px 6px 0;text-transform:uppercase;letter-spacing:.3px}
+
+/* tab bar (floating glass) */
+#tabbar{position:fixed;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom) + 12px);height:66px;border-radius:26px;display:none;grid-template-columns:repeat(3,1fr);z-index:15;background:rgba(70,35,15,.32);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(26px) saturate(1.5);-webkit-backdrop-filter:blur(26px) saturate(1.5);box-shadow:0 14px 34px -16px rgba(40,15,0,.6);padding:6px}
+#tabbar.on{display:grid;animation:fadeIn .3s}
+#tabbar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:12px;font-weight:500;color:rgba(255,255,255,.72);border-radius:20px;transition:background .2s,color .2s}
+#tabbar button svg{width:23px;height:23px}
+#tabbar button.on{color:#fff;background:rgba(255,255,255,.2)}
+
+/* sheets */
 .sheet{position:fixed;inset:0;background:rgba(40,15,0,.4);display:none;align-items:flex-end;z-index:20}
-.sheet.on{display:flex;animation:fade .25s}
-.sheet>div{background:#FFF8F1;color:var(--ink);width:100%;border-radius:30px 30px 0 0;padding:10px 20px calc(env(safe-area-inset-bottom) + 20px);max-height:90vh;overflow-y:auto}
+.sheet.on{display:flex;animation:dimIn .3s}
+@keyframes dimIn{from{background:rgba(40,15,0,0)}}
+.sheet>div{background:#FFF8F1;color:var(--ink);width:100%;border-radius:30px 30px 0 0;padding:10px 20px calc(env(safe-area-inset-bottom) + 20px);max-height:90vh;overflow-y:auto;transition:transform .3s var(--ease)}
+.sheet.on>div{animation:sheetUp .42s var(--ease)}
+@keyframes sheetUp{from{transform:translateY(100%)}}
 .sheet>div::before{content:"";display:block;width:40px;height:5px;border-radius:3px;background:#E1D3C4;margin:0 auto 14px}
 .sheet h2{font-size:24px;font-weight:700}
 .sheet .lbl{color:var(--ink)}
@@ -295,13 +390,11 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .sheet .chip.on{background:#D9652A;border-color:#D9652A;color:#fff}
 .sheet .pgrid .pt{background-color:#F1E6DA;border-color:#EADFD2}
 .sheet .pgrid label.pt{border-color:#D8C6B4;color:#6B5B4E}
-.sheet .srow{display:flex;align-items:center;gap:12px;width:100%;text-align:right;padding:14px 4px;border-bottom:1px solid #EFE4D8;min-height:64px}
-.sheet .srow:last-child{border:0}
-.sheet .srow .ic{width:40px;height:40px;border-radius:50%;background:#FBE6D6;color:#C2541C;display:grid;place-items:center;flex-shrink:0}
-.sheet .srow .ic svg{width:20px;height:20px}
-.sheet .srow .tx{flex:1}.sheet .srow b{display:block;font-size:17px;font-weight:500}.sheet .srow small{font-size:14px;color:#7A6A5D}
-.sheet .srow .end{color:#B3A396}
-.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 30px);transform:translate(-50%,20px);background:#fff;color:var(--ink);padding:12px 20px;border-radius:16px;font-size:15px;font-weight:500;opacity:0;transition:.3s;z-index:40;pointer-events:none;box-shadow:0 10px 30px -10px rgba(0,0,0,.3)}
+.lrow{display:flex;align-items:center;gap:12px;width:100%;padding:16px 6px;border-bottom:1px solid #EFE4D8;font-size:18px;font-weight:500;text-align:start}
+.lrow:last-child{border:0}
+.lrow small{font-size:14px;color:#8A7B6E;font-weight:400;margin-inline-start:6px}
+.lrow .c{margin-inline-start:auto;color:#D9652A;opacity:0}.lrow.on .c{opacity:1}
+.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 12px);transform:translate(-50%,-20px);background:#fff;color:var(--ink);padding:12px 20px;border-radius:16px;font-size:15px;font-weight:500;opacity:0;transition:.3s;z-index:40;pointer-events:none;box-shadow:0 10px 30px -10px rgba(0,0,0,.3);width:max-content;max-width:88vw;text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
@@ -309,7 +402,6 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 <div class="mesh"></div>
 
 <svg width="0" height="0" style="position:absolute">
-  <symbol id="i-next" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
   <symbol id="i-back" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
@@ -328,106 +420,117 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
   <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12h10l1-12M9 7V4h6v3"/></symbol>
   <symbol id="i-chev" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
   <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></symbol>
   <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z"/></symbol>
   <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r=".8"/></symbol>
   <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></symbol>
   <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 21c3.9 0 6.5-2.6 6.5-6.2 0-3.2-2-5.2-3.6-7.3-.4 1.6-1.3 2.6-2.4 3.1.2-2.9-1-5.6-3.5-7.6.1 3.3-1.6 5-3 6.8C4.9 11.2 5.5 13 5.5 14.8 5.5 18.4 8.1 21 12 21z"/></symbol>
   <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M11 18h2"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.5 3.5 5.5 3.5 8.5s-1 6-3.5 8.5c-2.5-2.5-3.5-5.5-3.5-8.5s1-6 3.5-8.5z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M5 19.5V12M12 19.5V5M19 19.5v-8"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M5 18.5V8A2.5 2.5 0 0 1 7.5 5.5h9A2.5 2.5 0 0 1 19 8v5.5a2.5 2.5 0 0 1-2.5 2.5H8.5z"/></symbol>
+  <symbol id="i-rocket" viewBox="0 0 24 24"><path d="M12 3c3 2.2 4.5 5.2 4.5 8.8L14.6 15H9.4l-1.9-3.2C7.5 8.2 9 5.2 12 3z"/><circle cx="12" cy="9.5" r="1.6"/><path d="M9.6 15 8 19.5l2.6-1.4M14.4 15l1.6 4.5-2.6-1.4"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="12.5" rx="2.5"/><path d="M10.5 8.8v5l4.2-2.5z"/><path d="M8.5 20.5h7"/></symbol>
+  <symbol id="i-brush" viewBox="0 0 24 24"><path d="M19.5 4.5 11 13l-2-2 8.5-8.5"/><path d="M9 11c-2.5 0-4 1.5-4 4 0 1.5-.8 2.6-1.5 3.5 3.5.5 8-.5 8-4.5"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5.5c2.5-1 5.5-1 8 .5 2.5-1.5 5.5-1.5 8-.5v13c-2.5-1-5.5-1-8 .5-2.5-1.5-5.5-1.5-8-.5z"/><path d="M12 6v13"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M20.5 3.5 3.5 10.5l7 3 3 7z"/><path d="M20.5 3.5l-10 10"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5.5 8h13l-1 12.5h-11z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></symbol>
+  <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="18" cy="12" r="1.2"/></symbol>
+  <symbol id="i-call" viewBox="0 0 24 24"><path d="M6.6 3.8h2.8l1.4 3.8-1.9 1.4a10.5 10.5 0 0 0 5.9 5.9l1.4-1.9 3.8 1.4v2.8a2 2 0 0 1-2.2 2A15.5 15.5 0 0 1 4.6 6a2 2 0 0 1 2-2.2z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-bubble" viewBox="0 0 24 24"><path d="M12 4.5c4.7 0 8.5 3 8.5 6.8s-3.8 6.8-8.5 6.8c-.9 0-1.8-.1-2.6-.3L5 19.5l1.2-3.4C4.5 14.9 3.5 13.2 3.5 11.3 3.5 7.5 7.3 4.5 12 4.5z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="12.5" rx="3"/><circle cx="12" cy="13.2" r="3.6"/><path d="M8.5 7l1.4-2.5h4.2L15.5 7"/></symbol>
+  <symbol id="i-note" viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5" fill="currentColor"/><circle cx="16.5" cy="16" r="2.5" fill="currentColor"/></symbol>
+  <symbol id="i-card" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18"/></symbol>
 </svg>
 
-<!-- ============ 1. WELCOME ============ -->
+<!-- ============ WELCOME ============ -->
 <section class="screen" id="ob1">
-  <div class="brand" style="margin-top:2vh">Look<br>Up</div>
-  <h1 class="t">הטלפון שלך יחזיר אותך<br>לאנשים שלך</h1>
-  <p class="d">רגע לפני שנכנסים לרשתות, לסרטונים, למשחקים או לקניות: נשימה אחת, תמונה שאוהבים, ודבר קטן לעשות במקום.</p>
+  <div class="top"><span></span><span></span><button class="langbtn" onclick="openLang()"><svg class="i"><use href="#i-globe"/></svg><span id="langName"></span></button></div>
+  <div class="brand" style="margin-top:1vh">Look<br>Up</div>
+  <h1 class="t" data-t="w_title"></h1>
+  <p class="d" data-t="w_desc"></p>
   <div class="grow" style="min-height:16px"></div>
   <div class="circ" style="--len:820">
     <svg class="arc" viewBox="0 0 280 280"><circle class="bgc" cx="140" cy="140" r="130"/><circle class="fg" cx="140" cy="140" r="130" style="stroke-dashoffset:520"/></svg>
     <div class="ph"></div>
   </div>
   <div class="grow" style="min-height:16px"></div>
-  <div class="duo"><button class="pill white" onclick="qi=0;go('quiz')">בואו נתחיל</button></div>
-  <p class="foot">שתי דקות · בלי הרשמה · הכול נשאר בטלפון</p>
+  <div class="duo"><button class="pill white" onclick="qi=0;go('quiz')" data-t="w_cta"></button></div>
+  <p class="foot" data-t="w_foot"></p>
 </section>
 
 <!-- ============ QUIZ ============ -->
 <section class="screen" id="quiz">
-  <div class="top"><button class="gbtn" onclick="quizBack()" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
-  <div class="stepof" id="qStep" style="margin-top:14px"></div><div class="prog" id="qProg"></div>
-  <h1 class="t" id="qTitle"></h1>
+  <div class="top"><button class="gbtn navback" onclick="quizBack()"><svg class="i fl"><use href="#i-back"/></svg></button><div class="obbar"><b></b></div><span></span></div>
+  <h1 class="t" id="qTitle" style="margin-top:26px"></h1>
   <p class="qhint" id="qHint"></p>
   <div class="opts" id="qOpts"></div>
   <div class="grow" style="min-height:16px"></div>
-  <div class="duo"><button class="pill white" id="qNext" onclick="quizNext()" disabled>המשך</button></div>
+  <div class="duo"><button class="pill white" id="qNext" onclick="quizNext()" disabled></button></div>
 </section>
 
-<!-- ============ 1. APPS & CATEGORIES ============ -->
+<!-- ============ APPS & CATEGORIES ============ -->
 <section class="screen" id="apps">
-  <div class="top"><button class="gbtn" onclick="back('quiz')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
-  <div class="stepof" data-step="1" style="margin-top:14px"></div><div class="prog" data-step="1"></div>
-  <h1 class="t">מה גוזל לך הכי<br>הרבה זמן?</h1>
-  <p class="d">אפשר לבחור קטגוריה שלמה, כמו כל המשחקים, או אפליקציות מסוימות. ההפסקה תופיע לפני כל אחת מהן.</p>
-  <div class="presets"><button onclick="preset('social')">רק רשתות</button><button onclick="preset('video')">סרטונים ורשתות</button><button onclick="preset('all')">כל מה שמסיח</button></div>
-  <div class="seg"><button data-t="cats" onclick="pickTab='cats';renderPicker()">קטגוריות</button><button data-t="apps" onclick="pickTab='apps';renderPicker()">אפליקציות</button></div>
-  <input class="field" id="pickSearch" placeholder="חיפוש אפליקציה" oninput="renderPicker(this.value)" style="margin-top:12px">
-  <div id="pickList" style="margin-top:12px"></div>
+  <div class="top"><button class="gbtn navback" onclick="back('quiz')"><svg class="i fl"><use href="#i-back"/></svg></button><div class="obbar"><b></b></div><span></span></div>
+  <h1 class="t" data-t="a_title" style="margin-top:26px"></h1>
+  <p class="d" data-t="a_desc"></p>
+  <button class="glass selcard" id="selCard" onclick="openPicker()"></button>
+  <div class="lbl" data-t="a_quick"></div>
+  <div class="presets"><button onclick="preset('social')" data-t="p_social"></button><button onclick="preset('video')" data-t="p_video"></button><button onclick="preset('all')" data-t="p_all"></button></div>
   <div class="grow" style="min-height:16px"></div>
-  <p class="qhint" id="pickSum" style="margin-bottom:-4px"></p>
-  <div class="duo"><button class="pill white" id="appsBtn" onclick="appsDone()">המשך</button></div>
+  <div class="duo"><button class="pill white" id="appsBtn" onclick="appsDone()"></button></div>
 </section>
 
-<!-- ============ 2. PEOPLE ============ -->
+<!-- ============ PEOPLE ============ -->
 <section class="screen" id="ob2">
-  <div class="top"><button class="gbtn" onclick="back('apps')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
-  <div class="stepof" data-step="2" style="margin-top:14px"></div><div class="prog" data-step="2"></div>
-  <h1 class="t">בשביל מי חשוב לך<br>להיות יותר כאן?</h1>
-  <p class="d">ילדים, בן או בת זוג, הורים, חברים. בשעות המשפחה יופיעו התמונה שלהם ורעיון קטן איתם.</p>
+  <div class="top"><button class="gbtn navback" onclick="back('apps')"><svg class="i fl"><use href="#i-back"/></svg></button><div class="obbar"><b></b></div><span></span></div>
+  <h1 class="t" data-t="o2_title" style="margin-top:26px"></h1>
+  <p class="d" data-t="o2_desc"></p>
   <div class="bubbles" id="peopleList" style="margin-top:18px"></div>
   <div class="grow"></div>
-  <div class="duo"><button class="pill glassb" id="ob2skip" onclick="go('ob3')">אוסיף אחר כך</button><button class="pill white" id="ob2next" onclick="go('ob3')">המשך</button></div>
+  <div class="duo"><button class="pill glassb" id="ob2skip" onclick="go('ob3')" data-t="o2_skip"></button><button class="pill white" id="ob2next" onclick="go('ob3')"></button></div>
 </section>
 
-<!-- ============ 3. PHOTOS + IDEAS ============ -->
+<!-- ============ PHOTOS + IDEAS ============ -->
 <section class="screen" id="ob3">
-  <div class="top"><button class="gbtn" onclick="back('ob2')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
-  <div class="stepof" data-step="3" style="margin-top:14px"></div><div class="prog" data-step="3"></div>
-  <h1 class="t">מה עושה לך טוב?</h1>
-  <p class="d">תמונות ורעיונות שיופיעו בהפסקה בשאר שעות היום.</p>
-  <div class="lbl">מה לעשות במקום לגלול?<small>לחיצה בוחרת</small></div>
+  <div class="top"><button class="gbtn navback" onclick="back('ob2')"><svg class="i fl"><use href="#i-back"/></svg></button><div class="obbar"><b></b></div><span></span></div>
+  <h1 class="t" data-t="o3_title" style="margin-top:26px"></h1>
+  <p class="d" data-t="o3_desc"></p>
+  <div class="lbl"><span data-t="o3_ideas"></span><small data-t="o3_ideas_s"></small></div>
   <div class="bubbles" id="catChips"></div>
-  <div class="lbl">תמונות שאוהבים<small>לא חובה · נשמרות רק בטלפון</small></div>
+  <div class="lbl"><span data-t="o3_photos"></span><small data-t="o3_photos_s"></small></div>
   <div class="pgrid" id="genGrid"></div>
-  <div class="lbl">רעיון משלך<small>לא חובה</small></div>
-  <div style="display:flex;gap:8px"><input class="field" id="customIdea" placeholder="למשל: לנגן 5 דקות בגיטרה" onkeydown="if(event.key==='Enter')addCustom()"><button class="pill white" style="flex:none;width:auto;padding:0 18px;height:54px" onclick="addCustom()">הוספה</button></div>
+  <div class="lbl"><span data-t="o3_own"></span><small data-t="optional"></small></div>
+  <div style="display:flex;gap:8px"><input class="field" id="customIdea" data-tp="o3_ph" onkeydown="if(event.key==='Enter')addCustom()"><button class="pill white" style="flex:none;width:auto;padding:0 18px;height:54px" onclick="addCustom()" data-t="add"></button></div>
   <div class="cust" id="customList"></div>
   <div class="grow" style="min-height:16px"></div>
-  <div class="duo"><button class="pill white" id="ob3btn" onclick="go('ob4')">המשך</button></div>
+  <div class="duo"><button class="pill white" id="ob3btn" onclick="go('ob4')"></button></div>
 </section>
 
-<!-- ============ 4. TIMES ============ -->
+<!-- ============ TIMES ============ -->
 <section class="screen" id="ob4">
-  <div class="top"><button class="gbtn" onclick="back('ob3')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
-  <div class="stepof" data-step="4" style="margin-top:14px"></div><div class="prog" data-step="4"></div>
-  <h1 class="t">מתי הכי חשוב לך<br>להיות כאן?</h1>
-  <p class="d">לפי השעה ההפסקה מציגה דברים אחרים. לחיצה על שעה משנה אותה.</p>
+  <div class="top"><button class="gbtn navback" onclick="back('ob3')"><svg class="i fl"><use href="#i-back"/></svg></button><div class="obbar"><b></b></div><span></span></div>
+  <h1 class="t" data-t="o4_title" style="margin-top:26px"></h1>
+  <p class="d" data-t="o4_desc"></p>
   <div style="margin-top:20px">
-    <div class="rowg"><span class="ic"><svg class="i"><use href="#i-sun"/></svg></span><span class="tx"><b>בוקר שקט</b><small>עד השעה הזו: מים, מתיחה, בוקר טוב</small></span><input type="time" class="time" id="mEnd" value="08:00"></div>
-    <div class="rowg" style="flex-wrap:wrap"><span class="ic"><svg class="i"><use href="#i-home"/></svg></span><span class="tx"><b>שעות משפחה</b><small>האנשים שלך ורעיון קטן איתם</small></span>
-      <span style="display:flex;align-items:center;gap:8px;width:100%;padding-inline-start:50px;margin-top:8px;font-size:15px">מ-<input type="time" class="time" id="fStart" value="17:00">עד<input type="time" class="time" id="fEnd" value="21:00"></span></div>
-    <div class="rowg"><span class="ic"><svg class="i"><use href="#i-candle"/></svg></span><span class="tx"><b>שבת כזמן משפחה</b><small>מכניסת שבת ועד מוצאי שבת</small></span><button class="tgl on" id="shabbat" onclick="this.classList.toggle('on')" aria-label="שבת"></button></div>
-    <div class="rowg"><span class="ic"><svg class="i"><use href="#i-moon"/></svg></span><span class="tx"><b>לילה</b><small>מהשעה הזו: מנוחה, בלי פיד</small></span><input type="time" class="time" id="nStart" value="22:30"></div>
+    <div class="rowg"><span class="ic"><svg class="i"><use href="#i-sun"/></svg></span><span class="tx"><b data-t="t_m"></b><small data-t="t_m_s"></small></span><input type="time" class="time" id="mEnd" value="08:00"></div>
+    <div class="rowg" style="flex-wrap:wrap"><span class="ic"><svg class="i"><use href="#i-home"/></svg></span><span class="tx"><b data-t="t_f"></b><small data-t="t_f_s"></small></span>
+      <span style="display:flex;align-items:center;gap:8px;width:100%;padding-inline-start:50px;margin-top:8px;font-size:15px"><span data-t="from"></span><input type="time" class="time" id="fStart" value="17:00"><span data-t="to"></span><input type="time" class="time" id="fEnd" value="21:00"></span></div>
+    <div class="rowg"><span class="ic"><svg class="i"><use href="#i-candle"/></svg></span><span class="tx"><b data-t="t_s"></b><small data-t="t_s_s"></small></span><button class="tgl on" id="shabbat" onclick="this.classList.toggle('on')" aria-label="Shabbat"></button></div>
+    <div class="rowg"><span class="ic"><svg class="i"><use href="#i-moon"/></svg></span><span class="tx"><b data-t="t_n"></b><small data-t="t_n_s"></small></span><input type="time" class="time" id="nStart" value="22:30"></div>
   </div>
   <div class="grow" style="min-height:16px"></div>
-  <div class="duo"><button class="pill white" id="ob4btn" onclick="finishTimes()">המשך</button></div>
+  <div class="duo"><button class="pill white" id="ob4btn" onclick="finishTimes()"></button></div>
 </section>
 
-<!-- ============ BUILDING YOUR PLAN (Cal AI style loading) ============ -->
+<!-- ============ BUILDING YOUR PLAN ============ -->
 <section class="screen" id="build">
   <div class="top"><span></span><div class="brand sm">Look Up</div><span></span></div>
   <div class="grow"></div>
   <div class="num" id="bPct" style="font-size:96px;text-align:center">0%</div>
-  <h1 class="t" style="margin-top:6px">בונים את התוכנית שלך</h1>
+  <h1 class="t" style="margin-top:6px" data-t="b_title"></h1>
   <div class="bbar"><b id="bBar"></b></div>
   <p class="d" id="bNow" style="min-height:24px"></p>
   <div class="glass blist" id="bList"></div>
@@ -436,188 +539,227 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 
 <!-- ============ YOUR PLAN ============ -->
 <section class="screen" id="plan">
-  <div class="top"><button class="gbtn" onclick="go('ob4')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
-  <h1 class="t" style="margin-top:22px">התוכנית שלך מוכנה</h1>
+  <div class="top"><button class="gbtn navback" onclick="back('ob4')"><svg class="i fl"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <h1 class="t" style="margin-top:18px" data-t="pl_title"></h1>
   <div class="solid phero" id="planHero"></div>
   <div class="glass plan" id="planBox"></div>
-  <p class="science">מחקר של אוניברסיטת היידלברג ומכון מקס פלאנק על הפסקה קצרה לפני פתיחת אפליקציה מצא ירידה של 57% בשימוש בה.</p>
+  <p class="science" data-t="science"></p>
   <div class="grow" style="min-height:16px"></div>
-  <div class="duo"><button class="pill white" onclick="go('commit')">זה מתאים לי</button></div>
+  <div class="duo"><button class="pill white" onclick="go('commit')" data-t="pl_cta"></button></div>
 </section>
 
 <!-- ============ COMMIT (hold) ============ -->
 <section class="screen" id="commit">
-  <div class="top"><button class="gbtn" onclick="go('plan')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
-  <h1 class="t" style="margin-top:26px">רגע אחד של החלטה</h1>
+  <div class="top"><button class="gbtn navback" onclick="back('plan')"><svg class="i fl"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <h1 class="t" style="margin-top:26px" data-t="c_title"></h1>
   <p class="d" id="commitTxt" style="font-size:19px;line-height:1.5;font-weight:500;color:#fff;margin-top:18px"></p>
   <div class="grow" style="min-height:20px"></div>
   <div class="circ hold" id="holdBtn" style="--len:820;width:200px">
     <svg class="arc" viewBox="0 0 280 280"><circle class="bgc" cx="140" cy="140" r="130"/><circle class="fg" id="holdArc" cx="140" cy="140" r="130"/></svg>
-    <div class="holdin"><svg class="i"><use href="#i-heart"/></svg><span id="holdLbl">להחזיק<br>לחוץ</span></div>
+    <div class="holdin"><svg class="i"><use href="#i-heart"/></svg><span id="holdLbl"></span></div>
   </div>
-  <p class="foot" style="margin-top:16px">להחזיק את העיגול עד שהוא מתמלא</p>
+  <p class="foot" style="margin-top:16px" data-t="c_foot"></p>
   <div class="grow" style="min-height:20px"></div>
 </section>
 
-<!-- ============ FIRST PAUSE (aha moment, right after the trial) ============ -->
-<section class="screen" id="first">
-  <div class="top"><span></span><div class="brand sm">Look Up</div><span></span></div>
-  <h1 class="t" style="margin-top:26px">ההפסקה הראשונה שלך</h1>
-  <p class="d">ככה זה ייראה רגע לפני שאחת האפליקציות שבחרת נפתחת. נשימה אחת, 10 שניות, ואז מחליטים.</p>
-  <div class="grow" style="min-height:16px"></div>
-  <div class="circ" style="--len:820;width:min(62vw,240px)">
-    <svg class="arc" viewBox="0 0 280 280"><circle class="bgc" cx="140" cy="140" r="130"/><circle class="fg" cx="140" cy="140" r="130" style="stroke-dashoffset:820"/></svg>
-    <div class="ph" id="firstPh"></div>
-  </div>
-  <div class="grow" style="min-height:16px"></div>
-  <div class="duo"><button class="pill white" onclick="firstRun=true;startPause('instagram',true)">להתחיל</button></div>
-</section>
-
-<!-- ============ PAYWALL 1/3: free ============ -->
+<!-- ============ PAYWALL 1/3 ============ -->
 <section class="screen" id="pw1">
-  <div class="top"><button class="gbtn" onclick="go('plan')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
-  <div style="text-align:center;margin-top:10px"><span class="demo">הדגמה · אין חיוב אמיתי</span></div>
-  <h1 class="t" style="font-size:34px;margin-top:20px">אנחנו רוצים<br>שתנסו בחינם</h1>
-  <p class="d">7 ימים מלאים, בלי לשלם כלום עכשיו.</p>
+  <div class="top"><button class="gbtn navback" onclick="back('commit')"><svg class="i fl"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <div style="text-align:center;margin-top:10px"><span class="demo" data-t="demo"></span></div>
+  <h1 class="t" style="font-size:34px;margin-top:20px" data-t="pw1_t"></h1>
+  <p class="d" data-t="pw1_d"></p>
   <div class="grow" style="min-height:16px"></div>
   <div class="circ" style="--len:820;width:min(62vw,240px)">
     <svg class="arc" viewBox="0 0 280 280"><circle class="bgc" cx="140" cy="140" r="130"/><circle class="fg" cx="140" cy="140" r="130" style="stroke-dashoffset:0"/></svg>
     <div class="ph" id="pw1ph"></div>
   </div>
   <div class="grow" style="min-height:16px"></div>
-  <div class="duo"><button class="pill white" onclick="go('pw2')">לנסות ב-0 ₪</button></div>
-  <p class="foot">אפשר לבטל בכל רגע</p>
+  <div class="duo"><button class="pill white" onclick="go('pw2')" data-t="pw1_cta"></button></div>
+  <p class="foot" data-t="cancel_any"></p>
 </section>
 
-<!-- ============ PAYWALL 2/3: reminder ============ -->
+<!-- ============ PAYWALL 2/3 ============ -->
 <section class="screen" id="pw2">
-  <div class="top"><button class="gbtn" onclick="go('pw1')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
-  <h1 class="t" style="font-size:32px;margin-top:22px">נזכיר לך יומיים<br>לפני שהניסיון נגמר</h1>
-  <p class="d">בלי הפתעות בחיוב. ככה זה עובד:</p>
+  <div class="top"><button class="gbtn navback" onclick="back('pw1')"><svg class="i fl"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <h1 class="t" style="font-size:32px;margin-top:22px" data-t="pw2_t"></h1>
+  <p class="d" data-t="pw2_d"></p>
   <div class="tl">
-    <div class="st"><span class="dot"><svg class="i"><use href="#i-check"/></svg></span><span><b>היום</b><span>גישה מלאה לכל Look Up</span></span></div>
-    <div class="st"><span class="dot"><svg class="i"><use href="#i-bell"/></svg></span><span><b>יום 5</b><span>נשלח לך תזכורת שהניסיון עומד להסתיים</span></span></div>
-    <div class="st"><span class="dot dim"><svg class="i"><use href="#i-star"/></svg></span><span><b>יום 7</b><span>מתחיל המנוי. אפשר לבטל עד אז בלי לשלם</span></span></div>
+    <div class="st"><span class="dot"><svg class="i"><use href="#i-check"/></svg></span><span><b data-t="tl1"></b><span data-t="tl1s"></span></span></div>
+    <div class="st"><span class="dot"><svg class="i"><use href="#i-bell"/></svg></span><span><b data-t="tl2"></b><span data-t="tl2s"></span></span></div>
+    <div class="st"><span class="dot dim"><svg class="i"><use href="#i-star"/></svg></span><span><b data-t="tl3"></b><span data-t="tl3s"></span></span></div>
   </div>
   <div class="grow" style="min-height:16px"></div>
-  <div class="duo"><button class="pill white" onclick="askReminder()"><svg class="i"><use href="#i-bell"/></svg>להפעיל תזכורת ולהמשיך</button></div>
-  <button class="pill link" onclick="go('pw3')">להמשיך בלי תזכורת</button>
+  <div class="duo"><button class="pill white" onclick="askReminder()"><svg class="i"><use href="#i-bell"/></svg><span data-t="pw2_cta"></span></button></div>
+  <button class="pill link" onclick="go('pw3')" data-t="pw2_skip"></button>
 </section>
 
-<!-- ============ PAYWALL 3/3: plans ============ -->
+<!-- ============ PAYWALL 3/3 ============ -->
 <section class="screen" id="pw3">
-  <div class="top"><button class="gbtn" onclick="go('pw2')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><button class="gbtn xbtn" id="pwX" onclick="openOffer()" aria-label="סגירה"><svg class="i"><use href="#i-x"/></svg></button></div>
-  <div style="text-align:center;margin-top:10px"><span class="demo">הדגמה · אין חיוב אמיתי</span></div>
-  <h1 class="t" style="margin-top:14px">להיות יותר כאן,<br>כל יום</h1>
-  <div class="vals">
-    <div><svg class="i"><use href="#i-heart"/></svg>הפסקה עם האנשים שלך, לפני כל אפליקציה שבחרת</div>
-    <div><svg class="i"><use href="#i-sun"/></svg>בוקר שקט, ערבי משפחה ושבת</div>
-    <div><svg class="i"><use href="#i-target"/></svg>רואים כל שבוע כמה פעמים בחרת בהם</div>
+  <div class="top"><button class="gbtn navback" onclick="back('pw2')"><svg class="i fl"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><button class="gbtn xbtn" id="pwX" onclick="openOffer()" aria-label="close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div style="text-align:center;margin-top:8px"><span class="demo" data-t="demo"></span></div>
+  <h1 class="t" style="margin-top:12px" data-t="pw3_t"></h1>
+  <div class="goalchip" id="pwGoal"></div>
+  <div class="vals"><div><svg class="i"><use href="#i-heart"/></svg><span data-t="v1"></span></div><div><svg class="i"><use href="#i-sun"/></svg><span data-t="v2"></span></div><div><svg class="i"><use href="#i-target"/></svg><span data-t="v3"></span></div></div>
+  <div class="plans">
+    <button class="plancard on" data-p="year" onclick="pickPlan('year')"><span class="tag" data-t="pl_tag"></span><span class="tx"><b data-t="yearly"></b><small data-t="yearly_s"></small></span><span class="price"><b>$29.99</b><small data-t="per_year"></small></span></button>
+    <button class="plancard" data-p="month" onclick="pickPlan('month')"><span class="tx"><b data-t="monthly"></b><small data-t="monthly_s"></small></span><span class="price"><b>$5.99</b><small data-t="per_month"></small></span></button>
   </div>
-  <div class="plans" id="plans">
-    <button class="plancard on" data-p="year" onclick="pickPlan('year')"><span class="tag">7 ימים בחינם · חיסכון של 58%</span><span class="tx"><b>שנתי</b><small>בערך $2.50 לחודש</small></span><span class="price"><b>$29.99</b><small>לשנה</small></span></button>
-    <button class="plancard" data-p="month" onclick="pickPlan('month')"><span class="tx"><b>חודשי</b><small>בלי ניסיון חינם</small></span><span class="price"><b>$5.99</b><small>לחודש</small></span></button>
-  </div>
-  <p class="science" style="margin-top:12px">מבוסס על מחקר: הפסקה קצרה לפני פתיחת אפליקציה הורידה את השימוש בה ב-57% (היידלברג ומקס פלאנק).</p>
   <div class="grow" style="min-height:16px"></div>
-  <div class="duo"><button class="pill white" id="pwBuy" onclick="startTrial()">להתחיל 7 ימים בחינם</button></div>
-  <p class="fine" id="pwFine">היום 0 ₪. אחרי 7 ימים $29.99 לשנה. תזכורת יומיים לפני. ביטול בכל רגע בהגדרות האייפון.</p>
-  <div class="links"><button onclick="toast('בהדגמה אין רכישות לשחזר')">שחזור רכישה</button><button onclick="toast('בגרסה האמיתית: דף תנאי שימוש')">תנאים</button><button onclick="toast('בגרסה האמיתית: דף פרטיות')">פרטיות</button></div>
+  <div class="duo"><button class="pill white" id="pwBuy" onclick="startTrial()"></button></div>
+  <p class="fine" id="pwFine"></p>
+  <div class="links"><button onclick="toast(t('t_restore'))" data-t="restore"></button><button onclick="toast(t('t_terms'))" data-t="terms"></button><button onclick="toast(t('t_privacy'))" data-t="privacy"></button></div>
 </section>
 
-<!-- ============ 5. CONNECT ============ -->
+<!-- ============ FIRST PAUSE (aha) ============ -->
+<section class="screen" id="first">
+  <div class="top"><span></span><div class="brand sm">Look Up</div><span></span></div>
+  <h1 class="t" style="margin-top:26px" data-t="f_t"></h1>
+  <p class="d" data-t="f_d"></p>
+  <div class="grow" style="min-height:16px"></div>
+  <div class="circ" style="--len:820;width:min(62vw,240px)">
+    <svg class="arc" viewBox="0 0 280 280"><circle class="bgc" cx="140" cy="140" r="130"/><circle class="fg" cx="140" cy="140" r="130" style="stroke-dashoffset:820"/></svg>
+    <div class="ph" id="firstPh"></div>
+  </div>
+  <div class="grow" style="min-height:16px"></div>
+  <div class="duo"><button class="pill white" onclick="firstRun=true;go('spring',{anim:'up'})" data-t="f_cta"></button></div>
+</section>
+
+<!-- ============ DEMO HOME SCREEN ============ -->
+<section class="screen" id="spring">
+  <div class="wall" id="sbWall"></div>
+  <div class="top"><button class="gbtn navback" onclick="back(firstRun?'first':'home')"><svg class="i fl"><use href="#i-back"/></svg></button><div style="text-align:center"><span class="demo" data-t="sp_demo"></span></div><span></span></div>
+  <div class="sbgrid" id="sbGrid"></div>
+  <div class="grow" style="min-height:20px"></div>
+  <p class="sbhint" data-t="sp_hint"></p>
+  <div class="sbdots"><i></i><i></i></div>
+  <div class="sbdock" id="sbDock"></div>
+</section>
+
+<!-- ============ CONNECT ============ -->
 <section class="screen" id="ob5">
-  <div class="top"><button class="gbtn" onclick="back(st.setup?'home':'pw3')" aria-label="חזרה"><svg class="i"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
-  <div class="stepof" data-step="5" style="margin-top:14px"></div><div class="prog" data-step="5"></div>
-  <h1 class="t">חיבור לאפליקציות</h1>
-  <p class="d">בגרסת הניסיון החיבור נעשה פעם אחת באפליקציית <b>קיצורים</b>, אוטומציה לכל אפליקציה. באפליקציה מהאפסטור זה יקרה לבד, כולל קטגוריות שלמות.</p>
+  <div class="top"><button class="gbtn navback" onclick="back(st.setup?'settings':'first')"><svg class="i fl"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <h1 class="t" data-t="c5_t" style="margin-top:22px"></h1>
+  <p class="d" data-t="c5_d"></p>
   <div class="glass" style="margin-top:18px" id="guideCard"></div>
   <div class="grow" style="min-height:16px"></div>
-  <div class="duo"><button class="pill glassb" id="ob5later" onclick="finishConnect(false)">אחר כך</button><button class="pill white" onclick="finishConnect(true)">סיימתי לחבר</button></div>
+  <div class="duo"><button class="pill glassb" id="ob5later" onclick="finishConnect(false)"></button><button class="pill white" onclick="finishConnect(true)" data-t="c5_ok"></button></div>
 </section>
 
-<!-- ============ HOME ============ -->
-<section class="screen" id="home">
-  <div class="top"><span class="streak" id="streak"></span><div class="brand sm">Look Up</div><button class="gbtn" onclick="openSettings()" aria-label="הגדרות"><svg class="i"><use href="#i-gear"/></svg></button></div>
+<!-- ============ TODAY (home) ============ -->
+<section class="screen tabbed" id="home">
+  <div class="top"><span class="streak" id="streak" onclick="go('stats',{anim:'fade'})"></span><div class="brand sm">Look Up</div><span></span></div>
   <div class="gauge glass">
-    <div class="h"><span>היום בחרת להיות כאן</span><span id="hDate" style="font-size:14px;opacity:.85"></span></div>
-    <div class="num" id="tHere">0<small>פעמים</small></div>
+    <div class="h"><span data-t="h_today"></span><span id="hDate" style="font-size:14px;opacity:.85"></span></div>
+    <div class="num" id="tHere">0</div>
     <svg class="g" viewBox="0 0 300 150" id="gauge"></svg>
-    <div class="gl"><span>התחלה</span><span>יעד: 5</span></div>
-    <button class="round heart" style="width:76px;height:76px" onclick="startPause('instagram',true)" aria-label="לנסות את ההפסקה"><svg class="i"><use href="#i-heart"/></svg></button>
+    <div class="gl"><span data-t="h_start"></span><span data-t="h_goal"></span></div>
+    <button class="round heart" style="width:76px;height:76px" onclick="firstRun=false;go('spring',{anim:'up'})" aria-label="try"><svg class="i"><use href="#i-heart"/></svg></button>
   </div>
-  <p style="text-align:center;font-size:14px;color:var(--w90);margin-top:8px">לחיצה על הלב: לנסות את ההפסקה</p>
+  <p style="text-align:center;font-size:14px;color:var(--w90);margin-top:8px" data-t="h_try"></p>
   <div id="connectStatus"></div>
   <div class="tiles">
-    <div class="tile solid"><span class="h">"אני כאן" השבוע</span><span class="num" id="wHere">0</span></div>
-    <div class="tile glass"><span class="h">פתחת בכל זאת</span><span class="num" id="wOpen">0</span></div>
+    <div class="tile solid"><span class="h" data-t="h_wk"></span><span class="num" id="wHere">0</span></div>
+    <div class="tile glass"><span class="h" data-t="h_open"></span><span class="num" id="wOpen">0</span></div>
   </div>
-  <div class="glass" style="padding:16px 16px 12px;margin-top:10px"><div style="font-size:15.5px;font-weight:500">7 הימים האחרונים</div><div class="week" id="week"></div></div>
-  <div id="pplWrap"><div class="lbl">השבוע בחרת ב…</div><div id="pplStats"></div></div>
-  <div style="height:10px"></div>
+  <button class="glass selcard" id="homeApps" style="margin-top:10px" onclick="openPicker()"></button>
+</section>
+
+<!-- ============ PROGRESS ============ -->
+<section class="screen tabbed" id="stats">
+  <div class="top"><span></span><div class="brand sm">Look Up</div><span></span></div>
+  <h1 class="t" style="margin-top:10px;font-size:28px" data-t="s_title"></h1>
+  <div class="glass" style="padding:18px;margin-top:16px">
+    <div style="display:flex;align-items:center;gap:14px"><svg class="i" style="width:46px;height:46px;color:#FFD08A;fill:#FFD08A;stroke:none"><use href="#i-flame"/></svg><div><div class="num" id="sStreak" style="font-size:54px">0</div><div style="font-size:15px;font-weight:500" data-t="s_streak"></div></div></div>
+    <div class="miles" id="sMiles"></div>
+  </div>
+  <div class="tiles">
+    <div class="tile solid"><span class="h" data-t="s_back"></span><span><span class="num" id="sMin">0</span><small class="s" style="display:block;color:#7A6A5D;margin-top:6px" data-t="s_back_s"></small></span></div>
+    <div class="tile glass"><span class="h" data-t="s_rate"></span><span><span class="num" id="sRate">0%</span><small class="s" style="display:block;margin-top:6px" data-t="s_rate_s"></small></span></div>
+  </div>
+  <div class="glass" style="padding:16px 16px 12px;margin-top:10px"><div style="font-size:15.5px;font-weight:500" data-t="s_week"></div><div class="week" id="week"></div></div>
+  <div id="pplWrap"><div class="lbl" data-t="s_people"></div><div id="pplStats"></div></div>
+</section>
+
+<!-- ============ SETTINGS ============ -->
+<section class="screen tabbed" id="settings">
+  <div class="top"><span></span><div class="brand sm">Look Up</div><span></span></div>
+  <h1 class="t" style="margin-top:10px;font-size:28px" data-t="set_t"></h1>
+  <div class="shead" data-t="set_pause"></div>
+  <div class="slist" id="setList1"></div>
+  <div class="shead" data-t="set_app"></div>
+  <div class="slist" id="setList2"></div>
+  <button class="pill link" style="margin-top:14px" onclick="resetAll()"><svg class="i"><use href="#i-trash"/></svg><span data-t="reset"></span></button>
+  <p class="foot" style="font-size:13px;opacity:.8">Look Up · v10</p>
 </section>
 
 <!-- ============ PAUSE ============ -->
 <section class="screen" id="pause">
   <div class="bgph" id="pBgBlur"></div>
-  <div class="top"><span></span><div class="brand sm" id="pGreet" style="font-family:Heebo;text-transform:none;font-weight:500;letter-spacing:0;font-size:15px"></div><span></span></div>
+  <div class="top" style="grid-template-columns:1fr"><span class="pchip" id="pGreet"></span></div>
   <div class="circ" id="pCirc" style="--len:820">
     <svg class="arc" viewBox="0 0 280 280"><circle class="bgc" cx="140" cy="140" r="130"/><circle class="fg" id="pArc" cx="140" cy="140" r="130"/></svg>
     <div class="ph" id="pPhoto"></div>
   </div>
-  <div class="cue" id="cue">נשימה פנימה…</div>
+  <div class="cue" id="cue"></div>
   <div class="msg" id="pMsg">
     <div class="title" id="pTitle"></div>
-    <div class="idea glass"><small id="pIdeaLbl">במקום:</small><span id="pIdea"></span></div>
+    <div class="idea glass"><small id="pIdeaLbl"></small><span id="pIdea"></span></div>
   </div>
   <div class="grow" style="min-height:16px"></div>
-  <button class="round big" id="orb" onclick="choose('here')"><span><svg class="i" style="display:block;margin:0 auto 4px;color:#3E9B5F"><use href="#i-leaf"/></svg>אני כאן</span></button>
-  <button class="pill glassb anyway" id="anyway" onclick="choose('open')">לפתוח בכל זאת</button>
+  <button class="round big" id="orb" onclick="choose('here')"><span><svg class="i" style="display:block;margin:0 auto 4px;color:#34A853"><use href="#i-leaf"/></svg><span data-t="here"></span></span></button>
+  <button class="pill glassb anyway" id="anyway" onclick="choose('open')"></button>
 </section>
 
 <section class="screen" id="done">
   <div class="grow"></div>
-  <div class="round big" style="pointer-events:none"><svg class="i" style="color:#3E9B5F;width:40px;height:40px"><use href="#i-check"/></svg></div>
+  <div class="round big" style="pointer-events:none"><svg class="i" style="color:#34A853;width:40px;height:40px"><use href="#i-check"/></svg></div>
   <h1 class="t" id="dTitle" style="font-size:32px;margin-top:26px"></h1>
   <p class="d" id="dSub"></p>
   <div class="grow"></div>
-  <p class="foot" id="dFoot">אפשר לסגור את המסך הזה.</p>
+  <p class="foot" id="dFoot"></p>
 </section>
+
+<nav id="tabbar">
+  <button data-tab="home" onclick="tab('home')"><svg class="i"><use href="#i-home"/></svg><span data-t="tab_today"></span></button>
+  <button data-tab="stats" onclick="tab('stats')"><svg class="i"><use href="#i-chart"/></svg><span data-t="tab_prog"></span></button>
+  <button data-tab="settings" onclick="tab('settings')"><svg class="i"><use href="#i-gear"/></svg><span data-t="tab_set"></span></button>
+</nav>
 
 <!-- person sheet -->
 <div class="sheet" id="pSheet" onclick="if(event.target===this)closeSheet()"><div>
-  <h2>להוסיף אדם</h2>
-  <div class="lbl" style="margin-top:16px">שם</div>
-  <input class="sf" id="pName" placeholder="למשל: נועה" oninput="checkPerson()">
-  <div class="lbl">מי זה בשבילך?</div>
+  <h2 data-t="ps_t"></h2>
+  <div class="lbl" style="margin-top:16px" data-t="ps_name"></div>
+  <input class="sf" id="pName" data-tp="ps_name_ph" oninput="checkPerson()">
+  <div class="lbl" data-t="ps_rel"></div>
   <div class="chips" id="relChips"></div>
-  <div class="lbl">תמונות<small>1–5, מהגלריה</small></div>
+  <div class="lbl"><span data-t="ps_pics"></span><small data-t="ps_pics_s"></small></div>
   <div class="pgrid" id="pPicGrid"></div>
-  <button class="pill ink" id="pSave" style="margin-top:20px" onclick="savePerson()" disabled>שמירה</button>
-  <button class="pill link" style="color:#7A6A5D" onclick="closeSheet()">ביטול</button>
+  <button class="pill ink" id="pSave" style="margin-top:20px" onclick="savePerson()" disabled data-t="save"></button>
+  <button class="pill link" style="color:#7A6A5D" onclick="closeSheet()" data-t="cancel"></button>
 </div></div>
 
-<!-- one-time offer (shown when closing the paywall) -->
+<!-- one-time offer -->
 <div class="sheet" id="oSheet" onclick="if(event.target===this)closeSheet()"><div style="text-align:center">
-  <span class="demo" style="background:#F3E3D3;color:#8A4A1F">הדגמה · אין חיוב אמיתי</span>
-  <h2 style="margin-top:14px">רגע לפני שהולכים</h2>
-  <p style="font-size:16px;color:#6B5B4E;margin-top:6px;line-height:1.5">הצעה חד-פעמית, רק עכשיו:</p>
-  <div class="offer"><div class="num" style="font-size:64px;color:#D9652A">50%</div><b>הנחה על השנה הראשונה</b><span><s>$29.99</s> &nbsp;<b>$14.99</b> לשנה הראשונה · 7 ימים בחינם</span></div>
-  <button class="pill ink" style="margin-top:16px" onclick="takeOffer()">לקחת את ההנחה</button>
-  <button class="pill link" style="color:#7A6A5D" onclick="closeSheet()">לא תודה</button>
+  <span class="demo" style="background:#F3E3D3;color:#8A4A1F" data-t="demo"></span>
+  <h2 style="margin-top:14px" data-t="of_t"></h2>
+  <p style="font-size:16px;color:#6B5B4E;margin-top:6px;line-height:1.5" data-t="of_d"></p>
+  <div class="offer"><div class="num" style="font-size:64px;color:#D9652A">50%</div><b data-t="of_b"></b><span><s>$29.99</s> &nbsp;<b>$14.99</b> <span style="display:inline;margin:0" data-t="of_s"></span></span></div>
+  <button class="pill ink" style="margin-top:16px" onclick="takeOffer()" data-t="of_cta"></button>
+  <button class="pill link" style="color:#7A6A5D" onclick="closeSheet()" data-t="of_no"></button>
 </div></div>
 
-<!-- settings sheet -->
-<div class="sheet" id="sSheet" onclick="if(event.target===this)closeSheet()"><div>
-  <h2>הגדרות</h2>
-  <div style="margin-top:10px">
-    <button class="srow" onclick="closeSheet();edit('apps')"><span class="ic"><svg class="i"><use href="#i-phone"/></svg></span><span class="tx"><b>אפליקציות להשהיה</b><small id="sApps"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
-    <button class="srow" onclick="closeSheet();edit('ob2')"><span class="ic"><svg class="i"><use href="#i-users"/></svg></span><span class="tx"><b>האנשים שלי</b><small id="sPeople"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
-    <button class="srow" onclick="closeSheet();edit('ob3')"><span class="ic"><svg class="i"><use href="#i-bulb"/></svg></span><span class="tx"><b>תמונות ורעיונות</b><small id="sIdeas"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
-    <button class="srow" onclick="closeSheet();edit('ob4')"><span class="ic"><svg class="i"><use href="#i-clock"/></svg></span><span class="tx"><b>שעות</b><small id="sTimes"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
-    <button class="srow" onclick="closeSheet();go('ob5')"><span class="ic"><svg class="i"><use href="#i-link"/></svg></span><span class="tx"><b>חיבור לאפליקציות</b><small id="sConn"></small></span><span class="end"><svg class="i"><use href="#i-chev"/></svg></span></button>
-  </div>
-  <button class="pill link" style="color:#B5462A;margin-top:12px" onclick="resetAll()"><svg class="i"><use href="#i-trash"/></svg>מחיקת כל הנתונים</button>
+<!-- language -->
+<div class="sheet" id="lSheet" onclick="if(event.target===this)closeSheet()"><div>
+  <h2 data-t="lang"></h2>
+  <div id="langList" style="margin-top:8px"></div>
+</div></div>
+
+<!-- Apple-style picker -->
+<div class="sheet ios" id="pkSheet" onclick="if(event.target===this)pkCancel()"><div>
+  <div class="pkh"><button onclick="pkCancel()" data-t="cancel"></button><div><b data-t="pk_t"></b><small id="pkCount"></small></div><button class="b" onclick="pkDone()" data-t="done"></button></div>
+  <label class="pks"><svg class="i"><use href="#i-search"/></svg><input id="pkQ" data-tp="pk_search" oninput="renderPk()"></label>
+  <div id="pkList"></div>
+  <p class="pkf" data-t="pk_foot"></p>
 </div></div>
 
 <div class="toast" id="toast"></div>
@@ -629,71 +771,225 @@ const DB=(()=>{let db;const open=()=>new Promise((r,j)=>{if(db)return r(db);cons
  return{put:(k,v)=>tx('readwrite',s=>s.put(v,k)),get:k=>tx('readonly',s=>s.get(k)),del:k=>tx('readwrite',s=>s.delete(k)),clear:()=>tx('readwrite',s=>s.clear())}})();
 const S={get(){try{return JSON.parse(localStorage.lu||'{}')}catch(e){return{}}},set(o){try{localStorage.lu=JSON.stringify(o)}catch(e){}}};
 let st=Object.assign({people:[],general:[],cats:['body','breath','life','rest'],custom:[],log:[],times:{mEnd:'08:00',fStart:'17:00',fEnd:'21:00',nStart:'22:30',shabbat:true},setup:false,connected:false},S.get());
+if(st.qv!==2){st.quiz={};st.qv=2;if(st.block&&st.block.cats)st.block.cats=st.block.cats.map(c=>c==='news'?'info':c)} /* v10: answers stored as indexes so they survive a language switch */
 const save=()=>S.set(st);
+const $=id=>document.getElementById(id);
 const uid=()=>Math.random().toString(36).slice(2,9);
-const ic=n=>`<svg class="i"><use href="#i-${n}"/></svg>`;
+const FL=['back','chev'];
+const ic=n=>`<svg class="i${FL.includes(n)?' fl':''}"><use href="#i-${n}"/></svg>`;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+
+/* ---------- haptics: iOS 18+ gives a light tap when a native switch toggles; Android uses vibrate ---------- */
+const hapEl=(()=>{const l=document.createElement('label');l.style.cssText='position:fixed;left:-99px;opacity:0;pointer-events:none';const i=document.createElement('input');i.type='checkbox';i.setAttribute('switch','');l.appendChild(i);document.body.appendChild(l);return l})();
+function hap(){try{if(navigator.vibrate)navigator.vibrate(8);else hapEl.click()}catch(e){}}
+document.addEventListener('click',e=>{if(e.target.closest('button,.pkr,.sbapp'))hap()},true);
+
+/* ================= LANGUAGES =================
+   Add a language: copy the `en` block, translate the values, add it to LANGS. dir:'rtl' for right-to-left languages. */
+const LANGS={en:{name:'English',dir:'ltr',loc:'en-US'},he:{name:'עברית',sub:'Hebrew',dir:'rtl',loc:'he-IL'}};
+const STR={
+en:{
+ w_title:'Your phone, bringing you<br>back to your people',w_desc:'Right before social media, videos, games or shopping: one breath, a photo you love, and a small thing to do instead.',w_cta:'Get started',w_foot:'2 minutes · no sign-up · everything stays on your phone',
+ cont:'Continue',save:'Save',later:'Later',back:'Back',done:'Done',cancel:'Cancel',add:'Add',optional:'optional',finish:'Finish',
+ a_title:'What takes most<br>of your time?',a_desc:'Pick whole categories, like all games, or specific apps. The pause shows up right before each one.',a_quick:'Quick picks',
+ p_social:'Just social',p_video:'Videos & social',p_all:'Everything distracting',
+ a_choose:'Choose apps & categories',a_choose_s:'Opens the same picker as iPhone Screen Time',a_edit:'Tap to change',
+ a_sum:(c,a,n)=>[c?c+(c===1?' category':' categories'):'',a?a+(a===1?' app':' apps'):''].filter(Boolean).join(' + ')+` · pause before ${n}+ apps`,
+ h_apps:'Paused apps',
+ pk_t:'Choose Activities',pk_sel:n=>n?`${n} selected`:'Nothing selected',pk_search:'Search',pk_cats:'Categories',pk_apps:'Apps',pk_n:n=>`${n} apps`,
+ pk_foot:'In the App Store version this is Apple’s own picker, with every app and website on your phone.',pk_incat:(a,c)=>`${a} is already included in “${c}”`,pk_none:'No match. The App Store version shows every app on your phone.',
+ o2_title:'Who do you want to be<br>more present for?',o2_desc:'Kids, partner, parents, friends. During family hours, their photo and a small idea with them will show up.',o2_add:'Add<br>person',o2_skip:'I’ll add later',
+ o3_title:'What makes you feel good?',o3_desc:'Photos and ideas for the pause during the rest of the day.',o3_ideas:'Instead of scrolling?',o3_ideas_s:'tap to choose',o3_photos:'Photos you love',o3_photos_s:'optional · stay on your phone',o3_own:'Your own idea',o3_ph:'e.g. Play guitar for 5 minutes',o3_addph:'Add<br>photos',idea_added:'Idea added',
+ o4_title:'When does being present<br>matter most?',o4_desc:'The pause shows different things by time of day. Tap a time to change it.',
+ t_m:'Quiet morning',t_m_s:'Until this time: water, stretch, good morning',t_f:'Family hours',t_f_s:'Your people and a small idea with them',from:'From',to:'to',t_s:'Shabbat as family time',t_s_s:'From candle lighting to havdalah',t_n:'Night',t_n_s:'From this time: rest, no feed',
+ b_title:'Building your plan',b_steps:['Your apps','Your people','Family hours & Shabbat','Ideas instead of scrolling','Your first pause'],b_now:s=>`Tuning: ${s}…`,b_ready:'All set',
+ pl_title:'Your plan is ready',goal_by:d=>`Your goal by ${d}`,per_day:'opens a day',instead:n=>`Instead of ${n} today. Without quitting your phone.`,pl_cta:'This works for me',
+ pr_now:n=>`Today: about ${n} opens a day`,pr_now_s:'With a short pause before each open, many of them simply won’t happen.',pr_unk:'We’ll find out together',pr_unk_s:'Home shows how many times you chose to be here.',
+ pr_goal:'Your goal',pr_goal_less:'Fewer opens than today, at your pace.',pr_goal_s:g=>`${g} opens a day. The pause gets you there gradually.`,pr_want:'What you get back',pr_ppl:'Your people',pr_ppl_s:n=>`${n}. They’ll show up during family hours.`,
+ pr_when:'When the pause changes',pr_when_s:T=>`Quiet morning until ${T.mEnd} · Family ${T.fStart}–${T.fEnd}${T.shabbat?' · Shabbat':''} · Night from ${T.nStart}`,pr_hard:'Toughest moments',pr_hard_s:s=>`${s}. That’s where the pause helps most.`,
+ science:'A Heidelberg University & Max Planck study of a short pause before opening an app found a 57% drop in its use.',
+ c_title:'One moment of decision',c_txt:w=>`Be more present${w?' for '+w:''}. Pause for a moment before the feed, and choose what really matters.`,and:' & ',hold:'Press<br>and hold',great:'Great',c_foot:'Hold the circle until it fills',
+ demo:'Demo · no real charge',pw1_t:'We want you to<br>try it for free',pw1_d:'7 full days. Nothing to pay now.',pw1_cta:'Try for $0.00',cancel_any:'Cancel anytime',
+ pw2_t:'We’ll remind you 2 days<br>before your trial ends',pw2_d:'No surprise charges. Here’s how it works:',tl1:'Today',tl1s:'Full access to everything in Look Up',tl2:'Day 5',tl2s:'We send you a reminder that the trial is ending',tl3:'Day 7',tl3s:'Your subscription starts. Cancel before then and pay nothing',pw2_cta:'Remind me & continue',pw2_skip:'Continue without a reminder',
+ pw3_t:'Be more present,<br>every day',pw_goal:(g,d)=>`Your goal: ${g} opens a day by ${d}`,v1:'A pause with your people, before every app you chose',v2:'Quiet mornings, family evenings and Shabbat',v3:'See each week how often you chose them',
+ pl_tag:'7 days free · save 58%',yearly:'Yearly',yearly_s:'Just $2.50 a month',per_year:'per year',monthly:'Monthly',monthly_s:'No free trial',per_month:'per month',
+ buy_y:'Start my 7 free days',buy_m:'Subscribe for $5.99/month',fine_y:'$0 today. Then $29.99/year after 7 days. Reminder 2 days before. Cancel anytime in iPhone Settings.',fine_m:'$5.99 every month, starting today. Cancel anytime in iPhone Settings.',
+ restore:'Restore',terms:'Terms',privacy:'Privacy',t_restore:'Nothing to restore in the demo',t_terms:'Real version: Terms page',t_privacy:'Real version: Privacy page',t_nocharge:'Demo: nothing was charged',
+ of_t:'Before you go',of_d:'A one-time offer, only right now:',of_b:'off your first year',of_s:'first year · 7 days free',of_cta:'Claim my discount',of_no:'No thanks',
+ f_t:'Your first pause',f_d:'Here’s how it feels right before one of your apps opens. On the next screen, tap an app like you always do.',f_cta:'Show me',
+ sp_demo:'Demo home screen',sp_hint:'Tap an app, like you always do',sp_dock:'Only your chosen apps are part of the demo',
+ c5_t:'Connect to your apps',c5_d:'In the prototype you connect once in the <b>Shortcuts</b> app, one automation per app. In the App Store version this happens by itself, including whole categories.',c5_ok:'I’m connected',
+ h_today:'Today you chose to be here',h_start:'Start',h_goal:'Goal: 5',h_try:'Tap the heart to try the pause',h_wk:'“I’m here” this week',h_open:'Opened anyway',
+ nc_t:'Not connected to your apps yet',nc_s:'Without this the pause won’t show up. 3 minutes.',nc_go:'Connect',times:n=>n===1?'time':'times',
+ tab_today:'Today',tab_prog:'Progress',tab_set:'Settings',
+ s_title:'Your progress',s_streak:'day streak',s_back:'Time back this week',s_back_s:'estimate: ~5 min per open you skipped',min:'min',s_rate:'Chose to be here',s_rate_s:'of all pauses this week',s_week:'Last 7 days',s_people:'This week you chose…',mile:n=>`${n} days`,
+ set_t:'Settings',set_pause:'The pause',set_app:'App',set_apps:'Apps to pause',set_ppl:'My people',set_ideas:'Photos & ideas',set_times:'Times',set_conn:'Connect to apps',set_lang:'Language',set_plan:'Subscription',
+ none_yet:'None yet',ideas_s:(p,i)=>`${p} photos · ${i} kinds of ideas`,times_s:T=>`Family ${T.fStart}–${T.fEnd} · Night from ${T.nStart}`,conn_y:'Connected',conn_n:'Not connected yet',plan_s:p=>p?(p==='month'?'Monthly (demo)':'Yearly · 7-day trial (demo)'):'No plan (demo)',
+ reset:'Delete all data',reset_q:'Delete all people, photos and history? This can’t be undone.',lang:'Language',
+ cue_in:'Breathe in…',cue_out:'And out…',instead_lbl:'Instead:',now_lbl:'Now:',here:'I’m here',anyway:a=>`Open ${a} anyway`,
+ g_family:'Family hours',g_morning:'Your day starts with you, not the feed',g_night:'Night',g_before:a=>`Before ${a}`,g_nth:n=>` · open #${n} today`,
+ d_title:'Nice.<br>You chose to be here.',d_person:n=>`Now it’s just ${n}.`,d_test:'This is how it’ll feel before every app you chose.',d_nth:n=>`That’s #${n} today.`,d_close:'You can close this screen.',d_first:'Now let’s connect it to your apps…',d_home:'Back home…',
+ t_noopen:'In the demo no app opens',t_opennow:'You can open the app normally now',t_copied:'Link copied',t_copyfail:'Couldn’t copy. Select and copy it manually',t_saved:'Saved',t_later:'You can connect anytime from Settings',t_added:n=>`${n} added`,rm_q:n=>`Remove ${n}?`,
+ ps_t:'Add a person',ps_name:'Name',ps_name_ph:'e.g. Noa',ps_rel:'Who are they to you?',ps_pics:'Photos',ps_pics_s:'1–5, from your gallery',addOne:'Add',
+ guide:(apps)=>`<div class="step"><span class="k">1</span><div><p>In the <b>Shortcuts</b> app → <b>+</b>. Name the shortcut exactly <b>Look Up Pass</b> and add 3 actions:</p><ul><li>Current Date</li><li>Save File: folder Shortcuts, name <b>lookup.txt</b>, Overwrite on</li><li>Open URLs → Shortcut Input</li></ul></div></div>
+ <div class="step"><span class="k">2</span><div><p><b>Automation</b> tab → <b>+</b> → App → choose <b>all the apps below</b> (several at once is fine) → “Is Opened” → <b>Run Immediately</b>.</p></div></div>
+ <div class="step"><span class="k">3</span><div><p>The automation’s actions:</p><ul><li>Get File lookup.txt from the Shortcuts folder (turn off “Show Error”)</li><li>Get Time Between Dates: from the file until now, in <b>seconds</b></li><li>If the result is <b>less than 60</b> → Stop This Shortcut</li><li>Open URL. Each app has its own link:</li></ul>${apps}</div></div>
+ <div class="step"><span class="k">4</span><div><p>One automation per app, with its own link. In the prototype this works per app, not for whole categories.</p></div></div>`,
+ copy:'Copy',
+ Q:{opens:{q:'About how many times a day do you open social media, videos or games?',o:['Under 10','10–30','30–60','More than 60','No idea']},
+  heard:{q:'How did you hear about Look Up?',o:['TikTok','Instagram','Friend or family','YouTube','App Store search','Other']},
+  pain:{q:'What bothers you most about it?',h:'Choose all that apply',o:['Missing moments with family','My kids ask me to put the phone down','Hard to fall asleep','Hard to focus','Feels like wasted time']},
+  f76:{q:'It’s not just you',t:'of parents pick up their phone without thinking, vs. 57% of people without kids. Phones are built for this. It’s not a weakness.'},
+  feel:{q:'How do you feel after a long scroll?',o:['Tired','A bit guilty','Like I wasted time','Totally fine','Depends on the day']},
+  tried:{q:'How long have you been trying to cut back?',o:['I haven’t tried yet','A few weeks','A few months','Years']},
+  when:{q:'When does it happen most?',h:'Choose all that apply',o:['Mornings, still in bed','During meals','Evenings with family','Before sleep','Breaks at work']},
+  f58:{q:'They notice',t:'of kids aged 8–16 wish their parents were more present. The good news: small moments are enough.'},
+  want:{q:'What matters most to get back?',h:'Choose all that apply',o:['Time with my kids','Time with my partner','Better sleep','Focus at work','Movement & fitness','A quiet mind']},
+  goal:{q:'How many opens a day would feel good?',o:['Under 10','10–20','20–30','Just fewer than now']},
+  real:{q:'That’s a realistic goal',t:(n,g)=>`From ${n} to ${g} opens a day. Realistic, without quitting your phone. You get there gradually, one moment at a time.`},
+  chart:{q:'With Look Up, it lasts',t:'Willpower alone usually doesn’t last. A short pause before each open breaks the habit: in a Heidelberg & Max Planck study, use dropped 57%.',note:'Illustration',a:'Willpower only',b:'With Look Up',today:'Today',m3:'Month 3'},
+  trust:{q:'Thank you for trusting us',b:'Your privacy matters to us',t:'No sign-up, no servers. Your answers, people and photos stay only on this phone.'}},
+ REL:{son:'Son',daughter:'Daughter',partnerM:'Husband / partner',partnerF:'Wife / partner',dad:'Dad',mom:'Mom',friendM:'Friend (he)',friendF:'Friend (she)'},
+ ICAT:{body:'Move',breath:'Breathe',life:'Errands',rest:'Rest'},
+ ACAT:{social:['Social','Instagram, TikTok, Facebook, X'],games:['Games','Every game on your phone'],ent:['Entertainment','YouTube, Netflix, Twitch'],creative:['Creativity','Photo & video editing'],info:['Information & Reading','News, Reddit, forums'],productivity:['Productivity & Finance','Mail, banking, files'],shop:['Shopping & Food','AliExpress, Amazon, SHEIN, Wolt'],other:['Other','Apps without a category']},
+ IDEAS:{body:['5 push-ups','Stand up and stretch your back','A glass of water, right now','10 squats'],breath:['Three slow breaths','Step onto the balcony for a minute','Open a window and feel the air'],life:['Check what’s for dinner','Finish that small task you put off','Reply to the one message that matters','Tidy one thing in the room'],rest:['Look out the window for a minute','Close your eyes for 30 seconds','Sip something warm, slowly']},
+ MORNING:['A glass of water before anything','Stretch your body for a minute','Say good morning to someone','Open the blinds and let the light in'],
+ DAY:['A moment for yourself.','What’s happening around you?','One breath, then decide.','The feed can wait. The world is here.'],
+ NIGHT:[['You did enough today.','Bed is waiting. The feed can wait until tomorrow.'],['Good night.','Tomorrow morning will feel good.']],
+ PI:{kid:[(n,g)=>`Ask ${n} what made ${g==='f'?'her':'him'} laugh today`,n=>`Play something small with ${n}, just the two of you`,n=>`Hug ${n}, just because`,(n,g)=>`Sit next to ${n} and see what ${g==='f'?'she':'he'}’s up to`],
+  partner:[n=>`Make ${n} something to drink, for no reason`,n=>`Sit with ${n} for five minutes, no phones`,(n,g)=>`Tell ${n} something good about ${g==='f'?'her':'him'}`,n=>`Ask ${n} how the day really went`],
+  parent:[n=>`Call ${n} for two minutes`,n=>`Send ${n} a photo from today`,n=>`Ask ${n} how things are`],
+  friend:[n=>`Call ${n}, just to say hi`,n=>`Set up coffee with ${n} this week`,n=>`Send ${n} a kind message`]},
+ PT:{kid:n=>`${n} is right here.`,partner:n=>`${n} is right here.`,parent:(n,g)=>`${n} would love to hear from you.`,friend:(n,g)=>`${n} would love to hear from you.`}
+},
+he:{
+ w_title:'הטלפון שלך יחזיר אותך<br>לאנשים שלך',w_desc:'רגע לפני שנכנסים לרשתות, לסרטונים, למשחקים או לקניות: נשימה אחת, תמונה שאוהבים, ודבר קטן לעשות במקום.',w_cta:'בואו נתחיל',w_foot:'שתי דקות · בלי הרשמה · הכול נשאר בטלפון',
+ cont:'המשך',save:'שמירה',later:'אחר כך',back:'חזרה',done:'סיום',cancel:'ביטול',add:'הוספה',optional:'לא חובה',finish:'סיימתי',
+ a_title:'מה גוזל לך הכי<br>הרבה זמן?',a_desc:'אפשר לבחור קטגוריה שלמה, כמו כל המשחקים, או אפליקציות מסוימות. ההפסקה תופיע רגע לפני כל אחת מהן.',a_quick:'בחירה מהירה',
+ p_social:'רק רשתות',p_video:'סרטונים ורשתות',p_all:'כל מה שמסיח',
+ a_choose:'בחירת אפליקציות וקטגוריות',a_choose_s:'נפתח אותו בוחר כמו בזמן מסך של האייפון',a_edit:'לחיצה לשינוי',
+ a_sum:(c,a,n)=>[c?(c===1?'קטגוריה אחת':c+' קטגוריות'):'',a?(a===1?'אפליקציה אחת':a+' אפליקציות'):''].filter(Boolean).join(' + ')+` · הפסקה לפני ${n}+ אפליקציות`,
+ h_apps:'אפליקציות בהשהיה',
+ pk_t:'בחירת פעילויות',pk_sel:n=>n?`נבחרו ${n}`:'לא נבחר כלום',pk_search:'חיפוש',pk_cats:'קטגוריות',pk_apps:'אפליקציות',pk_n:n=>`${n} אפליקציות`,
+ pk_foot:'בגרסה מהאפסטור זה הבוחר של אפל עצמה, עם כל האפליקציות והאתרים שבטלפון.',pk_incat:(a,c)=>`${a} כבר בפנים דרך "${c}"`,pk_none:'לא נמצא. בגרסה מהאפסטור יופיעו כל האפליקציות שבטלפון.',
+ o2_title:'בשביל מי חשוב לך<br>להיות יותר כאן?',o2_desc:'ילדים, בן או בת זוג, הורים, חברים. בשעות המשפחה יופיעו התמונה שלהם ורעיון קטן איתם.',o2_add:'להוסיף<br>אדם',o2_skip:'אוסיף אחר כך',
+ o3_title:'מה עושה לך טוב?',o3_desc:'תמונות ורעיונות שיופיעו בהפסקה בשאר שעות היום.',o3_ideas:'מה לעשות במקום לגלול?',o3_ideas_s:'לחיצה בוחרת',o3_photos:'תמונות שאוהבים',o3_photos_s:'לא חובה · נשמרות רק בטלפון',o3_own:'רעיון משלך',o3_ph:'למשל: לנגן 5 דקות בגיטרה',o3_addph:'להוסיף<br>תמונות',idea_added:'הרעיון נוסף',
+ o4_title:'מתי הכי חשוב לך<br>להיות כאן?',o4_desc:'לפי השעה ההפסקה מציגה דברים אחרים. לחיצה על שעה משנה אותה.',
+ t_m:'בוקר שקט',t_m_s:'עד השעה הזו: מים, מתיחה, בוקר טוב',t_f:'שעות משפחה',t_f_s:'האנשים שלך ורעיון קטן איתם',from:'מ-',to:'עד',t_s:'שבת כזמן משפחה',t_s_s:'מכניסת שבת ועד מוצאי שבת',t_n:'לילה',t_n_s:'מהשעה הזו: מנוחה, בלי פיד',
+ b_title:'בונים את התוכנית שלך',b_steps:['האפליקציות שבחרת','האנשים שלך','שעות המשפחה והשבת','רעיונות במקום לגלול','ההפסקה הראשונה שלך'],b_now:s=>`מתאימים: ${s}…`,b_ready:'הכול מוכן',
+ pl_title:'התוכנית שלך מוכנה',goal_by:d=>`היעד שלך עד ${d}`,per_day:'פתיחות ביום',instead:n=>`במקום ${n} היום. בלי לנתק את הטלפון.`,pl_cta:'זה מתאים לי',
+ pr_now:n=>`היום: בערך ${n} פתיחות ביום`,pr_now_s:'עם הפסקה קצרה לפני כל פתיחה, הרבה מהן פשוט לא יקרו.',pr_unk:'נגלה יחד כמה פעמים ביום',pr_unk_s:'במסך הבית יופיע כמה פעמים בחרת להיות כאן.',
+ pr_goal:'היעד שלך',pr_goal_less:'פחות פתיחות ממה שיש היום, בקצב שלך.',pr_goal_s:g=>`${g} פתיחות ביום. ההפסקה תעזור להגיע לשם בהדרגה.`,pr_want:'מה חוזר אליך',pr_ppl:'האנשים שלך',pr_ppl_s:n=>`${n}. יופיעו בשעות המשפחה.`,
+ pr_when:'מתי ההפסקה תהיה שונה',pr_when_s:T=>`בוקר שקט עד ${T.mEnd} · משפחה מ-${T.fStart} עד ${T.fEnd}${T.shabbat?' · שבת':''} · לילה מ-${T.nStart}`,pr_hard:'הרגעים הכי קשים',pr_hard_s:s=>`${s}. שם ההפסקה תעזור הכי הרבה.`,
+ science:'מחקר של אוניברסיטת היידלברג ומכון מקס פלאנק על הפסקה קצרה לפני פתיחת אפליקציה מצא ירידה של 57% בשימוש בה.',
+ c_title:'רגע אחד של החלטה',c_txt:w=>`להיות יותר כאן${w?' בשביל '+w:''}. לעצור לרגע לפני הפיד, ולבחור במה שחשוב באמת.`,and:' ו',hold:'להחזיק<br>לחוץ',great:'מעולה',c_foot:'להחזיק את העיגול עד שהוא מתמלא',
+ demo:'הדגמה · אין חיוב אמיתי',pw1_t:'אנחנו רוצים<br>שתנסו בחינם',pw1_d:'7 ימים מלאים, בלי לשלם כלום עכשיו.',pw1_cta:'לנסות ב-0 ₪',cancel_any:'אפשר לבטל בכל רגע',
+ pw2_t:'נזכיר לך יומיים<br>לפני שהניסיון נגמר',pw2_d:'בלי הפתעות בחיוב. ככה זה עובד:',tl1:'היום',tl1s:'גישה מלאה לכל Look Up',tl2:'יום 5',tl2s:'נשלח לך תזכורת שהניסיון עומד להסתיים',tl3:'יום 7',tl3s:'מתחיל המנוי. אפשר לבטל עד אז בלי לשלם',pw2_cta:'להפעיל תזכורת ולהמשיך',pw2_skip:'להמשיך בלי תזכורת',
+ pw3_t:'להיות יותר כאן,<br>כל יום',pw_goal:(g,d)=>`היעד שלך: ${g} פתיחות ביום עד ${d}`,v1:'הפסקה עם האנשים שלך, לפני כל אפליקציה שבחרת',v2:'בוקר שקט, ערבי משפחה ושבת',v3:'רואים כל שבוע כמה פעמים בחרת בהם',
+ pl_tag:'7 ימים בחינם · חיסכון של 58%',yearly:'שנתי',yearly_s:'רק $2.50 לחודש',per_year:'לשנה',monthly:'חודשי',monthly_s:'בלי ניסיון חינם',per_month:'לחודש',
+ buy_y:'להתחיל 7 ימים בחינם',buy_m:'להירשם ב-$5.99 לחודש',fine_y:'היום 0 ₪. אחרי 7 ימים $29.99 לשנה. תזכורת יומיים לפני. ביטול בכל רגע בהגדרות האייפון.',fine_m:'$5.99 כל חודש, מהיום. ביטול בכל רגע בהגדרות האייפון.',
+ restore:'שחזור רכישה',terms:'תנאים',privacy:'פרטיות',t_restore:'בהדגמה אין רכישות לשחזר',t_terms:'בגרסה האמיתית: דף תנאי שימוש',t_privacy:'בגרסה האמיתית: דף פרטיות',t_nocharge:'הדגמה: לא בוצע חיוב',
+ of_t:'רגע לפני שהולכים',of_d:'הצעה חד-פעמית, רק עכשיו:',of_b:'הנחה על השנה הראשונה',of_s:'לשנה הראשונה · 7 ימים בחינם',of_cta:'לקחת את ההנחה',of_no:'לא תודה',
+ f_t:'ההפסקה הראשונה שלך',f_d:'ככה זה מרגיש רגע לפני שאחת האפליקציות שבחרת נפתחת. במסך הבא לוחצים על אפליקציה, כמו תמיד.',f_cta:'להראות לי',
+ sp_demo:'מסך בית להדגמה',sp_hint:'לוחצים על אפליקציה, כמו תמיד',sp_dock:'רק האפליקציות שבחרת הן חלק מההדגמה',
+ c5_t:'חיבור לאפליקציות',c5_d:'בגרסת הניסיון החיבור נעשה פעם אחת באפליקציית <b>קיצורים</b>, אוטומציה לכל אפליקציה. באפליקציה מהאפסטור זה יקרה לבד, כולל קטגוריות שלמות.',c5_ok:'סיימתי לחבר',
+ h_today:'היום בחרת להיות כאן',h_start:'התחלה',h_goal:'יעד: 5',h_try:'לחיצה על הלב: לנסות את ההפסקה',h_wk:'"אני כאן" השבוע',h_open:'פתחת בכל זאת',
+ nc_t:'עוד לא מחובר לאפליקציות',nc_s:'בלי זה ההפסקה לא תופיע. 3 דקות.',nc_go:'לחבר',times:n=>n===1?'פעם':'פעמים',
+ tab_today:'היום',tab_prog:'התקדמות',tab_set:'הגדרות',
+ s_title:'ההתקדמות שלך',s_streak:'ימים ברצף',s_back:'זמן שחזר אליך השבוע',s_back_s:'הערכה: כ-5 דקות לכל פתיחה שוויתרת עליה',min:'דק׳',s_rate:'בחרת להיות כאן',s_rate_s:'מכל ההפסקות השבוע',s_week:'7 הימים האחרונים',s_people:'השבוע בחרת ב…',mile:n=>`${n} ימים`,
+ set_t:'הגדרות',set_pause:'ההפסקה',set_app:'האפליקציה',set_apps:'אפליקציות להשהיה',set_ppl:'האנשים שלי',set_ideas:'תמונות ורעיונות',set_times:'שעות',set_conn:'חיבור לאפליקציות',set_lang:'שפה',set_plan:'מנוי',
+ none_yet:'עוד לא נוספו',ideas_s:(p,i)=>`${p} תמונות · ${i} סוגי רעיונות`,times_s:T=>`משפחה מ-${T.fStart} עד ${T.fEnd} · לילה מ-${T.nStart}`,conn_y:'מחובר',conn_n:'עוד לא מחובר',plan_s:p=>p?(p==='month'?'חודשי (הדגמה)':'שנתי · 7 ימי ניסיון (הדגמה)'):'אין מנוי (הדגמה)',
+ reset:'מחיקת כל הנתונים',reset_q:'למחוק את כל האנשים, התמונות וההיסטוריה? אי אפשר לבטל.',lang:'שפה',
+ cue_in:'נשימה פנימה…',cue_out:'ועכשיו החוצה…',instead_lbl:'במקום:',now_lbl:'ועכשיו:',here:'אני כאן',anyway:a=>`לפתוח את ${a} בכל זאת`,
+ g_family:'שעות משפחה',g_morning:'היום מתחיל ממך, לא מהפיד',g_night:'לילה',g_before:a=>`רגע לפני ${a}`,g_nth:n=>` · הפעם ה-${n} היום`,
+ d_title:'יפה.<br>בחרת להיות כאן.',d_person:n=>`עכשיו רק ${n}.`,d_test:'ככה זה ירגיש לפני כל אפליקציה שבחרת.',d_nth:n=>`זו הפעם ה-${n} היום.`,d_close:'אפשר לסגור את המסך הזה.',d_first:'עכשיו נחבר את זה לאפליקציות…',d_home:'חוזרים הביתה…',
+ t_noopen:'בהדגמה לא נפתחת אפליקציה',t_opennow:'אפשר לפתוח את האפליקציה כרגיל עכשיו',t_copied:'הכתובת הועתקה',t_copyfail:'לא הצלחתי להעתיק. אפשר לסמן ולהעתיק ידנית',t_saved:'נשמר',t_later:'אפשר לחבר מתי שרוצים, מההגדרות',t_added:n=>`${n} בפנים`,rm_q:n=>`להסיר את ${n}?`,
+ ps_t:'להוסיף אדם',ps_name:'שם',ps_name_ph:'למשל: נועה',ps_rel:'מי זה בשבילך?',ps_pics:'תמונות',ps_pics_s:'1–5, מהגלריה',addOne:'להוסיף',
+ guide:(apps)=>`<div class="step"><span class="k">1</span><div><p>באפליקציית <b>קיצורים</b> ← <b>+</b>. לקרוא לקיצור בדיוק <b>Look Up Pass</b> ולהוסיף 3 פעולות:</p><ul><li>תאריך נוכחי</li><li>שמירת קובץ: תיקייה Shortcuts, שם <b>lookup.txt</b>, החלפה מופעלת</li><li>פתיחת כתובות URL ← קלט הקיצור</li></ul></div></div>
+ <div class="step"><span class="k">2</span><div><p>לשונית <b>אוטומציה</b> ← <b>+</b> ← אפליקציה ← לבחור <b>את כל האפליקציות שלמטה</b> (אפשר כמה בבת אחת) ← "נפתחת" ← <b>הפעלה מיידית</b>.</p></div></div>
+ <div class="step"><span class="k">3</span><div><p>פעולות האוטומציה:</p><ul><li>קבלת קובץ lookup.txt מתיקיית Shortcuts (לכבות "הצג שגיאה")</li><li>זמן בין תאריכים: מהקובץ ועד עכשיו, ב<b>שניות</b></li><li>אם התוצאה <b>קטנה מ-60</b> ← עצירת קיצור זה</li><li>פתיחת כתובת URL. לכל אפליקציה הכתובת שלה:</li></ul>${apps}</div></div>
+ <div class="step"><span class="k">4</span><div><p>אוטומציה אחת לכל אפליקציה, עם הכתובת שלה. בגרסת הניסיון זה עובד לפי אפליקציה, לא על קטגוריה שלמה.</p></div></div>`,
+ copy:'העתקה',
+ Q:{opens:{q:'כמה פעמים ביום, בערך, פותחים רשתות, סרטונים או משחקים?',o:['פחות מ-10','10–30','30–60','יותר מ-60','אין לי מושג']},
+  heard:{q:'איך שמעת על Look Up?',o:['טיקטוק','אינסטגרם','חבר או משפחה','יוטיוב','חיפוש באפסטור','אחר']},
+  pain:{q:'מה הכי מפריע לך בזה?',h:'אפשר לבחור כמה',o:['לפספס רגעים עם המשפחה','הילדים מבקשים שאניח את הטלפון','קשה להירדם בלילה','קשה להתרכז','תחושה של בזבוז זמן']},
+  f76:{q:'זה לא רק אצלך',t:'מההורים מרימים את הטלפון בלי לחשוב, לעומת 57% מאלה שאין להם ילדים. הטלפון בנוי לזה, וזו לא חולשה שלך.'},
+  feel:{q:'איך מרגישים אחרי גלילה ארוכה?',o:['עייפות','קצת אשמה','בזבוז זמן','בסדר גמור','תלוי ביום']},
+  tried:{q:'כמה זמן כבר מנסים לצמצם?',o:['עוד לא ניסיתי','כמה שבועות','כמה חודשים','שנים']},
+  when:{q:'מתי זה הכי קורה?',h:'אפשר לבחור כמה',o:['בבוקר, עוד במיטה','בארוחות','בערב עם המשפחה','לפני השינה','בהפסקות בעבודה']},
+  f58:{q:'הם שמים לב',t:'מהילדים בגילי 8–16 היו רוצים שההורים יהיו יותר נוכחים. החדשות הטובות: מספיקים רגעים קטנים.'},
+  want:{q:'מה הכי חשוב לך להחזיר?',h:'אפשר לבחור כמה',o:['זמן עם הילדים','זמן זוגי','שינה טובה','ריכוז בעבודה','תנועה וכושר','שקט בראש']},
+  goal:{q:'כמה פתיחות ביום היו מרגישות לך טוב?',o:['פחות מ-10','10–20','20–30','פשוט פחות ממה שיש היום']},
+  real:{q:'זה יעד מציאותי',t:(n,g)=>`מ-${n} ל-${g} פתיחות ביום. יעד מציאותי, בלי לנתק את הטלפון. מגיעים אליו בהדרגה, רגע אחד בכל פעם.`},
+  chart:{q:'עם Look Up זה מחזיק לאורך זמן',t:'רק כוח רצון בדרך כלל לא מחזיק. הפסקה קצרה לפני כל פתיחה שוברת את ההרגל: במחקר של היידלברג ומקס פלאנק השימוש ירד ב-57%.',note:'הגרף הוא המחשה',a:'רק כוח רצון',b:'Look Up עם',today:'היום',m3:'חודש 3'},
+  trust:{q:'תודה שסמכת עלינו',b:'הפרטיות שלך חשובה לנו',t:'בלי הרשמה ובלי שרתים. התשובות, האנשים והתמונות שלך נשמרים רק בטלפון הזה.'}},
+ REL:{son:'בן',daughter:'בת',partnerM:'בן זוג',partnerF:'בת זוג',dad:'אבא',mom:'אמא',friendM:'חבר',friendF:'חברה'},
+ ICAT:{body:'תנועה',breath:'נשימה',life:'סידורים',rest:'מנוחה'},
+ ACAT:{social:['רשתות חברתיות','Instagram, TikTok, Facebook, X'],games:['משחקים','כל המשחקים בטלפון'],ent:['בידור','YouTube, Netflix, Twitch'],creative:['יצירה','עריכת תמונות ווידאו'],info:['מידע וקריאה','חדשות, Reddit, פורומים'],productivity:['פרודוקטיביות וכספים','מייל, בנקים, קבצים'],shop:['קניות ואוכל','AliExpress, Amazon, SHEIN, Wolt'],other:['כל השאר','אפליקציות בלי קטגוריה']},
+ IDEAS:{body:['5 שכיבות סמיכה','לקום ולמתוח את הגב','כוס מים, עכשיו','10 סקוואטים'],breath:['שלוש נשימות איטיות','לצאת למרפסת לדקה','לפתוח חלון ולהרגיש את האוויר'],life:['לבדוק מה יש לארוחת ערב','לסגור את הסידור הקטן שדחית','לענות להודעה האחת החשובה','לסדר דבר אחד בחדר'],rest:['להסתכל מהחלון דקה','לעצום עיניים ל-30 שניות','לשתות משהו חם, לאט']},
+ MORNING:['כוס מים לפני הכול','למתוח את הגוף דקה','להגיד בוקר טוב למישהו','לפתוח את התריס ולתת לאור להיכנס'],
+ DAY:['רגע לעצמך.','מה קורה סביבך עכשיו?','נשימה אחת, ואז מחליטים.','הפיד יחכה. העולם כאן.'],
+ NIGHT:[['עשית מספיק היום.','המיטה מחכה. הפיד יחכה למחר.'],['לילה טוב.','מחר בבוקר זה ירגיש טוב.']],
+ PI:{kid:[(n,g)=>`לשאול את ${n} מה הכי ${g==='f'?'הצחיק אותה':'הצחיק אותו'} היום`,n=>`לשחק עם ${n} משהו קטן, רק שניכם`,n=>`לחבק את ${n}, סתם ככה`,(n,g)=>`לשבת ליד ${n} ולראות מה ${g==='f'?'היא עושה':'הוא עושה'}`],
+  partner:[n=>`להכין ל${n} משהו לשתות, בלי סיבה`,n=>`לשבת ליד ${n} חמש דקות, בלי טלפונים`,(n,g)=>`להגיד ל${n} משהו טוב ${g==='f'?'עליה':'עליו'}`,(n,g)=>`לשאול את ${n} איך היה ${g==='f'?'לה':'לו'} היום, באמת`],
+  parent:[n=>`להתקשר ל${n} לשתי דקות`,n=>`לשלוח ל${n} תמונה מהיום`,(n,g)=>`לשאול את ${n} מה שלומ${g==='f'?'ה':'ו'}`],
+  friend:[n=>`להתקשר ל${n}, סתם להגיד היי`,n=>`לקבוע עם ${n} קפה השבוע`,n=>`לשלוח ל${n} הודעה טובה`]},
+ PT:{kid:n=>`${n} כאן.`,partner:n=>`${n} ממש פה.`,parent:(n,g)=>`${n} ${g==='f'?'תשמח':'ישמח'} לשמוע ממך.`,friend:(n,g)=>`${n} ${g==='f'?'תשמח':'ישמח'} לשמוע ממך.`}
+}};
+let LANG=LANGS[st.lang]?st.lang:'en'; /* English is the default */
+const t=(k,...a)=>{let v=STR[LANG][k];if(v===undefined)v=STR.en[k];return typeof v==='function'?v(...a):(v===undefined?k:v)};
+const isRTL=()=>LANGS[LANG].dir==='rtl';
+function applyLang(){const L=LANGS[LANG];document.documentElement.lang=LANG;document.documentElement.dir=L.dir;
+ document.querySelectorAll('[data-t]').forEach(e=>e.innerHTML=t(e.dataset.t));
+ document.querySelectorAll('[data-tp]').forEach(e=>e.placeholder=t(e.dataset.tp));
+ $('langName').textContent=L.name}
+function openLang(){$('langList').innerHTML=Object.entries(LANGS).map(([k,v])=>`<button class="lrow ${k===LANG?'on':''}" onclick="setLang('${k}')">${v.name}${v.sub?`<small>${v.sub}</small>`:''}<span class="c">${ic('check')}</span></button>`).join('');$('lSheet').classList.add('on')}
+function setLang(k){LANG=k;st.lang=k;save();closeSheet();applyLang();const cur=document.querySelector('.screen.on');if(cur)go(cur.id,{anim:'fade'})}
+
+/* ---------- content ---------- */
+const REL={son:{g:'m',k:'kid'},daughter:{g:'f',k:'kid'},partnerM:{g:'m',k:'partner'},partnerF:{g:'f',k:'partner'},dad:{g:'m',k:'parent'},mom:{g:'f',k:'parent'},friendM:{g:'m',k:'friend'},friendF:{g:'f',k:'friend'}};
+const relL=k=>t('REL')[k];
+const CATS={body:104,breath:92,life:98,rest:88};
+/* Apple Screen Time categories (what FamilyActivityPicker shows natively) */
+const ACATS=[{k:'social',c:'#FF2D55',i:'chat'},{k:'games',c:'#AF52DE',i:'rocket'},{k:'ent',c:'#FF3B30',i:'play'},{k:'creative',c:'#FF9500',i:'brush'},{k:'info',c:'#5856D6',i:'book'},{k:'productivity',c:'#007AFF',i:'send'},{k:'shop',c:'#E5A500',i:'bag'},{k:'other',c:'#8E8E93',i:'dots'}];
+const catL=k=>t('ACAT')[k][0];
+const APPS={
+ instagram:{n:'אינסטגרם',en:'Instagram',u:'instagram://',c:'social'},tiktok:{n:'טיקטוק',en:'TikTok',u:'snssdk1233://',c:'social'},facebook:{n:'פייסבוק',en:'Facebook',u:'fb://',c:'social'},
+ x:{n:'X',en:'X',u:'twitter://',c:'social'},snapchat:{n:'סנאפצ׳ט',en:'Snapchat',u:'snapchat://',c:'social'},threads:{n:'Threads',en:'Threads',u:'barcelona://',c:'social'},
+ pinterest:{n:'פינטרסט',en:'Pinterest',u:'pinterest://',c:'social'},whatsapp:{n:'וואטסאפ',en:'WhatsApp',u:'whatsapp://',c:'social'},telegram:{n:'טלגרם',en:'Telegram',u:'tg://',c:'social'},
+ youtube:{n:'יוטיוב',en:'YouTube',u:'youtube://',c:'ent'},netflix:{n:'נטפליקס',en:'Netflix',u:'nflx://',c:'ent'},twitch:{n:'טוויץ׳',en:'Twitch',u:'twitch://',c:'ent'},
+ reddit:{n:'רדיט',en:'Reddit',u:'reddit://',c:'info'},ynet:{n:'ynet',en:'ynet',u:'',c:'info'},
+ aliexpress:{n:'עליאקספרס',en:'AliExpress',u:'aliexpress://',c:'shop'},amazon:{n:'אמזון',en:'Amazon',u:'com.amazon.mobile.shopping://',c:'shop'},shein:{n:'שיין',en:'SHEIN',u:'',c:'shop'},temu:{n:'טמו',en:'Temu',u:'',c:'shop'},wolt:{n:'וולט',en:'Wolt',u:'',c:'shop'},
+ candycrush:{n:'קנדי קראש',en:'Candy Crush',u:'',c:'games'},roblox:{n:'רובלוקס',en:'Roblox',u:'roblox://',c:'games'},clashroyale:{n:'קלאש רויאל',en:'Clash Royale',u:'',c:'games'},subway:{n:'סאבווי סרפרס',en:'Subway Surfers',u:'',c:'games'},
+ safari:{n:'ספארי',en:'Safari',u:'',c:'other'}};
+const appName=k=>APPS[k]?(LANG==='he'?APPS[k].n:APPS[k].en):(ACATS.find(c=>c.k===k)?catL(k):decodeURIComponent(k||'the app'));
+/* brand marks: Simple Icons (CC0) paths, drawn on iOS-style squircles */
+const ICONS={"facebook":"M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z","twitch":"M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z","amazon":"M.045 18.02c.072-.116.187-.124.348-.022 3.636 2.11 7.594 3.166 11.87 3.166 2.852 0 5.668-.533 8.447-1.595l.315-.14c.138-.06.234-.1.293-.13.226-.088.39-.046.525.13.12.174.09.336-.12.48-.256.19-.6.41-1.006.654-1.244.743-2.64 1.316-4.185 1.726a17.617 17.617 0 01-10.951-.577 17.88 17.88 0 01-5.43-3.35c-.1-.074-.151-.15-.151-.22 0-.047.021-.09.051-.13zm6.565-6.218c0-1.005.247-1.863.743-2.577.495-.71 1.17-1.25 2.04-1.615.796-.335 1.756-.575 2.912-.72.39-.046 1.033-.103 1.92-.174v-.37c0-.93-.105-1.558-.3-1.875-.302-.43-.78-.65-1.44-.65h-.182c-.48.046-.896.196-1.246.46-.35.27-.575.63-.675 1.096-.06.3-.206.465-.435.51l-2.52-.315c-.248-.06-.372-.18-.372-.39 0-.046.007-.09.022-.15.247-1.29.855-2.25 1.82-2.88.976-.616 2.1-.975 3.39-1.05h.54c1.65 0 2.957.434 3.888 1.29.135.15.27.3.405.48.12.165.224.314.283.45.075.134.15.33.195.57.06.254.105.42.135.51.03.104.062.3.076.615.01.313.02.493.02.553v5.28c0 .376.06.72.165 1.036.105.313.21.54.315.674l.51.674c.09.136.136.256.136.36 0 .12-.06.226-.18.314-1.2 1.05-1.86 1.62-1.963 1.71-.165.135-.375.15-.63.045a6.062 6.062 0 01-.526-.496l-.31-.347a9.391 9.391 0 01-.317-.42l-.3-.435c-.81.886-1.603 1.44-2.4 1.665-.494.15-1.093.227-1.83.227-1.11 0-2.04-.343-2.76-1.034-.72-.69-1.08-1.665-1.08-2.94l-.05-.076zm3.753-.438c0 .566.14 1.02.425 1.364.285.34.675.512 1.155.512.045 0 .106-.007.195-.02.09-.016.134-.023.166-.023.614-.16 1.08-.553 1.424-1.178.165-.28.285-.58.36-.91.09-.32.12-.59.135-.8.015-.195.015-.54.015-1.005v-.54c-.84 0-1.484.06-1.92.18-1.275.36-1.92 1.17-1.92 2.43l-.035-.02zm9.162 7.027c.03-.06.075-.11.132-.17.362-.243.714-.41 1.05-.5a8.094 8.094 0 011.612-.24c.14-.012.28 0 .41.03.65.06 1.05.168 1.172.33.063.09.099.228.099.39v.15c0 .51-.149 1.11-.424 1.8-.278.69-.664 1.248-1.156 1.68-.073.06-.14.09-.197.09-.03 0-.06 0-.09-.012-.09-.044-.107-.12-.064-.24.54-1.26.806-2.143.806-2.64 0-.15-.03-.27-.087-.344-.145-.166-.55-.257-1.224-.257-.243 0-.533.016-.87.046-.363.045-.7.09-1 .135-.09 0-.148-.014-.18-.044-.03-.03-.036-.047-.02-.077 0-.017.006-.03.02-.063v-.06z","tiktok":"M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z","x":"M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z","snapchat":"M12.206.793c.99 0 4.347.276 5.93 3.821.529 1.193.403 3.219.299 4.847l-.003.06c-.012.18-.022.345-.03.51.075.045.203.09.401.09.3-.016.659-.12 1.033-.301.165-.088.344-.104.464-.104.182 0 .359.029.509.09.45.149.734.479.734.838.015.449-.39.839-1.213 1.168-.089.029-.209.075-.344.119-.45.135-1.139.36-1.333.81-.09.224-.061.524.12.868l.015.015c.06.136 1.526 3.475 4.791 4.014.255.044.435.27.42.509 0 .075-.015.149-.045.225-.24.569-1.273.988-3.146 1.271-.059.091-.12.375-.164.57-.029.179-.074.36-.134.553-.076.271-.27.405-.555.405h-.03c-.135 0-.313-.031-.538-.074-.36-.075-.765-.135-1.273-.135-.3 0-.599.015-.913.074-.6.104-1.123.464-1.723.884-.853.599-1.826 1.288-3.294 1.288-.06 0-.119-.015-.18-.015h-.149c-1.468 0-2.427-.675-3.279-1.288-.599-.42-1.107-.779-1.707-.884-.314-.045-.629-.074-.928-.074-.54 0-.958.089-1.272.149-.211.043-.391.074-.54.074-.374 0-.523-.224-.583-.42-.061-.192-.09-.389-.135-.567-.046-.181-.105-.494-.166-.57-1.918-.222-2.95-.642-3.189-1.226-.031-.063-.052-.15-.055-.225-.015-.243.165-.465.42-.509 3.264-.54 4.73-3.879 4.791-4.02l.016-.029c.18-.345.224-.645.119-.869-.195-.434-.884-.658-1.332-.809-.121-.029-.24-.074-.346-.119-1.107-.435-1.257-.93-1.197-1.273.09-.479.674-.793 1.168-.793.146 0 .27.029.383.074.42.194.789.3 1.104.3.234 0 .384-.06.465-.105l-.046-.569c-.098-1.626-.225-3.651.307-4.837C7.392 1.077 10.739.807 11.727.807l.419-.015h.06z","telegram":"M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z","whatsapp":"M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z","threads":"M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z","instagram":"M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077","pinterest":"M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z","youtube":"M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z","roblox":"M18.926 23.998 0 18.892 5.075.002 24 5.108ZM15.348 10.09l-5.282-1.453-1.414 5.273 5.282 1.453z","reddit":"M12 0C5.373 0 0 5.373 0 12c0 3.314 1.343 6.314 3.515 8.485l-2.286 2.286C.775 23.225 1.097 24 1.738 24H12c6.627 0 12-5.373 12-12S18.627 0 12 0Zm4.388 3.199c1.104 0 1.999.895 1.999 1.999 0 1.105-.895 2-1.999 2-.946 0-1.739-.657-1.947-1.539v.002c-1.147.162-2.032 1.15-2.032 2.341v.007c1.776.067 3.4.567 4.686 1.363.473-.363 1.064-.58 1.707-.58 1.547 0 2.802 1.254 2.802 2.802 0 1.117-.655 2.081-1.601 2.531-.088 3.256-3.637 5.876-7.997 5.876-4.361 0-7.905-2.617-7.998-5.87-.954-.447-1.614-1.415-1.614-2.538 0-1.548 1.255-2.802 2.803-2.802.645 0 1.239.218 1.712.585 1.275-.79 2.881-1.291 4.64-1.365v-.01c0-1.663 1.263-3.034 2.88-3.207.188-.911.993-1.595 1.959-1.595Zm-8.085 8.376c-.784 0-1.459.78-1.506 1.797-.047 1.016.64 1.429 1.426 1.429.786 0 1.371-.369 1.418-1.385.047-1.017-.553-1.841-1.338-1.841Zm7.406 0c-.786 0-1.385.824-1.338 1.841.047 1.017.634 1.385 1.418 1.385.785 0 1.473-.413 1.426-1.429-.046-1.017-.721-1.797-1.506-1.797Zm-3.703 4.013c-.974 0-1.907.048-2.77.135-.147.015-.241.168-.183.305.483 1.154 1.622 1.964 2.953 1.964 1.33 0 2.47-.81 2.953-1.964.057-.137-.037-.29-.184-.305-.863-.087-1.795-.135-2.769-.135Z","netflix":"M5.398 0v.006c3.028 8.556 5.37 15.175 8.348 23.596 2.344.058 4.85.398 4.854.398-2.8-7.924-5.923-16.747-8.487-24zm8.489 0v9.63L18.6 22.951c-.043-7.86-.004-15.913.002-22.95zM5.398 1.05V24c1.873-.225 2.81-.312 4.715-.398v-9.22z","aliexpress":"M5.166 9.096a.022.022 0 0 0-.022.021c0 .396-.32.717-.713.717a.021.021 0 0 0-.021.022c0 .012.01.021.021.021.394 0 .713.322.713.718 0 .012.01.021.022.021.011 0 .021-.01.021-.021A.717.717 0 0 1 5.9 9.88a.021.021 0 0 0 0-.043.716.716 0 0 1-.713-.718v-.002a.021.021 0 0 0-.006-.015.022.022 0 0 0-.015-.006zm-3.693.526L0 13.462h.48l.355-.922h1.782l.354.922h.481L1.98 9.622zm2.264.002v3.838h.491V9.624zm2.375 0v3.838h2.413v-.502H6.613v-1.19H8.19v-.477H6.613v-1.166h1.773v-.502zm-4.386.592l.698 1.82H1.028zm14.689.402a1.466 1.466 0 0 0-.966.366V10.7h-.491v2.763h.49c.002-.477 0-.955.002-1.433a.969.969 0 0 1 .965-.918zm4.18.007c-.053 0-.105.003-.158.01-.315.031-.606.175-.753.377a.689.689 0 0 0-.14.465c.007.2.066.357.233.496.184.147.42.2.657.259.311.067.426.095.546.186.08.07.133.127.136.27 0 .25-.221.372-.42.41a.89.89 0 0 1-.894-.344l-.371.288c.33.382.777.505 1.09.5.54-.01.891-.217 1.029-.534.066-.153.063-.309.063-.38a.677.677 0 0 0-.267-.545c-.228-.177-.583-.228-.636-.242-.437-.078-.658-.196-.697-.341-.043-.192.102-.35.297-.411a.76.76 0 0 1 .857.277l.367-.247a1.166 1.166 0 0 0-.939-.494zm2.387 0c-.052 0-.105.003-.157.01-.316.031-.607.175-.753.377a.689.689 0 0 0-.14.465c.006.2.065.357.233.496.183.147.42.2.657.259.31.067.426.095.545.186.081.07.134.127.136.27.001.25-.221.372-.42.41a.89.89 0 0 1-.894-.344l-.371.288c.33.382.777.505 1.09.5.541-.01.891-.217 1.03-.534.065-.153.062-.309.062-.38a.677.677 0 0 0-.267-.545c-.227-.177-.583-.228-.636-.242-.437-.078-.658-.196-.696-.341-.043-.192.101-.35.297-.411a.76.76 0 0 1 .857.277l.367-.247a1.167 1.167 0 0 0-.94-.494zm-9.84.002a1.461 1.461 0 0 0-1.42 1.117 1.305 1.305 0 0 0-.041.327v2.833h.491v-1.813c.17.18.487.42.96.454a1.447 1.447 0 0 0 1.208-.627 1.457 1.457 0 0 0-1.199-2.292zm4.804 0a1.448 1.448 0 0 0-1.288 2.08c.255.53.811.87 1.412.833a1.452 1.452 0 0 0 1.012-.51l-.363-.291a.968.968 0 0 1-1.106.273 1.01 1.01 0 0 1-.602-.69h2.239l.002-.427a1.295 1.295 0 0 0-1.306-1.268zm-9.2.08l1.062 1.377-1.062 1.378h.581l.779-1.01.778 1.01h.581l-1.062-1.378 1.062-1.378h-.581l-.778 1.01-.779-1.01zm-3.825.015v2.74h.49v-2.74zm8.233.37a.96.96 0 0 1 .95.993.963.963 0 0 1-.863.998.962.962 0 0 1-1.034-.739c-.074-.382 0-.746.307-1.019a.959.959 0 0 1 .64-.233zm4.79.015a.823.823 0 0 1 .819.755h-1.76a.964.964 0 0 1 .94-.755z"};
+const BR={instagram:{bg:'radial-gradient(circle at 30% 107%,#fdf497 0%,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285AEB 90%)'},tiktok:{bg:'#000',fx:'drop-shadow(-1.3px -1px 0 #25F4EE) drop-shadow(1.3px 1px 0 #FE2C55)'},
+ facebook:{bg:'#0866FF',sz:.66},x:{bg:'#000',sz:.5},snapchat:{bg:'#FFFC00',st:'#000'},threads:{bg:'#000',sz:.55},pinterest:{bg:'#fff',fg:'#E60023',sz:.66},
+ whatsapp:{bg:'linear-gradient(#5FFC7B,#28D146)',sz:.62},telegram:{bg:'linear-gradient(#37AEE2,#1E96C8)',sz:.66},youtube:{bg:'#fff',fg:'#FF0000',sz:.62},netflix:{bg:'#000',fg:'#E50914',sz:.56},
+ twitch:{bg:'#9146FF',sz:.55},reddit:{bg:'#FF4500',sz:.66},aliexpress:{bg:'linear-gradient(#FF7A00,#E62E04)',sz:.92},amazon:{bg:'linear-gradient(#FFFFFF,#E3ECF2)',fg:'#232F3E',sz:.62},roblox:{bg:'#1A1A1A',sz:.55},
+ shein:{bg:'#000',tx:'SHEIN',fs:.21},temu:{bg:'#FB7701',tx:'TEMU',fs:.24},wolt:{bg:'#00C2E8',tx:'Wolt',fs:.3},ynet:{bg:'#D3141C',tx:'ynet',fs:.3},
+ candycrush:{bg:'linear-gradient(#FF9AD5,#C2187B)',em:'🍬'},clashroyale:{bg:'linear-gradient(#5BA8FF,#1C4FB8)',em:'👑'},subway:{bg:'linear-gradient(#FFD54A,#F08A00)',em:'🏄'},
+ safari:{bg:'#fff',svg:'<svg viewBox="0 0 24 24" style="width:84%;height:84%"><defs><linearGradient id="sfg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1AD6FD"/><stop offset="1" stop-color="#1D62F0"/></linearGradient></defs><circle cx="12" cy="12" r="11" fill="url(#sfg)"/><path d="M17.6 6.4 13.3 13.3 10.7 10.7z" fill="#FF3B30"/><path d="M6.4 17.6 10.7 10.7 13.3 13.3z" fill="#fff"/></svg>'}};
+function appIcon(k,s=58){const a=APPS[k]||{en:'?'},b=BR[k]||{bg:'#888'};const r=Math.round(s*.225);let inner;
+ if(b.svg)inner=b.svg;
+ else if(b.tx)inner=`<span style="font:800 ${Math.round(s*b.fs)}px/1 -apple-system,Helvetica,Arial,sans-serif;letter-spacing:-.2px;color:#fff;direction:ltr">${b.tx}</span>`;
+ else if(b.em)inner=`<span style="font-size:${Math.round(s*.56)}px;line-height:1">${b.em}</span>`;
+ else if(ICONS[k]){const z=Math.round(s*(b.sz||.6));inner=`<svg viewBox="0 0 24 24" style="width:${z}px;height:${z}px;fill:${b.fg||'#fff'};${b.st?`stroke:${b.st};stroke-width:.8;`:''}${b.fx?`filter:${b.fx};`:''}"><path d="${ICONS[k]}"/></svg>`}
+ else inner=`<b style="font-size:${Math.round(s*.42)}px;color:#fff">${a.en[0]}</b>`;
+ return`<span class="aic" style="width:${s}px;height:${s}px;border-radius:${r}px;background:${b.bg}">${inner}</span>`}
+function catIcon(k,s=30){const c=ACATS.find(x=>x.k===k);return`<span class="cic" style="width:${s}px;height:${s}px;border-radius:${Math.round(s*.24)}px;background:${c.c}"><svg class="i"><use href="#i-${c.i}"/></svg></span>`}
+const GOAL=5;
 
 /* ---------- photos ---------- */
 function resize(file,max=1400){return new Promise(r=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height,k=Math.min(1,max/Math.max(w,h));const c=document.createElement('canvas');c.width=w*k;c.height=h*k;c.getContext('2d').drawImage(img,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',.8));URL.revokeObjectURL(img.src)};img.src=URL.createObjectURL(file)})}
 const urlCache={};async function photo(id){if(!id)return'';if(urlCache[id])return urlCache[id];const v=await DB.get(id);urlCache[id]=v||'';return urlCache[id]}
-
-/* ---------- content ---------- */
-const REL={son:{l:'בן',g:'m',k:'kid'},daughter:{l:'בת',g:'f',k:'kid'},partnerM:{l:'בן זוג',g:'m',k:'partner'},partnerF:{l:'בת זוג',g:'f',k:'partner'},dad:{l:'אבא',g:'m',k:'parent'},mom:{l:'אמא',g:'f',k:'parent'},friendM:{l:'חבר',g:'m',k:'friend'},friendF:{l:'חברה',g:'f',k:'friend'}};
-const CATS={body:['תנועה',104],breath:['נשימה',92],life:['סידורים',98],rest:['מנוחה',88]};
-const P=(g,m,f)=>g==='f'?f:m;
-const PEOPLE_IDEAS={
- kid:[(n,g)=>`לשאול את ${n} מה הכי ${P(g,'הצחיק אותו','הצחיק אותה')} היום`,(n,g)=>`לשחק עם ${n} משהו קטן, רק שניכם`,(n,g)=>`לחבק את ${n}, סתם ככה`,(n,g)=>`לשבת ליד ${n} ולראות מה ${P(g,'הוא עושה','היא עושה')}`],
- partner:[(n,g)=>`להכין ל${n} משהו לשתות, בלי סיבה`,(n,g)=>`לשבת ליד ${n} חמש דקות, בלי טלפונים`,(n,g)=>`להגיד ל${n} משהו טוב ${P(g,'עליו','עליה')}`,(n,g)=>`לשאול את ${n} איך היה ${P(g,'לו','לה')} היום, באמת`],
- parent:[(n,g)=>`להתקשר ל${n} לשתי דקות`,(n,g)=>`לשלוח ל${n} תמונה מהיום`,(n,g)=>`לשאול את ${n} מה שלומ${P(g,'ו','ה')}`],
- friend:[(n,g)=>`להתקשר ל${n}, סתם להגיד היי`,(n,g)=>`לקבוע עם ${n} קפה השבוע`,(n,g)=>`לשלוח ל${n} הודעה טובה`]};
-const PEOPLE_TITLES={kid:(n,g)=>`${n} כאן.`,partner:(n,g)=>`${n} ממש פה.`,parent:(n,g)=>`${n} ${P(g,'ישמח','תשמח')} לשמוע ממך.`,friend:(n,g)=>`${n} ${P(g,'ישמח','תשמח')} לשמוע ממך.`};
-const IDEAS={body:['5 שכיבות סמיכה','לקום ולמתוח את הגב','כוס מים, עכשיו','10 סקוואטים'],breath:['שלוש נשימות איטיות','לצאת למרפסת לדקה','לפתוח חלון ולהרגיש את האוויר'],life:['לבדוק מה יש לארוחת ערב','לסגור את הסידור הקטן שדחית','לענות להודעה האחת החשובה','לסדר דבר אחד בחדר'],rest:['להסתכל מהחלון דקה','לעצום עיניים ל-30 שניות','לשתות משהו חם, לאט']};
-const MORNING=['כוס מים לפני הכול','למתוח את הגוף דקה','להגיד בוקר טוב למישהו','לפתוח את התריס ולתת לאור להיכנס'];
-const DAY_TITLES=['רגע לעצמך.','מה קורה סביבך עכשיו?','נשימה אחת, ואז מחליטים.','הפיד יחכה. העולם כאן.'];
-const NIGHT=[['עשית מספיק היום.','המיטה מחכה. הפיד יחכה למחר.'],['לילה טוב.','מחר בבוקר זה ירגיש טוב.']];
-/* App categories = Apple Screen Time / App Store categories (what FamilyActivityPicker shows in the native app) */
-const ACATS=[
- {k:'social',l:'רשתות חברתיות',e:'Instagram, TikTok, Facebook, X',c:'#E1306C'},
- {k:'ent',l:'בידור וסרטונים',e:'YouTube, Netflix, Twitch',c:'#E5483B'},
- {k:'games',l:'משחקים',e:'כל המשחקים בטלפון',c:'#7A5AF8'},
- {k:'shop',l:'קניות ואוכל',e:'AliExpress, Amazon, Shein, Wolt',c:'#F08A24'},
- {k:'news',l:'מידע וקריאה',e:'חדשות, Reddit, פורומים',c:'#2F80ED'},
- {k:'creative',l:'יצירה',e:'עריכת תמונות ווידאו',c:'#1FA67A'},
- {k:'productivity',l:'פרודוקטיביות וכספים',e:'מייל, בנקים, קבצים',c:'#5B6B7F'},
- {k:'other',l:'כל השאר',e:'אפליקציות בלי קטגוריה',c:'#8C8C8C'}];
-/* popular apps (prototype list; the real app uses Apple's picker with every installed app) */
-const APPS={
- instagram:{n:'אינסטגרם',en:'Instagram',u:'instagram://',c:'social',col:'#D62976'},
- tiktok:{n:'טיקטוק',en:'TikTok',u:'snssdk1233://',c:'social',col:'#111111'},
- facebook:{n:'פייסבוק',en:'Facebook',u:'fb://',c:'social',col:'#1877F2'},
- x:{n:'X',en:'X',u:'twitter://',c:'social',col:'#000000'},
- snapchat:{n:'סנאפצ׳ט',en:'Snapchat',u:'snapchat://',c:'social',col:'#E8C900'},
- threads:{n:'Threads',en:'Threads',u:'barcelona://',c:'social',col:'#222222'},
- pinterest:{n:'פינטרסט',en:'Pinterest',u:'pinterest://',c:'social',col:'#E60023'},
- whatsapp:{n:'וואטסאפ',en:'WhatsApp',u:'whatsapp://',c:'social',col:'#25D366'},
- telegram:{n:'טלגרם',en:'Telegram',u:'tg://',c:'social',col:'#2AABEE'},
- youtube:{n:'יוטיוב',en:'YouTube',u:'youtube://',c:'ent',col:'#FF0000'},
- netflix:{n:'נטפליקס',en:'Netflix',u:'nflx://',c:'ent',col:'#B20710'},
- twitch:{n:'טוויץ׳',en:'Twitch',u:'twitch://',c:'ent',col:'#9146FF'},
- reddit:{n:'רדיט',en:'Reddit',u:'reddit://',c:'news',col:'#FF4500'},
- ynet:{n:'ynet',en:'ynet',u:'',c:'news',col:'#D3141C'},
- aliexpress:{n:'עליאקספרס',en:'AliExpress',u:'aliexpress://',c:'shop',col:'#E43225'},
- amazon:{n:'אמזון',en:'Amazon',u:'com.amazon.mobile.shopping://',c:'shop',col:'#232F3E'},
- shein:{n:'שיין',en:'SHEIN',u:'',c:'shop',col:'#222222'},
- temu:{n:'טמו',en:'Temu',u:'',c:'shop',col:'#FB7701'},
- wolt:{n:'וולט',en:'Wolt',u:'',c:'shop',col:'#00C2E8'},
- candycrush:{n:'קנדי קראש',en:'Candy Crush',u:'',c:'games',col:'#F2789F'},
- roblox:{n:'רובלוקס',en:'Roblox',u:'roblox://',c:'games',col:'#3D3D3D'},
- clashroyale:{n:'קלאש רויאל',en:'Clash Royale',u:'',c:'games',col:'#2F6FD8'},
- subway:{n:'סאבווי סרפרס',en:'Subway Surfers',u:'',c:'games',col:'#F6B12B'},
- safari:{n:'ספארי (אתרים)',en:'Safari',u:'',c:'other',col:'#1E90FF'}};
-const appName=k=>APPS[k]?APPS[k].n:(ACATS.find(c=>c.k===k)||{}).l||decodeURIComponent(k||'האפליקציה');
-const pick=a=>a[Math.floor(Math.random()*a.length)];
-const GOAL=5;
+const anyPic=()=>st.general[0]||st.people.flatMap(p=>p.pics)[0];
 
 /* ---------- time logic ---------- */
-const mins=t=>{const[h,m]=t.split(':').map(Number);return h*60+m};
+const mins=x=>{const[h,m]=x.split(':').map(Number);return h*60+m};
 function mode(d=new Date()){const T=st.times,now=d.getHours()*60+d.getMinutes(),day=d.getDay();
  if(now>=mins(T.nStart)||now<240)return'night';
  if(now<mins(T.mEnd))return'morning';
@@ -701,257 +997,278 @@ function mode(d=new Date()){const T=st.times,now=d.getHours()*60+d.getMinutes(),
  if((now>=mins(T.fStart)&&now<mins(T.fEnd))||shab)return st.people.length?'family':'day';
  return'day'}
 
-/* ---------- navigation ---------- */
-const TOTAL=5;let editing=false;
-function go(id){closeSheet();document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));const el=document.getElementById(id);el.classList.add('on');el.scrollTop=0;
- el.querySelectorAll('[data-step]').forEach(x=>{const n=+x.dataset.step;if(editing||st.setup){x.style.display='none';return}x.style.display='';
-  if(x.classList.contains('prog'))x.innerHTML=[...Array(TOTAL)].map((_,i)=>`<i class="${i<n?'on':''}"></i>`).join('');else x.textContent=`שלב ${n} מתוך ${TOTAL}`});
- if(id==='ob2')renderPeople();if(id==='ob3')renderGeneral();if(id==='ob4')loadTimes();if(id==='ob5')renderGuide();if(id==='home')renderHome();
- if(id==='build')runBuild();if(id==='pw3')armExit();
- if(id==='quiz')renderQuiz();if(id==='plan')renderPlan();if(id==='apps')renderPicker();if(id==='commit')renderCommit();
- if(id==='first')photo(st.general[0]||st.people.flatMap(p=>p.pics)[0]).then(s=>{if(s)document.getElementById('firstPh').style.backgroundImage=`url(${s})`});
- if(id==='pw1')photo(st.general[0]||st.people.flatMap(p=>p.pics)[0]).then(s=>{if(s)document.getElementById('pw1ph').style.backgroundImage=`url(${s})`})}
-function back(id){if(editing){editing=false;go('home')}else go(id)}
+/* ---------- navigation (push / pop / fade / zoom / up) ---------- */
+let editing=false;
+const QZ=[{k:'opens'},{k:'heard'},{k:'pain',m:1},{fact:'f76',n:'76%'},{k:'feel'},{k:'tried'},{k:'when',m:1},{fact:'f58',n:'58%'},{k:'want',m:1},{k:'goal'},{dyn:'real'},{chart:'chart'},{trust:'trust'}];
+const ONB=['apps','ob2','ob3','ob4'],OBTOT=QZ.length+ONB.length;
+const TABS=['home','stats','settings'];
+let navT=null;
+let doneT=null;
+function go(id,o={}){closeSheet();clearTimeout(doneT);const el=$(id),prev=document.querySelector('.screen.on');const anim=o.anim||(o.back?'pop':'push');
+ clearTimeout(navT);document.querySelectorAll('.screen.out').forEach(s=>s.className=s.className.replace(/\s?(out|a-\S+)/g,''));
+ if(prev&&prev!==el){prev.classList.remove('on');if(anim!=='none'){prev.classList.add('out','a-'+anim+'-out')}}
+ el.className=el.className.replace(/\s?a-\S+/g,'');el.classList.add('on');void el.offsetWidth;if(anim!=='none'&&prev!==el)el.classList.add('a-'+anim+'-in');
+ navT=setTimeout(()=>{document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('out');s.className=s.className.replace(/\s?a-\S+/g,'')})},520);
+ el.scrollTop=0;
+ const tb=TABS.includes(id);$('tabbar').classList.toggle('on',tb);document.body.classList.toggle('tabs',tb);
+ document.querySelectorAll('#tabbar button').forEach(b=>b.classList.toggle('on',b.dataset.tab===id));
+ const ob=el.querySelector('.obbar');if(ob){const hide=editing||st.setup;ob.style.visibility=hide?'hidden':'';const n=id==='quiz'?qi+1:QZ.length+ONB.indexOf(id)+1;ob.firstElementChild.style.width=(n/OBTOT*100)+'%'}
+ ({ob2:renderPeople,ob3:renderGeneral,ob4:loadTimes,ob5:renderGuide,home:renderHome,stats:renderStats,settings:renderSettings,build:runBuild,pw3:renderPw3,quiz:renderQuiz,plan:renderPlan,apps:renderApps,commit:renderCommit,spring:renderSpring}[id]||(()=>{}))();
+ if(id==='first'||id==='pw1')photo(anyPic()).then(s=>{if(s)$(id==='first'?'firstPh':'pw1ph').style.backgroundImage=`url(${s})`})}
+function back(id){if(editing){editing=false;go('settings',{back:1})}else go(id,{back:1})}
 function edit(id){editing=true;go(id)}
-function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),1800)}
-function closeSheet(){document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('on'))}
-function doneEditing(){editing=false;toast('נשמר');go('home')}
+function tab(id){const cur=document.querySelector('.screen.on');if(cur&&cur.id===id){cur.scrollTo({top:0,behavior:'smooth'});return}go(id,{anim:'fade'})}
+let toastT;function toast(x){const e=$('toast');e.textContent=x;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),2000)}
+function closeSheet(){document.querySelectorAll('.sheet').forEach(s=>{s.classList.remove('on');s.firstElementChild.style.transform=''})}
+function doneEditing(){editing=false;toast(t('t_saved'));go('settings',{back:1})}
 
-/* ---------- people (bubbles) ---------- */
+/* edge-swipe back (from the leading edge, like iOS) */
+(()=>{let sx=0,sy=0,edge=false;
+ document.addEventListener('touchstart',e=>{const x=e.touches[0].clientX;sx=x;sy=e.touches[0].clientY;edge=isRTL()?x>innerWidth-26:x<26},{passive:true});
+ document.addEventListener('touchend',e=>{if(!edge)return;edge=false;const dx=(e.changedTouches[0].clientX-sx)*(isRTL()?-1:1),dy=Math.abs(e.changedTouches[0].clientY-sy);
+  if(dx>80&&dy<70&&!document.querySelector('.sheet.on')){const b=document.querySelector('.screen.on .navback');if(b)b.click()}},{passive:true})})();
+/* drag a sheet down to close it */
+(()=>{let y0=null,dy=0,box=null;
+ document.addEventListener('touchstart',e=>{const b=e.target.closest('.sheet>div');if(!b||b.scrollTop>0||e.target.closest('input'))return;box=b;y0=e.touches[0].clientY;dy=0;b.style.transition='none'},{passive:true});
+ document.addEventListener('touchmove',e=>{if(y0===null)return;dy=Math.max(0,e.touches[0].clientY-y0);if(dy>0&&box.scrollTop<=0)box.style.transform=`translateY(${dy}px)`},{passive:true});
+ document.addEventListener('touchend',()=>{if(y0===null)return;box.style.transition='';if(dy>110){if(box.parentElement.id==='pkSheet')pkCancel();else closeSheet()}else box.style.transform='';y0=null;box=null},{passive:true})})();
+
+/* ---------- people ---------- */
 let draft=null;
-function openPerson(){draft={id:uid(),name:'',rel:'daughter',pics:[]};document.getElementById('pName').value='';renderRel();renderDraftPics();checkPerson();document.getElementById('pSheet').classList.add('on')}
-function renderRel(){document.getElementById('relChips').innerHTML=Object.entries(REL).map(([k,v])=>`<button class="chip ${draft.rel===k?'on':''}" onclick="draft.rel='${k}';renderRel()">${v.l}</button>`).join('')}
-function checkPerson(){document.getElementById('pSave').disabled=!document.getElementById('pName').value.trim()}
+function openPerson(){draft={id:uid(),name:'',rel:'daughter',pics:[]};$('pName').value='';renderRel();renderDraftPics();checkPerson();$('pSheet').classList.add('on')}
+function renderRel(){$('relChips').innerHTML=Object.keys(REL).map(k=>`<button class="chip ${draft.rel===k?'on':''}" onclick="draft.rel='${k}';renderRel()">${relL(k)}</button>`).join('')}
+function checkPerson(){$('pSave').disabled=!$('pName').value.trim()}
 async function pickPersonPics(inp){for(const f of inp.files){if(draft.pics.length>=5)break;const id='ph_'+uid();await DB.put(id,await resize(f));draft.pics.push(id)}inp.value='';renderDraftPics()}
-async function renderDraftPics(){const g=document.getElementById('pPicGrid');let h='';
- for(const id of draft.pics)h+=`<div class="pt" style="background-image:url(${await photo(id)})"><button onclick="rmDraftPic('${id}')" aria-label="הסרה">${ic('x')}</button></div>`;
- if(draft.pics.length<5)h+=`<label class="pt"><span>${ic('image')}להוסיף</span><input type="file" accept="image/*" multiple hidden onchange="pickPersonPics(this)"></label>`;g.innerHTML=h}
+async function renderDraftPics(){let h='';
+ for(const id of draft.pics)h+=`<div class="pt" style="background-image:url(${await photo(id)})"><button onclick="rmDraftPic('${id}')" aria-label="remove">${ic('x')}</button></div>`;
+ if(draft.pics.length<5)h+=`<label class="pt"><span>${ic('image')}${t('addOne')}</span><input type="file" accept="image/*" multiple hidden onchange="pickPersonPics(this)"></label>`;$('pPicGrid').innerHTML=h}
 function rmDraftPic(id){draft.pics=draft.pics.filter(x=>x!==id);DB.del(id);renderDraftPics()}
-function savePerson(){draft.name=document.getElementById('pName').value.trim();if(!draft.name)return;st.people.push(draft);save();closeSheet();renderPeople();toast(`${draft.name} ${REL[draft.rel].g==='f'?'נוספה':'נוסף'}`)}
-function delPerson(id){const p=st.people.find(x=>x.id===id);if(!p||!confirm(`להסיר את ${p.name}?`))return;st.people=st.people.filter(x=>x.id!==id);p.pics.forEach(x=>DB.del(x));save();renderPeople()}
-async function renderPeople(){const L=document.getElementById('peopleList');let h='';const sizes=[112,100,92,104,96];
+function savePerson(){draft.name=$('pName').value.trim();if(!draft.name)return;st.people.push(draft);save();closeSheet();renderPeople();toast(t('t_added',draft.name))}
+function delPerson(id){const p=st.people.find(x=>x.id===id);if(!p||!confirm(t('rm_q',p.name)))return;st.people=st.people.filter(x=>x.id!==id);p.pics.forEach(x=>DB.del(x));save();renderPeople()}
+async function renderPeople(){let h='';const sizes=[112,100,92,104,96];
  for(let i=0;i<st.people.length;i++){const p=st.people[i];const src=await photo(p.pics[0]);
-  h+=`<div class="bub ${src?'photo':'on'}" style="--s:${sizes[i%5]}px;${src?`background-image:url(${src})`:''}"><button class="x" onclick="delPerson('${p.id}')" aria-label="הסרה">${ic('x')}</button><span>${esc(p.name)}</span>${p.name===REL[p.rel].l?'':`<small>${REL[p.rel].l}</small>`}</div>`}
- h+=`<button class="bub add" style="--s:${st.people.length?92:120}px" onclick="openPerson()">${ic('plus')}להוסיף<br>אדם</button>`;L.innerHTML=h;
- const n=document.getElementById('ob2next'),s=document.getElementById('ob2skip');
- if(editing){n.textContent='שמירה';n.onclick=doneEditing;s.style.display='none'}
- else{n.textContent='המשך';n.onclick=()=>go('ob3');s.style.display=st.people.length?'none':''}}
+  h+=`<div class="bub ${src?'photo':'on'}" style="--s:${sizes[i%5]}px;${src?`background-image:url(${src})`:''}"><button class="x" onclick="delPerson('${p.id}')" aria-label="remove">${ic('x')}</button><span>${esc(p.name)}</span>${p.name===relL(p.rel)?'':`<small>${relL(p.rel)}</small>`}</div>`}
+ h+=`<button class="bub add" style="--s:${st.people.length?92:120}px" onclick="openPerson()">${ic('plus')}${t('o2_add')}</button>`;$('peopleList').innerHTML=h;
+ const n=$('ob2next'),s=$('ob2skip');
+ if(editing){n.textContent=t('save');n.onclick=doneEditing;s.style.display='none'}
+ else{n.textContent=t('cont');n.onclick=()=>go('ob3');s.style.display=st.people.length?'none':''}}
 
-/* ---------- general photos & categories ---------- */
+/* ---------- photos & idea kinds ---------- */
 async function addGeneral(inp){for(const f of inp.files){const id='ph_'+uid();await DB.put(id,await resize(f));st.general.push(id)}inp.value='';save();renderGeneral()}
-async function renderGeneral(){const g=document.getElementById('genGrid');let h='';
- for(const id of st.general)h+=`<div class="pt" style="background-image:url(${await photo(id)})"><button onclick="rmGen('${id}')" aria-label="הסרת תמונה">${ic('x')}</button></div>`;
- h+=`<label class="pt"><span>${ic('image')}להוסיף<br>תמונות</span><input type="file" accept="image/*" multiple hidden onchange="addGeneral(this)"></label>`;g.innerHTML=h;
- document.getElementById('catChips').innerHTML=Object.entries(CATS).map(([k,[l,s]])=>`<button class="bub ${st.cats.includes(k)?'on':''}" style="--s:${s}px" onclick="toggleCat('${k}')">${st.cats.includes(k)?ic('check'):''}${l}</button>`).join('');
- renderCustom();const b=document.getElementById('ob3btn');if(editing){b.textContent='שמירה';b.onclick=doneEditing}else{b.textContent='המשך';b.onclick=()=>go('ob4')}}
+async function renderGeneral(){let h='';
+ for(const id of st.general)h+=`<div class="pt" style="background-image:url(${await photo(id)})"><button onclick="rmGen('${id}')" aria-label="remove">${ic('x')}</button></div>`;
+ h+=`<label class="pt"><span>${ic('image')}${t('o3_addph')}</span><input type="file" accept="image/*" multiple hidden onchange="addGeneral(this)"></label>`;$('genGrid').innerHTML=h;
+ $('catChips').innerHTML=Object.entries(CATS).map(([k,s])=>`<button class="bub ${st.cats.includes(k)?'on':''}" style="--s:${s}px" onclick="toggleCat('${k}')">${st.cats.includes(k)?ic('check'):''}${t('ICAT')[k]}</button>`).join('');
+ renderCustom();const b=$('ob3btn');if(editing){b.textContent=t('save');b.onclick=doneEditing}else{b.textContent=t('cont');b.onclick=()=>go('ob4')}}
 function rmGen(id){st.general=st.general.filter(x=>x!==id);DB.del(id);save();renderGeneral()}
 function toggleCat(k){st.cats=st.cats.includes(k)?st.cats.filter(x=>x!==k):[...st.cats,k];save();renderGeneral()}
-function addCustom(){const i=document.getElementById('customIdea');const v=i.value.trim();if(!v)return;st.custom.push(v);save();i.value='';renderCustom();toast('הרעיון נוסף')}
-function renderCustom(){document.getElementById('customList').innerHTML=st.custom.map((c,i)=>`<span>${esc(c)}<button onclick="st.custom.splice(${i},1);save();renderCustom()" aria-label="הסרה">${ic('x')}</button></span>`).join('')}
+function addCustom(){const i=$('customIdea');const v=i.value.trim();if(!v)return;st.custom.push(v);save();i.value='';renderCustom();toast(t('idea_added'))}
+function renderCustom(){$('customList').innerHTML=st.custom.map((c,i)=>`<span>${esc(c)}<button onclick="st.custom.splice(${i},1);save();renderCustom()" aria-label="remove">${ic('x')}</button></span>`).join('')}
 
-/* ---------- times ---------- */
-function loadTimes(){const T=st.times;['mEnd','fStart','fEnd','nStart'].forEach(k=>document.getElementById(k).value=T[k]);document.getElementById('shabbat').classList.toggle('on',T.shabbat);document.getElementById('ob4btn').textContent=editing?'שמירה':'המשך'}
-function finishTimes(){const T=st.times;['mEnd','fStart','fEnd','nStart'].forEach(k=>T[k]=document.getElementById(k).value||T[k]);T.shabbat=document.getElementById('shabbat').classList.contains('on');save();if(editing)return doneEditing();go('build')}
-function runBuild(){const steps=['האפליקציות שבחרת','האנשים שלך','שעות המשפחה והשבת','רעיונות במקום לגלול','ההפסקה הראשונה שלך'];
- const L=document.getElementById('bList');L.innerHTML=steps.map((s,i)=>`<div class="bi" id="bi${i}"><span class="bk">${ic('check')}</span>${s}</div>`).join('');
- const t0=performance.now(),D=4200;const now=document.getElementById('bNow');
- const tick=t=>{const p=Math.min(1,(t-t0)/D),e=1-Math.pow(1-p,2.2),n=Math.round(e*100);
-  document.getElementById('bPct').textContent=n+'%';document.getElementById('bBar').style.width=n+'%';
-  const k=Math.min(steps.length-1,Math.floor(e*steps.length));steps.forEach((_,i)=>document.getElementById('bi'+i).classList.toggle('ok',i<k||p===1));
-  now.textContent=p<1?'מתאימים: '+steps[k]+'…':'הכול מוכן';
-  if(p<1&&document.getElementById('build').classList.contains('on'))requestAnimationFrame(tick);else if(p===1){if(navigator.vibrate)navigator.vibrate([20,40,20]);setTimeout(()=>go('plan'),700)}};
+/* ---------- times + build ---------- */
+function loadTimes(){const T=st.times;['mEnd','fStart','fEnd','nStart'].forEach(k=>$(k).value=T[k]);$('shabbat').classList.toggle('on',T.shabbat);$('ob4btn').textContent=editing?t('save'):t('cont')}
+function finishTimes(){const T=st.times;['mEnd','fStart','fEnd','nStart'].forEach(k=>T[k]=$(k).value||T[k]);T.shabbat=$('shabbat').classList.contains('on');save();if(editing)return doneEditing();go('build',{anim:'fade'})}
+function runBuild(){const steps=t('b_steps');
+ $('bList').innerHTML=steps.map((s,i)=>`<div class="bi" id="bi${i}"><span class="bk">${ic('check')}</span>${s}</div>`).join('');
+ const t0=performance.now(),D=4200;let lastK=-1;
+ const tick=n=>{const p=Math.min(1,(n-t0)/D),e=1-Math.pow(1-p,2.2),v=Math.round(e*100);
+  $('bPct').textContent=v+'%';$('bBar').style.width=v+'%';
+  const k=Math.min(steps.length-1,Math.floor(e*steps.length));if(k!==lastK){lastK=k;if(k>0)hap()}
+  steps.forEach((_,i)=>$('bi'+i).classList.toggle('ok',i<k||p===1));
+  $('bNow').textContent=p<1?t('b_now',steps[k]):t('b_ready');
+  const here=$('build').classList.contains('on');if(!here)return;
+  if(p<1)requestAnimationFrame(tick);else{hap();setTimeout(()=>{if($('build').classList.contains('on'))go('plan',{anim:'up'})},700)}};
  requestAnimationFrame(tick)}
 
-/* ---------- quiz ---------- */
-/* onboarding blueprint (Steven Cravotta / Cal AI / Duolingo): pain questions → facts → goal → plan → commit → paywall */
-const QUIZ=[
- {k:'opens',q:'כמה פעמים ביום, בערך, פותחים רשתות, סרטונים או משחקים?',o:['פחות מ-10','10–30','30–60','יותר מ-60','אין לי מושג']},
- {k:'heard',q:'איך שמעת על Look Up?',o:['טיקטוק','אינסטגרם','חבר או משפחה','יוטיוב','חיפוש באפסטור','אחר']},
- {k:'pain',q:'מה הכי מפריע לך בזה?',h:'אפשר לבחור כמה',m:1,o:['לפספס רגעים עם המשפחה','הילדים מבקשים שאניח את הטלפון','קשה להירדם בלילה','קשה להתרכז','תחושה של בזבוז זמן']},
- {fact:1,n:'76%',q:'זה לא רק אצלך',t:'מההורים מרימים את הטלפון בלי לחשוב, לעומת 57% מאלה שאין להם ילדים. הטלפון בנוי לזה, וזו לא חולשה שלך.'},
- {k:'feel',q:'איך מרגישים אחרי גלילה ארוכה?',o:['עייפות','קצת אשמה','בזבוז זמן','בסדר גמור','תלוי ביום']},
- {k:'tried',q:'כמה זמן כבר מנסים לצמצם?',o:['עוד לא ניסיתי','כמה שבועות','כמה חודשים','שנים']},
- {k:'when',q:'מתי זה הכי קורה?',h:'אפשר לבחור כמה',m:1,o:['בבוקר, עוד במיטה','בארוחות','בערב עם המשפחה','לפני השינה','בהפסקות בעבודה']},
- {fact:1,n:'58%',q:'הם שמים לב',t:'מהילדים בגילי 8–16 היו רוצים שההורים יהיו יותר נוכחים. החדשות הטובות: מספיקים רגעים קטנים.'},
- {k:'want',q:'מה הכי חשוב לך להחזיר?',h:'אפשר לבחור כמה',m:1,o:['זמן עם הילדים','זמן זוגי','שינה טובה','ריכוז בעבודה','תנועה וכושר','שקט בראש']},
- {k:'goal',q:'כמה פתיחות ביום היו מרגישות לך טוב?',o:['פחות מ-10','10–20','20–30','פשוט פחות ממה שיש היום']},
- {dyn:'realistic',q:'זה יעד מציאותי'},
- {chart:1,q:'עם Look Up זה מחזיק לאורך זמן'},
- {trust:1,q:'תודה שסמכת עלינו'}];
-/* numbers behind the "realistic" + chart screens */
-const OPENS_N={'פחות מ-10':8,'10–30':20,'30–60':45,'יותר מ-60':70},GOAL_N={'פחות מ-10':8,'10–20':15,'20–30':25};
+/* ---------- quiz (answers stored as option indexes) ---------- */
+const OPENS_N=[8,20,45,70],GOAL_N=[8,15,25];
 function goalNums(){const z=st.quiz||{};const now=OPENS_N[z.opens]||30;let g=GOAL_N[z.goal];if(!g||g>=now)g=Math.max(5,Math.round(now*0.5));return{now,g}}
-function chartSVG(){/* illustration: willpower alone rebounds; a short pause before opening keeps usage lower (one sec study: −57%) */
- return`<svg viewBox="0 0 320 190" class="chart"><defs><linearGradient id="lg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
- <line x1="20" y1="160" x2="300" y2="160" stroke="rgba(255,255,255,.35)"/>
- <path d="M300 40 C250 40 230 120 190 125 C150 130 120 70 80 50 C60 42 40 45 20 48" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="3" stroke-dasharray="6 6"/>
+function chartSVG(){const C=t('Q').chart,R=isRTL();
+ /* drawn for RTL (today on the right); mirrored for LTR. Illustration only. */
+ const g=`<g ${R?'':'transform="matrix(-1 0 0 1 320 0)"'}><path d="M300 40 C250 40 230 120 190 125 C150 130 120 70 80 50 C60 42 40 45 20 48" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="3" stroke-dasharray="6 6"/>
  <path d="M300 40 C260 45 240 110 190 128 C140 146 80 140 20 142 L20 160 L300 160Z" fill="url(#lg)"/>
  <path d="M300 40 C260 45 240 110 190 128 C140 146 80 140 20 142" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
- <circle cx="300" cy="40" r="6" fill="#fff"/><circle cx="20" cy="142" r="7" fill="#fff"/>
- <text x="300" y="180" fill="#fff" font-size="12" text-anchor="end" font-family="Heebo">היום</text><text x="20" y="180" fill="#fff" font-size="12" font-family="Heebo">חודש 3</text>
- <text x="100" y="34" fill="rgba(255,255,255,.9)" font-size="13" font-family="Heebo" font-weight="500" text-anchor="end">רק כוח רצון</text>
- <text x="30" y="126" fill="#fff" font-size="13.5" font-family="Heebo" font-weight="700" text-anchor="start">Look Up עם</text></svg>`}
+ <circle cx="300" cy="40" r="6" fill="#fff"/><circle cx="20" cy="142" r="7" fill="#fff"/></g>`;
+ const X=x=>R?x:320-x,A=a=>R?a:(a==='end'?'start':a==='start'?'end':a);
+ return`<svg viewBox="0 0 320 190" class="chart"><defs><linearGradient id="lg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+ <line x1="20" y1="160" x2="300" y2="160" stroke="rgba(255,255,255,.35)"/>${g}
+ <text x="${X(300)}" y="180" fill="#fff" font-size="12" text-anchor="${A('end')}" font-family="Heebo">${C.today}</text><text x="${X(20)}" y="180" fill="#fff" font-size="12" text-anchor="${A('start')}" font-family="Heebo">${C.m3}</text>
+ <text x="${X(100)}" y="34" fill="rgba(255,255,255,.9)" font-size="13" font-family="Heebo" font-weight="500" text-anchor="${A('end')}">${C.a}</text>
+ <text x="${X(30)}" y="126" fill="#fff" font-size="13.5" font-family="Heebo" font-weight="700" text-anchor="${A('start')}">${C.b}</text></svg>`}
 let qi=0;
-function renderQuiz(){const Q=QUIZ[qi];st.quiz=st.quiz||{};
- document.getElementById('qStep').textContent=`${qi+1} מתוך ${QUIZ.length}`;
- document.getElementById('qProg').innerHTML=QUIZ.map((_,i)=>`<i class="${i<=qi?'on':''}" style="width:${Math.max(10,180/QUIZ.length)}px"></i>`).join('');
- document.getElementById('qTitle').textContent=Q.q;document.getElementById('qHint').textContent=Q.h||'';
- const info=h=>{document.getElementById('qOpts').innerHTML=h;const b=document.getElementById('qNext');b.disabled=false;b.textContent='המשך'};
- if(Q.fact)return info(`<div class="glass fact"><div class="num">${Q.n}</div><p>${Q.t}</p></div>`);
- if(Q.dyn){const{now,g}=goalNums();return info(`<div class="glass fact"><div class="num" style="font-size:64px">${now} <span style="opacity:.6">←</span> ${g}</div><p>מ-${now} ל-${g} פתיחות ביום. יעד מציאותי, בלי לנתק את הטלפון. מגיעים אליו בהדרגה, רגע אחד בכל פעם.</p></div>`)}
- if(Q.chart)return info(`<div class="glass fact" style="padding:18px 14px">${chartSVG()}<p style="font-size:15.5px">רק כוח רצון בדרך כלל לא מחזיק. הפסקה קצרה לפני כל פתיחה שוברת את ההרגל: במחקר של היידלברג ומקס פלאנק השימוש ירד ב-57%.</p><p style="font-size:12.5px;opacity:.75;margin-top:6px">הגרף הוא המחשה</p></div>`);
- if(Q.trust)return info(`<div class="glass fact"><div class="round" style="width:84px;height:84px;margin:0 auto"><svg class="i" style="width:36px;height:36px"><use href="#i-lock"/></svg></div><p style="font-size:18px;font-weight:600;margin-top:16px">הפרטיות שלך חשובה לנו</p><p>בלי הרשמה ובלי שרתים. התשובות, האנשים והתמונות שלך נשמרים רק בטלפון הזה.</p></div>`);
- const a=st.quiz[Q.k]||(Q.m?[]:null);
- document.getElementById('qOpts').innerHTML=Q.o.map((o,i)=>{const on=Q.m?a.includes(o):a===o;return`<button class="opt ${Q.m?'multi':''} ${on?'on':''}" onclick="quizPick(${i})">${o}<span class="ck"><svg class="i"><use href="#i-check"/></svg></span></button>`}).join('');
- document.getElementById('qNext').disabled=Q.m?!a.length:!a;document.getElementById('qNext').textContent=qi===QUIZ.length-1?'סיימתי':'המשך'}
-function quizPick(i){const Q=QUIZ[qi],o=Q.o[i];st.quiz=st.quiz||{};
- if(Q.m){const a=st.quiz[Q.k]||[];st.quiz[Q.k]=a.includes(o)?a.filter(x=>x!==o):[...a,o]}else st.quiz[Q.k]=o;save();renderQuiz();
- if(!Q.m)setTimeout(quizNext,280)}
-function quizNext(){const Q=QUIZ[qi],a=(st.quiz||{})[Q.k];if(Q.k&&(Q.m?!(a&&a.length):!a))return;if(qi<QUIZ.length-1){qi++;renderQuiz();document.getElementById('quiz').scrollTop=0}else go('apps')}
-function quizBack(){if(qi>0){qi--;renderQuiz()}else go('ob1')}
+function renderQuiz(){const Q=QZ[qi],TX=t('Q');st.quiz=st.quiz||{};
+ const ob=$('quiz').querySelector('.obbar b');if(ob)ob.style.width=((qi+1)/OBTOT*100)+'%';
+ const info=(title,h)=>{$('qTitle').textContent=title;$('qHint').textContent='';$('qOpts').innerHTML=h;const b=$('qNext');b.disabled=false;b.textContent=t('cont')};
+ if(Q.fact){const F=TX[Q.fact];return info(F.q,`<div class="glass fact"><div class="num">${Q.n}</div><p>${F.t}</p></div>`)}
+ if(Q.dyn){const{now,g}=goalNums();const F=TX.real;return info(F.q,`<div class="glass fact"><div class="num" style="font-size:64px;direction:ltr">${isRTL()?`${g} <span style="opacity:.6">←</span> ${now}`:`${now} <span style="opacity:.6">→</span> ${g}`}</div><p>${F.t(now,g)}</p></div>`)}
+ if(Q.chart){const F=TX.chart;return info(F.q,`<div class="glass fact" style="padding:18px 14px">${chartSVG()}<p style="font-size:15.5px">${F.t}</p><p style="font-size:12.5px;opacity:.75;margin-top:6px">${F.note}</p></div>`)}
+ if(Q.trust){const F=TX.trust;return info(F.q,`<div class="glass fact"><div class="round" style="width:84px;height:84px;margin:0 auto"><svg class="i" style="width:36px;height:36px"><use href="#i-lock"/></svg></div><p style="font-size:18px;font-weight:600;margin-top:16px">${F.b}</p><p>${F.t}</p></div>`)}
+ const F=TX[Q.k],a=st.quiz[Q.k]!==undefined?st.quiz[Q.k]:(Q.m?[]:null);
+ $('qTitle').textContent=F.q;$('qHint').textContent=F.h||'';
+ $('qOpts').innerHTML=F.o.map((o,i)=>{const on=Q.m?a.includes(i):a===i;return`<button class="opt ${Q.m?'multi':''} ${on?'on':''}" onclick="quizPick(${i})">${o}<span class="ck"><svg class="i"><use href="#i-check"/></svg></span></button>`}).join('');
+ $('qNext').disabled=Q.m?!a.length:a===null;$('qNext').textContent=qi===QZ.length-1?t('finish'):t('cont')}
+function quizPick(i){const Q=QZ[qi];st.quiz=st.quiz||{};
+ if(Q.m){const a=st.quiz[Q.k]||[];st.quiz[Q.k]=a.includes(i)?a.filter(x=>x!==i):[...a,i]}else st.quiz[Q.k]=i;save();
+ document.querySelectorAll('#qOpts .opt').forEach((b,j)=>b.classList.toggle('on',Q.m?st.quiz[Q.k].includes(j):j===i));
+ $('qNext').disabled=Q.m?!st.quiz[Q.k].length:false;
+ if(!Q.m)setTimeout(quizNext,300)}
+function quizStep(d){const s=$('quiz');s.classList.remove('a-push-in','a-pop-in');void s.offsetWidth;s.classList.add(d>0?'a-push-in':'a-pop-in');setTimeout(()=>s.classList.remove('a-push-in','a-pop-in'),500)}
+function quizNext(){const Q=QZ[qi],a=(st.quiz||{})[Q.k];if(Q.k&&(Q.m?!(a&&a.length):a===undefined||a===null))return;if(qi<QZ.length-1){qi++;renderQuiz();$('quiz').scrollTop=0;quizStep(1)}else go('apps')}
+function quizBack(){if(qi>0){qi--;renderQuiz();quizStep(-1)}else go('ob1',{back:1})}
 
 /* ---------- plan + paywall (demo) ---------- */
-function renderPlan(){const z=st.quiz||{},T=st.times;
- {const{now,g}=goalNums();const d=new Date(Date.now()+21*864e5).toLocaleDateString('he-IL',{day:'numeric',month:'long'});
-  document.getElementById('planHero').innerHTML=`<small>היעד שלך עד ${d}</small><div class="num" style="font-size:58px">${g}<small>פתיחות ביום</small></div><span>במקום ${now} היום. בלי לנתק את הטלפון.</span>`}const per={'פחות מ-10':8,'10–30':20,'30–60':45,'יותר מ-60':70}[z.opens];
- const rows=[];
- if(per)rows.push(['phone','היום: בערך '+per+' פתיחות ביום','עם הפסקה קצרה לפני כל פתיחה, הרבה מהן פשוט לא יקרו.']);
- else rows.push(['phone','נגלה יחד כמה פעמים ביום','במסך הבית יופיע כמה פעמים בחרת להיות כאן.']);
- if(z.goal)rows.push(['target','היעד שלך',z.goal==='פשוט פחות ממה שיש היום'?'פחות פתיחות ממה שיש היום, בקצב שלך.':z.goal+' פתיחות ביום. ההפסקה תעזור להגיע לשם בהדרגה.']);
- if(z.want&&z.want.length)rows.push(['star','מה חוזר אליך',z.want.join(' · ')]);
- if(st.people.length)rows.push(['heart','האנשים שלך',st.people.map(p=>p.name).join(', ')+'. יופיעו בשעות המשפחה.']);
- rows.push(['clock','מתי ההפסקה תהיה שונה',`בוקר שקט עד ${T.mEnd} · משפחה מ-${T.fStart} עד ${T.fEnd}${T.shabbat?' · שבת':''} · לילה מ-${T.nStart}`]);
- if(z.when&&z.when.length)rows.push(['sun','הרגעים הכי קשים',z.when.join(' · ')+'. שם ההפסקה תעזור הכי הרבה.']);
- document.getElementById('planBox').innerHTML=rows.map(([i,b,s])=>`<div class="pr"><span class="ic">${ic(i)}</span><span><b>${esc(b)}</b><span>${esc(s)}</span></span></div>`).join('')}
+const goalDate=()=>new Date(Date.now()+21*864e5).toLocaleDateString(LANGS[LANG].loc,{day:'numeric',month:'long'});
+function renderPlan(){const z=st.quiz||{},T=st.times,TX=t('Q');const{now,g}=goalNums();
+ $('planHero').innerHTML=`<small>${t('goal_by',goalDate())}</small><div class="num" style="font-size:58px">${g}<small>${t('per_day')}</small></div><span>${t('instead',now)}</span>`;
+ const rows=[],per=OPENS_N[z.opens];
+ rows.push(per?['phone',t('pr_now',per),t('pr_now_s')]:['phone',t('pr_unk'),t('pr_unk_s')]);
+ if(z.goal!==undefined)rows.push(['target',t('pr_goal'),z.goal===3?t('pr_goal_less'):t('pr_goal_s',TX.goal.o[z.goal])]);
+ if(z.want&&z.want.length)rows.push(['star',t('pr_want'),z.want.map(i=>TX.want.o[i]).join(' · ')]);
+ if(st.people.length)rows.push(['heart',t('pr_ppl'),t('pr_ppl_s',st.people.map(p=>p.name).join(', '))]);
+ rows.push(['clock',t('pr_when'),t('pr_when_s',T)]);
+ if(z.when&&z.when.length)rows.push(['sun',t('pr_hard'),t('pr_hard_s',z.when.map(i=>TX.when.o[i]).join(' · '))]);
+ $('planBox').innerHTML=rows.map(([i,b,s])=>`<div class="pr"><span class="ic">${ic(i)}</span><span><b>${esc(b)}</b><span>${esc(s)}</span></span></div>`).join('')}
 let plan='year';
 function pickPlan(p){plan=p;document.querySelectorAll('.plancard').forEach(c=>c.classList.toggle('on',c.dataset.p===p));
- document.getElementById('pwBuy').textContent=p==='year'?'להתחיל 7 ימים בחינם':'להירשם ב-$5.99 לחודש';
- document.getElementById('pwFine').textContent=p==='year'?'היום 0 ₪. אחרי 7 ימים $29.99 לשנה. תזכורת יומיים לפני. ביטול בכל רגע בהגדרות האייפון.':'$5.99 כל חודש, מהיום. ביטול בכל רגע בהגדרות האייפון.'}
-async function startTrial(){st.trial={plan,start:Date.now()};save();toast('הדגמה: לא בוצע חיוב');go('first')}
+ $('pwBuy').textContent=p==='year'?t('buy_y'):t('buy_m');$('pwFine').textContent=p==='year'?t('fine_y'):t('fine_m')}
+function renderPw3(){const{g}=goalNums();$('pwGoal').innerHTML=`${ic('target')}<span>${t('pw_goal',g,goalDate())}</span>`;pickPlan(plan);armExit()}
+function startTrial(){st.trial={plan,start:Date.now()};save();toast(t('t_nocharge'));go('first',{anim:'up'})}
 let exitT=null;
-function armExit(){const x=document.getElementById('pwX');x.classList.remove('show');clearTimeout(exitT);exitT=setTimeout(()=>x.classList.add('show'),2500)}
-function openOffer(){document.getElementById('oSheet').classList.add('on')}
+function armExit(){const x=$('pwX');x.classList.remove('show');clearTimeout(exitT);exitT=setTimeout(()=>x.classList.add('show'),2500)}
+function openOffer(){$('oSheet').classList.add('on')}
 function takeOffer(){plan='year50';closeSheet();startTrial()}
 async function askReminder(){try{if('Notification' in window&&Notification.permission==='default')await Notification.requestPermission()}catch(e){}st.remind=true;save();go('pw3')}
-/* hold-to-commit */
 let holdT=null;
-function setupHold(){const el=document.getElementById('holdBtn'),arc=document.getElementById('holdArc');if(el.dataset.ok)return;el.dataset.ok=1;
- const start=e=>{e.preventDefault();arc.style.transition='stroke-dashoffset 1.6s linear';arc.style.strokeDashoffset=0;el.classList.add('down');if(navigator.vibrate)navigator.vibrate(15);
-  holdT=setTimeout(()=>{if(navigator.vibrate)navigator.vibrate([30,40,60]);document.getElementById('holdLbl').innerHTML='מעולה';st.committed=Date.now();save();setTimeout(()=>go('pw1'),600)},1600)};
+function setupHold(){const el=$('holdBtn'),arc=$('holdArc');if(el.dataset.ok)return;el.dataset.ok=1;
+ const start=e=>{e.preventDefault();arc.style.transition='stroke-dashoffset 1.6s linear';arc.style.strokeDashoffset=0;el.classList.add('down');hap();
+  holdT=setTimeout(()=>{hap();$('holdLbl').innerHTML=t('great');st.committed=Date.now();save();setTimeout(()=>go('pw1',{anim:'up'}),600)},1600)};
  const stop=()=>{if(!holdT)return;clearTimeout(holdT);holdT=null;el.classList.remove('down');arc.style.transition='stroke-dashoffset .3s';arc.style.strokeDashoffset=820};
- el.addEventListener('pointerdown',start);['pointerup','pointerleave','pointercancel'].forEach(t=>el.addEventListener(t,stop))}
+ el.addEventListener('pointerdown',start);['pointerup','pointerleave','pointercancel'].forEach(x=>el.addEventListener(x,stop))}
 function renderCommit(){const ppl=st.people.map(p=>p.name);const z=st.quiz||{};
- document.getElementById('commitTxt').textContent=`להיות יותר כאן${ppl.length?' בשביל '+ppl.join(' ו'):(z.want&&z.want.length?' בשביל '+z.want[0]:'')}. לעצור לרגע לפני הפיד, ולבחור במה שחשוב באמת.`;
- const arc=document.getElementById('holdArc');arc.style.transition='none';arc.style.strokeDashoffset=820;document.getElementById('holdLbl').innerHTML='להחזיק<br>לחוץ';setupHold()}
+ $('commitTxt').textContent=t('c_txt',ppl.length?ppl.join(t('and')):(z.want&&z.want.length?t('Q').want.o[z.want[0]]:''));
+ const arc=$('holdArc');arc.style.transition='none';arc.style.strokeDashoffset=820;$('holdLbl').innerHTML=t('hold');setupHold()}
 function finishConnect(ok){if(ok)st.connected=true;const first=!st.setup;st.setup=true;save();
  if(pendingApp){const a=pendingApp;pendingApp=null;startPause(a);return}
- if(first&&!ok)toast('אפשר לחבר מתי שרוצים, מההגדרות');go('home')}
+ if(first&&!ok)toast(t('t_later'));go(first?'home':'settings',{anim:first?'up':'pop'})}
+
+/* ---------- demo home screen ---------- */
+function renderSpring(){const ks=guideApps().slice(0,16);
+ photo(anyPic()).then(s=>{$('sbWall').style.backgroundImage=s?`url(${s})`:'var(--photo)'});
+ $('sbGrid').innerHTML=ks.map(k=>`<button class="sbapp" onclick="tapApp(this,'${k}')">${appIcon(k,60)}<span>${APPS[k].en}</span></button>`).join('');
+ const dock=[['#34C759','call'],['#34C759','bubble'],['safari'],['#8E8E93','camera']];
+ $('sbDock').innerHTML=dock.map(d=>d[0]==='safari'?`<button onclick="toast(t('sp_dock'))">${appIcon('safari',60)}</button>`:`<button onclick="toast(t('sp_dock'))"><span class="aic" style="width:60px;height:60px;border-radius:14px;background:linear-gradient(${d[0]}cc,${d[0]})"><svg class="i" style="width:32px;height:32px;color:#fff"><use href="#i-${d[1]}"/></svg></span></button>`).join('')}
+function tapApp(btn,k){const r=btn.querySelector('.aic').getBoundingClientRect();const p=$('pause');p.style.transformOrigin=`${r.left+r.width/2}px ${r.top+r.height/2}px`;setTimeout(()=>startPause(k,true,'zoom'),120)}
 
 /* ---------- pause ---------- */
-let firstRun=false,curApp='instagram',curPerson=null,pendingApp=null,isTest=false,lastSrc='',lastNight=false,timers=[];
-async function startPause(app,test){curApp=app||'instagram';isTest=!!test;curPerson=null;
+let firstRun=false,curApp='instagram',curPerson=null,pendingApp=null,isTest=false,timers=[];
+async function startPause(app,test,anim){curApp=app||'instagram';isTest=!!test;curPerson=null;
  const tries=st.log.filter(e=>e.app===curApp&&dayKey(new Date(e.t))===dayKey(new Date())).length+1;
- const m=mode();let title,idea,pic,greet,lbl='במקום:';
- if(m==='family'){const p=pick(st.people);curPerson=p.id;const r=REL[p.rel];title=PEOPLE_TITLES[r.k](p.name,r.g);idea=pick(PEOPLE_IDEAS[r.k])(p.name,r.g);pic=pick(p.pics)||pick(st.general);greet='שעות משפחה'}
- else if(m==='morning'){title='בוקר טוב.';idea=pick(MORNING);pic=pick(st.general)||pick(st.people.flatMap(p=>p.pics));greet='היום מתחיל ממך, לא מהפיד'}
- else if(m==='night'){const n=pick(NIGHT);title=n[0];idea=n[1];pic=pick(st.general)||pick(st.people.flatMap(p=>p.pics));greet='לילה';lbl='ועכשיו:'}
- else{title=pick(DAY_TITLES);const pool=[...st.cats.flatMap(c=>IDEAS[c]||[]),...st.custom,...st.custom];idea=pick(pool.length?pool:IDEAS.breath);pic=pick([...st.general,...st.people.flatMap(p=>p.pics)]);greet=`רגע לפני ${appName(curApp)}`}
- if(!isTest)greet+=` · הפעם ה-${tries} היום`;
- lastSrc=await photo(pic)||'';lastNight=m==='night';
- const bg=lastSrc?`url(${lastSrc})`:(lastNight?'var(--photoNight)':'var(--photo)');
- document.getElementById('pPhoto').style.backgroundImage=bg;document.getElementById('pBgBlur').style.backgroundImage=bg;
- document.getElementById('pGreet').textContent=greet;document.getElementById('pTitle').textContent=title;
- document.getElementById('pIdea').textContent=idea;document.getElementById('pIdeaLbl').textContent=lbl;
- document.getElementById('anyway').textContent=`לפתוח את ${appName(curApp)} בכל זאת`;
- document.getElementById('pMsg').classList.remove('on');
- go('pause');runBreath()}
-function runBreath(){timers.forEach(clearTimeout);const s=document.getElementById('pause'),c=document.getElementById('cue'),a=document.getElementById('pArc');
- s.classList.remove('in','out','ready');c.textContent='נשימה פנימה…';a.style.transition='none';a.style.strokeDashoffset=820;
- if(navigator.vibrate)navigator.vibrate(20);
+ const m=mode();let title,idea,pic,greet,lbl=t('instead_lbl');
+ if(m==='family'){const p=pick(st.people);curPerson=p.id;const r=REL[p.rel];title=t('PT')[r.k](p.name,r.g);idea=pick(t('PI')[r.k])(p.name,r.g);pic=pick(p.pics)||pick(st.general);greet=t('g_family')}
+ else if(m==='morning'){title=LANG==='he'?'בוקר טוב.':'Good morning.';idea=pick(t('MORNING'));pic=pick(st.general)||pick(st.people.flatMap(p=>p.pics));greet=t('g_morning')}
+ else if(m==='night'){const n=pick(t('NIGHT'));title=n[0];idea=n[1];pic=pick(st.general)||pick(st.people.flatMap(p=>p.pics));greet=t('g_night');lbl=t('now_lbl')}
+ else{title=pick(t('DAY'));const I=t('IDEAS');const pool=[...st.cats.flatMap(c=>I[c]||[]),...st.custom,...st.custom];idea=pick(pool.length?pool:I.breath);pic=pick([...st.general,...st.people.flatMap(p=>p.pics)]);greet=t('g_before',appName(curApp))}
+ if(!isTest)greet+=t('g_nth',tries);
+ const src=await photo(pic)||'';const bg=src?`url(${src})`:(m==='night'?'var(--photoNight)':'var(--photo)');
+ $('pPhoto').style.backgroundImage=bg;$('pBgBlur').style.backgroundImage=bg;
+ $('pGreet').innerHTML=(APPS[curApp]?appIcon(curApp,26):'')+`<span>${esc(greet)}</span>`;$('pTitle').textContent=title;
+ $('pIdea').textContent=idea;$('pIdeaLbl').textContent=lbl;
+ $('anyway').textContent=t('anyway',appName(curApp));
+ $('pMsg').classList.remove('on');
+ go('pause',{anim:anim||'fade'});runBreath()}
+function runBreath(){timers.forEach(clearTimeout);const s=$('pause'),c=$('cue'),a=$('pArc');
+ s.classList.remove('in','out','ready');c.textContent=t('cue_in');a.style.transition='none';a.style.strokeDashoffset=820;
  requestAnimationFrame(()=>requestAnimationFrame(()=>{s.classList.add('in');a.style.transition='stroke-dashoffset 6.4s linear';a.style.strokeDashoffset=0}));
- timers=[setTimeout(()=>{s.classList.replace('in','out');c.textContent='ועכשיו החוצה…'},3000),
- setTimeout(()=>{c.textContent='';document.getElementById('pMsg').classList.add('on')},5400),
- setTimeout(()=>{s.classList.remove('out');s.classList.add('in','ready')},6500)]}
+ timers=[setTimeout(()=>{s.classList.replace('in','out');c.textContent=t('cue_out')},3000),
+ setTimeout(()=>{c.textContent='';$('pMsg').classList.add('on')},5400),
+ setTimeout(()=>{s.classList.remove('out');s.classList.add('in','ready');s.style.transformOrigin=''},6500)]}
 function choose(kind){if(!isTest){st.log.push({t:Date.now(),k:kind,app:curApp,p:curPerson});st.log=st.log.slice(-2000);save()}
- if(kind==='here'){const today=countDay(new Date());document.getElementById('dTitle').innerHTML='יפה.<br>בחרת להיות כאן.';
-  const p=st.people.find(x=>x.id===curPerson);document.getElementById('dSub').textContent=p?`עכשיו רק ${p.name}.`:(isTest?'ככה זה ייראה לפני כל אפליקציה שבחרת.':`זו הפעם ה-${today.here||1} היום.`);
+ if(kind==='here'){const today=countDay(new Date());$('dTitle').innerHTML=t('d_title');
+  const p=st.people.find(x=>x.id===curPerson);$('dSub').textContent=p?t('d_person',p.name):(isTest?t('d_test'):t('d_nth',today.here||1));
   const after=firstRun?'ob5':'home';
-  document.getElementById('dFoot').textContent=isTest?(firstRun?'עכשיו נחבר את זה לאפליקציות…':'חוזרים למסך הבית…'):'אפשר לסגור את המסך הזה.';go('done');if(isTest)setTimeout(()=>{firstRun=false;go(after)},2600);return}
- if(isTest){toast('בניסיון לא נפתחת אפליקציה');const a=firstRun?'ob5':'home';firstRun=false;go(a);return}
- const u=(APPS[curApp]||{}).u;if(!u){toast('אפשר לפתוח את האפליקציה כרגיל עכשיו');return}
+  $('dFoot').textContent=isTest?(firstRun?t('d_first'):t('d_home')):t('d_close');go('done',{anim:'fade'});if(isTest)doneT=setTimeout(()=>{firstRun=false;go(after,{anim:'up'})},2600);return}
+ if(isTest){toast(t('t_noopen'));const a=firstRun?'ob5':'home';firstRun=false;go(a,{anim:'up'});return}
+ const u=(APPS[curApp]||{}).u;if(!u){toast(t('t_opennow'));return}
  location.href='shortcuts://run-shortcut?name='+encodeURIComponent('Look Up Pass')+'&input=text&text='+encodeURIComponent(u)}
 
-/* ---------- app & category picker ---------- */
-let pickTab='cats';
-function selApps(){st.block=st.block||{cats:['social','ent'],apps:['instagram','tiktok','youtube']};return st.block}
-const appIcon=k=>{const a=APPS[k];return`<span class="aic" style="background:${a.col}">${esc(a.en[0])}</span>`};
-function renderPicker(q=''){const B=selApps();
- document.querySelectorAll('#apps .seg button').forEach(b=>b.classList.toggle('on',b.dataset.t===pickTab));
- document.getElementById('pickSearch').style.display=pickTab==='apps'?'':'none';
- const L=document.getElementById('pickList');
- if(pickTab==='cats')L.innerHTML=`<div class="opts" style="margin-top:0">`+ACATS.map(c=>`<button class="opt multi ${B.cats.includes(c.k)?'on':''}" onclick="togCat('${c.k}')"><span class="cdot" style="background:${c.c}"></span><span style="flex:1"><b style="display:block;font-weight:600">${c.l}</b><small style="display:block;font-size:13.5px;font-weight:400;opacity:.8">${c.e}</small></span><span class="ck"><svg class="i"><use href="#i-check"/></svg></span></button>`).join('')+`</div>`;
- else{const s=q.trim().toLowerCase();const ks=Object.keys(APPS).filter(k=>!s||APPS[k].n.toLowerCase().includes(s)||APPS[k].en.toLowerCase().includes(s));
-  L.innerHTML=`<div class="agrid">`+ks.map(k=>{const inCat=B.cats.includes(APPS[k].c),on=B.apps.includes(k)||inCat;return`<button class="atile ${on?'on':''} ${inCat?'viacat':''}" onclick="togApp('${k}')">${appIcon(k)}<span>${APPS[k].n}</span>${on?`<em>${ic('check')}</em>`:''}</button>`}).join('')+`</div>`+(ks.length?'':'<p class="qhint">לא נמצא. באפליקציה האמיתית יופיעו כל האפליקציות שבטלפון.</p>')}
- const nApps=Object.keys(APPS).filter(k=>B.apps.includes(k)||B.cats.includes(APPS[k].c)).length;
- document.getElementById('pickSum').textContent=B.cats.length||B.apps.length?`${B.cats.length?B.cats.length+(B.cats.length===1?' קטגוריה':' קטגוריות'):''}${B.cats.length&&B.apps.length?' + ':''}${B.apps.length?B.apps.length+(B.apps.length===1?' אפליקציה':' אפליקציות'):''} · ההפסקה תופיע לפני ${nApps}+ אפליקציות`:'עוד לא נבחר כלום';
- const btn=document.getElementById('appsBtn');btn.disabled=!(B.cats.length||B.apps.length);btn.textContent=editing?'שמירה':'המשך'}
-function togCat(k){const B=selApps();B.cats=B.cats.includes(k)?B.cats.filter(x=>x!==k):[...B.cats,k];save();renderPicker()}
-function togApp(k){const B=selApps();if(B.cats.includes(APPS[k].c)){toast(`${APPS[k].n} כבר בפנים דרך הקטגוריה "${ACATS.find(c=>c.k===APPS[k].c).l}"`);return}
- B.apps=B.apps.includes(k)?B.apps.filter(x=>x!==k):[...B.apps,k];save();renderPicker(document.getElementById('pickSearch').value)}
-function preset(p){const B=selApps();const P={social:{cats:['social'],apps:[]},video:{cats:['ent'],apps:['instagram','tiktok']},all:{cats:['social','ent','games','shop'],apps:[]}}[p];B.cats=[...P.cats];B.apps=[...P.apps];save();renderPicker()}
+/* ---------- apps: summary card + Apple-style picker ---------- */
+function selApps(){st.block=st.block||{cats:['social','ent'],apps:[]};return st.block}
+const coveredApps=B=>Object.keys(APPS).filter(k=>B.apps.includes(k)||B.cats.includes(APPS[k].c));
+function selCardHTML(B,title){const n=B.cats.length+B.apps.length;
+ const icons=[...B.cats.map(k=>catIcon(k,40)),...B.apps.map(k=>appIcon(k,40))];
+ return n?`<span class="tx"><b>${title}</b><small>${t('a_sum',B.cats.length,B.apps.length,coveredApps(B).length)}</small><span class="stack">${icons.slice(0,7).join('')}${icons.length>7?`<em>+${icons.length-7}</em>`:''}</span></span><span style="color:var(--w90)">${ic('chev')}</span>`
+  :`<span style="flex-shrink:0;width:48px;height:48px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center">${ic('plus')}</span><span class="tx"><b>${t('a_choose')}</b><small>${t('a_choose_s')}</small></span>`}
+function renderApps(){const B=selApps();$('selCard').innerHTML=selCardHTML(B,t('a_choose'));
+ const btn=$('appsBtn');btn.disabled=!(B.cats.length||B.apps.length);btn.textContent=editing?t('save'):t('cont')}
+function preset(p){const B=selApps();const P={social:{cats:['social'],apps:[]},video:{cats:['ent'],apps:['instagram','tiktok']},all:{cats:['social','ent','games','shop'],apps:[]}}[p];B.cats=[...P.cats];B.apps=[...P.apps];save();renderApps();toast(t('pk_sel',B.cats.length+B.apps.length))}
 function appsDone(){if(editing)return doneEditing();go('ob2')}
+let pk=null,pkOpen={};
+function openPicker(){const B=selApps();pk={cats:[...B.cats],apps:[...B.apps]};pkOpen={};$('pkQ').value='';renderPk();$('pkSheet').classList.add('on');$('pkSheet').firstElementChild.scrollTop=0}
+function pkRow(k,isCat,sub){if(isCat){const on=pk.cats.includes(k),n=Object.keys(APPS).filter(a=>APPS[a].c===k).length;
+  return`<div class="pkr ${on?'on':''}" onclick="pkTogCat('${k}')"><span class="pkc">${ic('check')}</span>${catIcon(k,30)}<span class="tx">${catL(k)}<small>${t('ACAT')[k][1]}</small></span><button class="pkx ${pkOpen[k]?'open':''}" onclick="event.stopPropagation();pkOpen['${k}']=!pkOpen['${k}'];renderPk()" aria-label="expand">${ic('down')}</button></div>`}
+ const via=pk.cats.includes(APPS[k].c),on=pk.apps.includes(k);
+ return`<div class="pkr ${sub?'sub':''} ${on?'on':''} ${via?'via':''}" onclick="pkTogApp('${k}')"><span class="pkc">${ic('check')}</span>${appIcon(k,30)}<span class="tx">${appName(k)}</span></div>`}
+function renderPk(){const q=$('pkQ').value.trim().toLowerCase();$('pkCount').textContent=t('pk_sel',pk.cats.length+pk.apps.length);
+ if(q){const ks=Object.keys(APPS).filter(k=>APPS[k].n.toLowerCase().includes(q)||APPS[k].en.toLowerCase().includes(q));
+  $('pkList').innerHTML=ks.length?`<div class="pksec">${t('pk_apps')}</div><div class="pkg">${ks.map(k=>pkRow(k)).join('')}</div>`:`<p class="pkf" style="margin:20px 0">${t('pk_none')}</p>`;return}
+ $('pkList').innerHTML=`<div class="pksec">${t('pk_cats')}</div><div class="pkg">`+ACATS.map(c=>pkRow(c.k,1)+(pkOpen[c.k]?Object.keys(APPS).filter(a=>APPS[a].c===c.k).map(a=>pkRow(a,0,1)).join(''):'')).join('')+`</div>`}
+function pkTogCat(k){pk.cats=pk.cats.includes(k)?pk.cats.filter(x=>x!==k):[...pk.cats,k];if(pk.cats.includes(k))pk.apps=pk.apps.filter(a=>APPS[a].c!==k);renderPk()}
+function pkTogApp(k){if(pk.cats.includes(APPS[k].c)){toast(t('pk_incat',appName(k),catL(APPS[k].c)));return}pk.apps=pk.apps.includes(k)?pk.apps.filter(x=>x!==k):[...pk.apps,k];renderPk()}
+function pkCancel(){closeSheet()}
+function pkDone(){const B=selApps();B.cats=pk.cats;B.apps=pk.apps;save();closeSheet();const cur=document.querySelector('.screen.on').id;if(cur==='apps')renderApps();if(cur==='home')renderHome();if(cur==='settings')renderSettings()}
 
-/* ---------- home ---------- */
+/* ---------- today ---------- */
 const dayKey=d=>d.toDateString();
 function countDay(d){const k=dayKey(d),r={here:0,open:0};st.log.forEach(e=>{if(dayKey(new Date(e.t))===k)r[e.k]++});return r}
-function drawGauge(v){const cx=150,cy=145,R=120;let t='';
- for(let i=0;i<=40;i++){const a=Math.PI*(i/40),long=i%5===0,r1=R-(long?14:8),x1=cx+r1*Math.cos(a),y1=cy-r1*Math.sin(a),x2=cx+R*Math.cos(a),y2=cy-R*Math.sin(a);
-  const on=i/40<=v;t+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${on?'#fff':'rgba(255,255,255,.35)'}" stroke-width="${long?2:1.4}" stroke-linecap="round"/>`}
- const a=Math.PI*Math.min(1,v),R2=R-26;t+=`<path d="M${cx-R2} ${cy} A${R2} ${R2} 0 0 1 ${cx+R2} ${cy}" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="2" stroke-dasharray="3 6"/>`;
- t+=`<circle cx="${(cx+R2*Math.cos(a)).toFixed(1)}" cy="${(cy-R2*Math.sin(a)).toFixed(1)}" r="6" fill="#fff"/>`;
- document.getElementById('gauge').innerHTML=t}
-async function renderHome(){const now=new Date();
- document.getElementById('hDate').textContent=now.toLocaleDateString('he-IL',{weekday:'long',day:'numeric',month:'numeric'});
- const today=countDay(now).here;document.getElementById('tHere').innerHTML=`${today}<small>${today===1?'פעם':'פעמים'}</small>`;
- drawGauge(today/GOAL);
- {let s=0;const d=new Date(now);if(!countDay(d).here)d.setDate(d.getDate()-1);while(countDay(d).here){s++;d.setDate(d.getDate()-1)}
-  document.getElementById('streak').innerHTML=`${ic('flame')}<b>${s}</b>`;document.getElementById('streak').title=`רצף של ${s} ימים`}
- document.getElementById('connectStatus').innerHTML=st.connected?'':`<div class="status"><span class="tx"><b>עוד לא מחובר לאפליקציות</b><small>בלי זה ההפסקה לא תופיע. 3 דקות.</small></span><button class="go" onclick="go('ob5')">לחבר</button></div>`;
+function streakDays(){let s=0;const d=new Date();if(!countDay(d).here)d.setDate(d.getDate()-1);while(countDay(d).here){s++;d.setDate(d.getDate()-1)}return s}
+function drawGauge(v){const cx=150,cy=145,R=120,L=!isRTL();let x='';const ang=f=>Math.PI*(L?1-f:f);
+ for(let i=0;i<=40;i++){const a=ang(i/40),long=i%5===0,r1=R-(long?14:8);
+  x+=`<line x1="${(cx+r1*Math.cos(a)).toFixed(1)}" y1="${(cy-r1*Math.sin(a)).toFixed(1)}" x2="${(cx+R*Math.cos(a)).toFixed(1)}" y2="${(cy-R*Math.sin(a)).toFixed(1)}" stroke="${i/40<=v?'#fff':'rgba(255,255,255,.35)'}" stroke-width="${long?2:1.4}" stroke-linecap="round"/>`}
+ const a=ang(Math.min(1,v)),R2=R-26;x+=`<path d="M${cx-R2} ${cy} A${R2} ${R2} 0 0 1 ${cx+R2} ${cy}" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="2" stroke-dasharray="3 6"/>`;
+ x+=`<circle cx="${(cx+R2*Math.cos(a)).toFixed(1)}" cy="${(cy-R2*Math.sin(a)).toFixed(1)}" r="6" fill="#fff"/>`;$('gauge').innerHTML=x}
+function renderHome(){const now=new Date();
+ $('hDate').textContent=now.toLocaleDateString(LANGS[LANG].loc,{weekday:'long',day:'numeric',month:'numeric'});
+ const today=countDay(now).here;$('tHere').innerHTML=`${today}<small>${t('times',today)}</small>`;drawGauge(today/GOAL);
+ $('streak').innerHTML=`${ic('flame')}<b>${streakDays()}</b>`;
+ $('connectStatus').innerHTML=st.connected?'':`<div class="status"><span class="tx"><b>${t('nc_t')}</b><small>${t('nc_s')}</small></span><button class="go" onclick="go('ob5')">${t('nc_go')}</button></div>`;
+ const wk=st.log.filter(e=>e.t>now-7*864e5);$('wHere').textContent=wk.filter(e=>e.k==='here').length;$('wOpen').textContent=wk.filter(e=>e.k==='open').length;
+ $('homeApps').innerHTML=selCardHTML(selApps(),t('h_apps'))}
+
+/* ---------- progress ---------- */
+function renderStats(){const now=new Date(),s=streakDays();$('sStreak').textContent=s;
+ $('sMiles').innerHTML=[3,7,14,30].map(n=>`<div class="${s>=n?'ok':''}"><i>${s>=n?ic('check'):n}</i>${t('mile',n)}</div>`).join('');
+ const wk=st.log.filter(e=>e.t>now-7*864e5),here=wk.filter(e=>e.k==='here').length,tot=wk.length;
+ $('sMin').innerHTML=`${here*5}<small>${t('min')}</small>`;$('sRate').textContent=tot?Math.round(here/tot*100)+'%':'–';
  const days=[...Array(7)].map((_,i)=>{const d=new Date(now);d.setDate(now.getDate()-6+i);return{d,c:countDay(d)}});const max=Math.max(1,...days.map(x=>x.c.here));
- document.getElementById('week').innerHTML=days.map((x,i)=>`<div class="${i===6?'today':''}"><em>${x.c.here||''}</em><i style="--h:${x.c.here/max*100}%"></i><span>${i===6?'היום':x.d.toLocaleDateString('he-IL',{weekday:'short'}).replace('יום ','')}</span></div>`).join('');
- const wk=st.log.filter(e=>e.t>now-7*864e5);document.getElementById('wHere').textContent=wk.filter(e=>e.k==='here').length;document.getElementById('wOpen').textContent=wk.filter(e=>e.k==='open').length;
- document.getElementById('pplWrap').style.display=st.people.length?'':'none';
- const counts=st.people.map(p=>wk.filter(e=>e.k==='here'&&e.p===p.id).length);const pmax=Math.max(1,...counts);let h='';
- for(let i=0;i<st.people.length;i++){const p=st.people[i],n=counts[i];
-  h+=`<div class="rowg"><span class="tx"><b style="display:flex;justify-content:space-between"><span>${esc(p.name)}</span><span>${n}</span></b><div class="bar"><b style="--w:${n/pmax*100}%"></b></div></span></div>`}
- document.getElementById('pplStats').innerHTML=h}
+ $('week').innerHTML=days.map((x,i)=>`<div class="${i===6?'today':''}"><em>${x.c.here||''}</em><i style="--h:${x.c.here/max*100}%"></i><span>${i===6?t('tab_today'):x.d.toLocaleDateString(LANGS[LANG].loc,{weekday:'short'}).replace('יום ','')}</span></div>`).join('');
+ $('pplWrap').style.display=st.people.length?'':'none';
+ const counts=st.people.map(p=>wk.filter(e=>e.k==='here'&&e.p===p.id).length);const pmax=Math.max(1,...counts);
+ $('pplStats').innerHTML=st.people.map((p,i)=>`<div class="rowg"><span class="tx"><b style="display:flex;justify-content:space-between"><span>${esc(p.name)}</span><span>${counts[i]}</span></b><div class="bar"><b style="--w:${counts[i]/pmax*100}%"></b></div></span></div>`).join('')}
 
 /* ---------- connect guide ---------- */
+function guideApps(){const ks=coveredApps(selApps());return ks.length?ks:['instagram','tiktok']}
 function renderGuide(){const base=location.origin+location.pathname;const u=a=>`${base}#pause&app=${a}`;
- document.getElementById('ob5later').textContent=st.setup?'חזרה':'אחר כך';
- document.getElementById('guideCard').innerHTML=`
- <div class="step"><span class="k">1</span><div><p>באפליקציית <b>קיצורים</b> ← <b>+</b>. לקרוא לקיצור בדיוק <b>Look Up Pass</b> ולהוסיף 3 פעולות:</p><ul><li>תאריך נוכחי</li><li>שמירת קובץ: תיקייה Shortcuts, שם <b>lookup.txt</b>, החלפה מופעלת</li><li>פתיחת כתובות URL ← קלט הקיצור</li></ul></div></div>
- <div class="step"><span class="k">2</span><div><p>לשונית <b>אוטומציה</b> ← <b>+</b> ← אפליקציה ← לבחור <b>את כל האפליקציות שלמטה</b> (אפשר כמה בבת אחת) ← "נפתחת" ← <b>הפעלה מיידית</b>.</p></div></div>
- <div class="step"><span class="k">3</span><div><p>פעולות האוטומציה:</p><ul><li>קבלת קובץ lookup.txt מתיקיית Shortcuts (לכבות "הצג שגיאה")</li><li>זמן בין תאריכים: מהקובץ ועד עכשיו, ב<b>שניות</b></li><li>אם התוצאה <b>קטנה מ-60</b> ← עצירת קיצור זה</li><li>פתיחת כתובת URL. לכל אפליקציה הכתובת שלה:</li></ul>${guideApps().map(k=>`<div class="gapp">${appIcon(k)}<b>${APPS[k].n}</b><button class="copy" style="margin:0;margin-inline-start:auto" onclick="cp('${u(k)}')">${ic('link')}העתקה</button></div>`).join('')}</div></div>
- <div class="step"><span class="k">4</span><div><p>אוטומציה אחת לכל אפליקציה, עם הכתובת שלה. בגרסת הניסיון זה לא עובד על קטגוריה שלמה, רק על אפליקציות.</p></div></div>`}
-function guideApps(){const B=selApps();const ks=Object.keys(APPS).filter(k=>B.apps.includes(k)||B.cats.includes(APPS[k].c));return ks.length?ks:['instagram','tiktok']}
-function cp(t){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הכתובת הועתקה')).catch(()=>toast('לא הצלחתי להעתיק. אפשר לסמן ולהעתיק ידנית'))}
+ $('ob5later').textContent=st.setup?t('back'):t('later');
+ $('guideCard').innerHTML=t('guide',guideApps().map(k=>`<div class="gapp">${appIcon(k,36)}<b>${appName(k)}</b><button class="copy" style="margin-inline-start:auto" onclick="cp('${u(k)}')">${ic('link')}${t('copy')}</button></div>`).join(''))}
+function cp(x){(navigator.clipboard?navigator.clipboard.writeText(x):Promise.reject()).then(()=>toast(t('t_copied'))).catch(()=>toast(t('t_copyfail')))}
 
 /* ---------- settings ---------- */
-function openSettings(){const T=st.times;
- document.getElementById('sPeople').textContent=st.people.length?st.people.map(p=>p.name).join(', '):'עוד לא נוספו';
- document.getElementById('sIdeas').textContent=`${st.general.length} תמונות · ${st.cats.length+st.custom.length} סוגי רעיונות`;
- document.getElementById('sTimes').textContent=`משפחה מ-${T.fStart} עד ${T.fEnd} · לילה מ-${T.nStart}`;
- {const B=selApps();document.getElementById('sApps').textContent=[...B.cats.map(k=>ACATS.find(c=>c.k===k).l),...B.apps.map(k=>APPS[k].n)].join(', ')||'עוד לא נבחרו'}
- document.getElementById('sConn').textContent=st.connected?'מחובר':'עוד לא מחובר';
- document.getElementById('sSheet').classList.add('on')}
-async function resetAll(){if(!confirm('למחוק את כל האנשים, התמונות וההיסטוריה? אי אפשר לבטל.'))return;await DB.clear();localStorage.removeItem('lu');location.hash='';location.reload()}
+function srow(icon,col,title,sub,act){return`<button class="srow" onclick="${act}"><span class="ic" style="background:${col}">${ic(icon)}</span><span class="tx"><b>${title}</b><small>${esc(sub)}</small></span><span class="end">${ic('chev')}</span></button>`}
+function renderSettings(){const T=st.times,B=selApps();
+ $('setList1').innerHTML=srow('phone','#D9652A',t('set_apps'),[...B.cats.map(catL),...B.apps.map(appName)].join(', ')||t('none_yet'),'openPicker()')
+  +srow('users','#E0842F',t('set_ppl'),st.people.length?st.people.map(p=>p.name).join(', '):t('none_yet'),"edit('ob2')")
+  +srow('bulb','#C9A227',t('set_ideas'),t('ideas_s',st.general.length,st.cats.length+st.custom.length),"edit('ob3')")
+  +srow('clock','#8A6E8C',t('set_times'),t('times_s',T),"edit('ob4')")
+  +srow('link','#3E8E6A',t('set_conn'),st.connected?t('conn_y'):t('conn_n'),"go('ob5')");
+ $('setList2').innerHTML=srow('globe','#2F80ED',t('set_lang'),LANGS[LANG].name,'openLang()')
+  +srow('card','#5E4E42',t('set_plan'),t('plan_s',st.trial&&st.trial.plan),"toast(t('t_restore'))")}
+async function resetAll(){if(!confirm(t('reset_q')))return;await DB.clear();const l=st.lang;localStorage.removeItem('lu');if(l)S.set({lang:l});location.hash='';location.reload()}
 
 /* ---------- boot ---------- */
-function boot(){const h=location.hash.slice(1),q=new URLSearchParams(h.replace(/^pause&?/,''));
+function boot(){applyLang();const h=location.hash.slice(1),q=new URLSearchParams(h.replace(/^pause&?/,''));
  if(h.startsWith('pause')){const app=q.get('app')||'instagram';history.replaceState(null,'',location.pathname);
-  if(!st.setup){pendingApp=app;go('ob1');return}st.connected=true;save();startPause(app);return}
- go(st.setup?'home':'ob1')}
+  if(!st.setup){pendingApp=app;go('ob1',{anim:'none'});return}st.connected=true;save();startPause(app,false,'none');return}
+ go(st.setup?'home':'ob1',{anim:'none'})}
 boot();
 if('serviceWorker' in navigator&&!location.pathname.includes('/lookup')){navigator.serviceWorker.register('sw.js').catch(()=>{})}
 </script>
