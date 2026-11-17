@@ -12,8 +12,8 @@
   "lang": "en",
   "dir": "ltr",
   "icons": [
-    {"src": "lookup-wordmark-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
-    {"src": "lookup-wordmark-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
-    {"src": "lookup-wordmark-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+    {"src": "lookup-rise-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "lookup-rise-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "lookup-rise-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
   ]
 }
