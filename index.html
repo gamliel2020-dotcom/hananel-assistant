@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Look Up v27: back to the regular v25 flow (v26 test flow removed) + clean idea tiles on "What makes you feel good?" · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
+/* Look Up v28: idea options as Cal AI-style rows (v27 tiles looked "AI") · v27: back to the regular v25 flow (v26 test flow removed) + clean idea tiles on "What makes you feel good?" · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
    Apple Screen Time style picker with real app icons, demo home screen, tab bar (Today / Progress / Settings), one onboarding progress bar */
 /* earlier v9: Cal AI onboarding patterns · v8: any app + categories · v7: Steven Cravotta blueprint · design: Passion Finder + Stress glass */
 :root{
@@ -242,17 +242,15 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .miles .ok i{background:#fff;color:#D9652A;border:0}
 
 /* photos + fields */
-/* v27: idea tiles (clean 2x2 grid, replaces overlapping bubbles) */
-.itiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.itile{display:flex;align-items:center;gap:10px;height:64px;padding-inline:14px 12px;border-radius:20px;background:rgba(255,255,255,.16);border:1px solid var(--gline);color:#fff;font-size:17px;text-align:start;transition:transform .15s,background .2s}
-.itile:active{transform:scale(.96)}
-.itile .em{font-size:24px;line-height:1}
+/* v28: idea options as Cal AI-style rows (full width, line icon in a circle, selected row turns solid) */
+.itiles{display:flex;flex-direction:column;gap:10px}
+.itile{display:flex;align-items:center;gap:14px;width:100%;height:60px;padding-inline:12px 16px;border-radius:18px;background:rgba(255,255,255,.14);color:#fff;font-size:17px;text-align:start;transition:transform .15s,background .2s,color .2s}
+.itile:active{transform:scale(.98)}
+.itile .ico{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.18);display:grid;place-items:center;flex:none;transition:background .2s}
+.itile .ico svg{width:19px;height:19px;stroke-width:2}
 .itile b{flex:1;font-weight:600}
-.itile .ck{width:24px;height:24px;border-radius:50%;border:1.5px solid rgba(255,255,255,.6);display:grid;place-items:center}
-.itile .ck svg{width:14px;height:14px;stroke-width:3;opacity:0}
-.itile.on{background:#FFF8F1;color:var(--ink);border-color:#fff;box-shadow:0 10px 24px -14px rgba(80,30,0,.5)}
-.itile.on .ck{background:var(--ink,#2A1A10);border-color:transparent;color:#fff}
-.itile.on .ck svg{opacity:1}
+.itile.on{background:#fff;color:var(--ink)}
+.itile.on .ico{background:var(--ink,#2A1A10);color:#fff}
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .pgrid .pt{aspect-ratio:1;border-radius:20px;background:rgba(255,255,255,.2) center/cover;position:relative;border:1px solid var(--gline)}
 .pgrid .pt button{position:absolute;top:6px;inset-inline-end:6px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center}
@@ -511,6 +509,9 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 <svg width="0" height="0" style="position:absolute">
   <symbol id="i-back" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9"/></symbol>
+  <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></symbol>
+  <symbol id="i-wind" viewBox="0 0 24 24"><path d="M12.8 19.6A2 2 0 1 0 14 16H2"/><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"/><path d="M9.8 4.4A2 2 0 1 1 11 8H2"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
   <symbol id="i-gear" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
@@ -1495,8 +1496,8 @@ async function addGeneral(inp){for(const f of inp.files){const id='ph_'+uid();aw
 async function renderGeneral(){let h='';
  for(const id of st.general)h+=`<div class="pt" style="background-image:url(${await photo(id)})"><button onclick="rmGen('${id}')" aria-label="remove">${ic('x')}</button></div>`;
  h+=`<label class="pt"><span>${ic('image')}${t('o3_addph')}</span><input type="file" accept="image/*" multiple hidden onchange="addGeneral(this)"></label>`;$('genGrid').innerHTML=h;
- const CEMO={body:'🏃',breath:'🌬️',life:'✅',rest:'😌'};
- $('catChips').className='itiles';$('catChips').innerHTML=Object.keys(CATS).map(k=>`<button class="itile ${st.cats.includes(k)?'on':''}" onclick="hap();toggleCat('${k}')"><span class="em">${CEMO[k]}</span><b>${t('ICAT')[k]}</b><span class="ck">${ic('check')}</span></button>`).join('');
+ const CICO={body:'pulse',breath:'wind',life:'list',rest:'moon'};
+ $('catChips').className='itiles';$('catChips').innerHTML=Object.keys(CATS).map(k=>`<button class="itile ${st.cats.includes(k)?'on':''}" onclick="hap();toggleCat('${k}')"><span class="ico">${ic(CICO[k])}</span><b>${t('ICAT')[k]}</b></button>`).join('');
  renderCustom();const b=$('ob3btn');if(editing){b.textContent=t('save');b.onclick=doneEditing}else{b.textContent=t('cont');b.onclick=()=>go('ob4')}}
 function rmGen(id){st.general=st.general.filter(x=>x!==id);DB.del(id);save();renderGeneral()}
 function toggleCat(k){st.cats=st.cats.includes(k)?st.cats.filter(x=>x!==k):[...st.cats,k];save();renderGeneral()}
