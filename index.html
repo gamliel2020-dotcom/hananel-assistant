@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Look Up v26: photo pause before the paywall (saved v25 = /saved-v25/) · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
+/* Look Up v27: back to the regular v25 flow (v26 test flow removed) + clean idea tiles on "What makes you feel good?" · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
    Apple Screen Time style picker with real app icons, demo home screen, tab bar (Today / Progress / Settings), one onboarding progress bar */
 /* earlier v9: Cal AI onboarding patterns · v8: any app + categories · v7: Steven Cravotta blueprint · design: Passion Finder + Stress glass */
 :root{
@@ -242,6 +242,17 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .miles .ok i{background:#fff;color:#D9652A;border:0}
 
 /* photos + fields */
+/* v27: idea tiles (clean 2x2 grid, replaces overlapping bubbles) */
+.itiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.itile{display:flex;align-items:center;gap:10px;height:64px;padding-inline:14px 12px;border-radius:20px;background:rgba(255,255,255,.16);border:1px solid var(--gline);color:#fff;font-size:17px;text-align:start;transition:transform .15s,background .2s}
+.itile:active{transform:scale(.96)}
+.itile .em{font-size:24px;line-height:1}
+.itile b{flex:1;font-weight:600}
+.itile .ck{width:24px;height:24px;border-radius:50%;border:1.5px solid rgba(255,255,255,.6);display:grid;place-items:center}
+.itile .ck svg{width:14px;height:14px;stroke-width:3;opacity:0}
+.itile.on{background:#FFF8F1;color:var(--ink);border-color:#fff;box-shadow:0 10px 24px -14px rgba(80,30,0,.5)}
+.itile.on .ck{background:var(--ink,#2A1A10);border-color:transparent;color:#fff}
+.itile.on .ck svg{opacity:1}
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .pgrid .pt{aspect-ratio:1;border-radius:20px;background:rgba(255,255,255,.2) center/cover;position:relative;border:1px solid var(--gline)}
 .pgrid .pt button{position:absolute;top:6px;inset-inline-end:6px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center}
@@ -666,7 +677,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 
 <!-- ============ PAYWALL 1/3 ============ -->
 <section class="screen" id="pw1">
-  <div class="top"><button class="gbtn navback" onclick="back('first')"><svg class="i fl"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
+  <div class="top"><button class="gbtn navback" onclick="back('commit')"><svg class="i fl"><use href="#i-back"/></svg></button><div class="brand sm">Look Up</div><span></span></div>
   <div style="text-align:center;margin-top:10px"><span class="demo" data-t="demo"></span></div>
   <h1 class="t" style="font-size:34px;margin-top:20px" data-t="pw1_t"></h1>
   <p class="d" data-t="pw1_d"></p>
@@ -1341,9 +1352,7 @@ const GS={en:['<b>Important for testing:</b> the automation opens Look Up in <b>
  es:['<b>Importante para probar:</b> la automatización abre Look Up en <b>Safari</b>. Un icono de inicio añadido como app web guarda datos aparte, así que su contador se queda en 0. Solución: usa Look Up en Safari (o borra el icono y añádelo de nuevo desde Safari con <b>Abrir como app web</b> desactivado) y añade allí a tu gente una vez.','Modo de prueba: las pausas de Atajos se cuentan en Look Up en Safari, no en este icono.'],
  fr:['<b>Important pour tester :</b> l’automatisation ouvre Look Up dans <b>Safari</b>. Une icône d’accueil ajoutée comme app web garde ses propres données, donc son compteur reste à 0. Solution : utilise Look Up dans Safari (ou supprime l’icône et ajoute-la de nouveau depuis Safari avec <b>Ouvrir comme app web</b> désactivé), et ajoute tes proches là-bas une fois.','Mode test : les pauses des Raccourcis sont comptées dans Look Up sur Safari, pas dans cette icône.'],
  ar:['<b>مهم للاختبار:</b> تفتح الأتمتة Look Up في <b>سفاري</b>. أيقونة الشاشة الرئيسية المضافة كتطبيق ويب تحتفظ ببيانات منفصلة، لذلك يبقى عدّادها 0. الحل: استخدم Look Up في سفاري (أو احذف الأيقونة وأضفها مجددًا من سفاري مع إيقاف <b>الفتح كتطبيق ويب</b>)، وأضف أحبّاءك هناك مرة واحدة.','وضع الاختبار: تُحتسب الاستراحات من الاختصارات في Look Up على سفاري، لا في هذه الأيقونة.']};
-/* v26: the photo pause now comes BEFORE the paywall (feel it first, then decide) */
-const DF={en:'This is Look Up. Now let’s make it yours…',he:'זה Look Up. עכשיו נמשיך…',es:'Esto es Look Up. Ahora hagámoslo tuyo…',fr:'C’est Look Up. Maintenant, on le fait tien…',ar:'هذا هو Look Up. لنجعله لك الآن…'};
-for(const l in PM){V[l].d_first2=DF[l];Object.assign(V[l],PM[l]);V[l].perm_test=PT2[l];V[l].g_safari=GS[l][0];V[l].g_safari_short=GS[l][1]}
+for(const l in PM){Object.assign(V[l],PM[l]);V[l].perm_test=PT2[l];V[l].g_safari=GS[l][0];V[l].g_safari_short=GS[l][1]}
 for(const l in W){Object.assign(V[l],W[l]);V[l].w_restore=RS[l];V[l].w_lead=WL[l][0];V[l].w_rot=WL[l][1];V[l].w_mock=WL[l][2]}
 for(const l in V){const{Q,...rest}=V[l];Object.assign(STR[l],rest);Object.assign(STR[l].Q,Q)}})();
 let LANG=LANGS[st.lang]?st.lang:'en'; /* English is the default */
@@ -1486,7 +1495,8 @@ async function addGeneral(inp){for(const f of inp.files){const id='ph_'+uid();aw
 async function renderGeneral(){let h='';
  for(const id of st.general)h+=`<div class="pt" style="background-image:url(${await photo(id)})"><button onclick="rmGen('${id}')" aria-label="remove">${ic('x')}</button></div>`;
  h+=`<label class="pt"><span>${ic('image')}${t('o3_addph')}</span><input type="file" accept="image/*" multiple hidden onchange="addGeneral(this)"></label>`;$('genGrid').innerHTML=h;
- $('catChips').innerHTML=Object.entries(CATS).map(([k,s])=>`<button class="bub ${st.cats.includes(k)?'on':''}" style="--s:${s}px" onclick="toggleCat('${k}')">${st.cats.includes(k)?ic('check'):''}${t('ICAT')[k]}</button>`).join('');
+ const CEMO={body:'🏃',breath:'🌬️',life:'✅',rest:'😌'};
+ $('catChips').className='itiles';$('catChips').innerHTML=Object.keys(CATS).map(k=>`<button class="itile ${st.cats.includes(k)?'on':''}" onclick="hap();toggleCat('${k}')"><span class="em">${CEMO[k]}</span><b>${t('ICAT')[k]}</b><span class="ck">${ic('check')}</span></button>`).join('');
  renderCustom();const b=$('ob3btn');if(editing){b.textContent=t('save');b.onclick=doneEditing}else{b.textContent=t('cont');b.onclick=()=>go('ob4')}}
 function rmGen(id){st.general=st.general.filter(x=>x!==id);DB.del(id);save();renderGeneral()}
 function toggleCat(k){st.cats=st.cats.includes(k)?st.cats.filter(x=>x!==k):[...st.cats,k];save();renderGeneral()}
@@ -1561,7 +1571,7 @@ let plan='year';
 function pickPlan(p){plan=p;document.querySelectorAll('.plancard').forEach(c=>c.classList.toggle('on',c.dataset.p===p));
  $('pwBuy').textContent=p==='year'?t('buy_y'):t('buy_m');$('pwFine').textContent=p==='year'?t('fine_y'):t('fine_m')}
 function renderPw3(){const{g}=goalNums();$('pwGoal').innerHTML=`${ic('target')}<span>${t('pw_goal',g,goalDate())}</span>`;pickPlan(plan);armExit()}
-function startTrial(){st.trial={plan,start:Date.now()};save();toast(t('t_nocharge'));go('perm',{anim:'up'})}
+function startTrial(){st.trial={plan,start:Date.now()};save();toast(t('t_nocharge'));go('first',{anim:'up'})}
 let exitT=null;
 function armExit(){const x=$('pwX');x.classList.remove('show');clearTimeout(exitT);exitT=setTimeout(()=>x.classList.add('show'),2500)}
 function openOffer(){$('oSheet').classList.add('on')}
@@ -1574,7 +1584,7 @@ function setupHold(){const el=$('holdBtn'),arc=$('holdArc');if(el.dataset.ok)ret
  const buzz=n=>{hap();if(navigator.vibrate)navigator.vibrate(12);buzzT=setTimeout(()=>buzz(n+1),Math.max(70,220-n*18))};
  const start=e=>{e.preventDefault();arc.style.transition='stroke-dashoffset 1.6s linear';arc.style.strokeDashoffset=0;el.classList.remove('done');el.classList.add('down');buzz(0);
   holdT=setTimeout(()=>{clearTimeout(buzzT);el.classList.remove('down');el.classList.add('done');hap();setTimeout(hap,120);setTimeout(hap,240);if(navigator.vibrate)navigator.vibrate([40,60,80]);
-   $('holdLbl').innerHTML=t('great');st.committed=Date.now();save();setTimeout(()=>{firstRun=true;go('first',{anim:'up'})},900)},1600)};
+   $('holdLbl').innerHTML=t('great');st.committed=Date.now();save();setTimeout(()=>go('pw1',{anim:'up'}),900)},1600)};
  const stop=()=>{clearTimeout(buzzT);if(!holdT)return;clearTimeout(holdT);holdT=null;el.classList.remove('down');arc.style.transition='stroke-dashoffset .3s';arc.style.strokeDashoffset=820};
  el.addEventListener('pointerdown',start);['pointerup','pointerleave','pointercancel'].forEach(x=>el.addEventListener(x,stop))}
 function renderCommit(){const ppl=st.people.map(p=>p.name);const z=st.quiz||{};
@@ -1625,9 +1635,9 @@ function runBreath(){timers.forEach(clearTimeout);const s=$('pause'),c=$('cue'),
 function choose(kind){if(!isTest){st.log.push({t:Date.now(),k:kind,app:curApp,p:curPerson});st.log=st.log.slice(-2000);save()}
  if(kind==='here'){const today=countDay(new Date());$('dTitle').innerHTML=t('d_title');
   const p=st.people.find(x=>x.id===curPerson);$('dSub').textContent=p?t('d_person',p.name):(isTest?t('d_test'):t('d_nth',today.here||1));
-  const after=firstRun?'pw1':'home';
-  $('dFoot').textContent=isTest?(firstRun?t('d_first2'):t('d_home')):t('d_close');go('done',{anim:'fade'});hap();setTimeout(hap,140);if(isTest)doneT=setTimeout(()=>{firstRun=false;go(after,{anim:'up'})},2600);return}
- if(isTest){toast(t('t_noopen'));const a=firstRun?'pw1':'home';firstRun=false;go(a,{anim:'up'});return}
+  const after=firstRun?'perm':'home';
+  $('dFoot').textContent=isTest?(firstRun?t('d_first'):t('d_home')):t('d_close');go('done',{anim:'fade'});hap();setTimeout(hap,140);if(isTest)doneT=setTimeout(()=>{firstRun=false;go(after,{anim:'up'})},2600);return}
+ if(isTest){toast(t('t_noopen'));const a=firstRun?'perm':'home';firstRun=false;go(a,{anim:'up'});return}
  const u=(APPS[curApp]||{}).u;if(!u){toast(t('t_opennow'));return}
  location.href='shortcuts://run-shortcut?name='+encodeURIComponent('Look Up Pass')+'&input=text&text='+encodeURIComponent(u)}
 
