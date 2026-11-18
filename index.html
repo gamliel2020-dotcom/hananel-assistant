@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Look Up v39: moments with your people (Progress + Done), new Settings: people first, pause feel (breaths, sound, usual open time), privacy (saved v38 = /saved-v38/) · v38: breathing pause over your person's photo + breath sound/mute, "open for X minutes" wheel, open-session bar, quiet times + day of rest (saved v37 = /saved-v37/) · v37: removed "Photos you love" from the ideas screen (photos come from your people) · v36: clearer "how does phone time affect you?" + required name/photo marks in Add person · v35: Cal AI-style week strip on Home (saved v34 = /saved-v34/) · v34: Settings → "See the intro again" · v33: welcome research laurel, plan "moments a year with your people", personal paywall (saved v32 = /saved-v32/) · v32: Opal-style Screen Time primer (saved v31 = /saved-v31/) · v31: logo only on Home like Cal AI (saved v30 in Archive) · v30: app icon = 10d "head rising" · v29: wordmark app icon + removed the icon→Safari "Test mode" screen · v28: idea options as Cal AI-style rows (v27 tiles looked "AI") · v27: back to the regular v25 flow (v26 test flow removed) + clean idea tiles on "What makes you feel good?" · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
+/* Look Up v40: home logo = mark + LOOK UP wordmark, big breathe text + dark strip on pause, plan shows its math, strict family time (30s wait), gentle reminders card (saved v39 = /saved-v39/) · v39: moments with your people (Progress + Done), new Settings: people first, pause feel (breaths, sound, usual open time), privacy (saved v38 = /saved-v38/) · v38: breathing pause over your person's photo + breath sound/mute, "open for X minutes" wheel, open-session bar, quiet times + day of rest (saved v37 = /saved-v37/) · v37: removed "Photos you love" from the ideas screen (photos come from your people) · v36: clearer "how does phone time affect you?" + required name/photo marks in Add person · v35: Cal AI-style week strip on Home (saved v34 = /saved-v34/) · v34: Settings → "See the intro again" · v33: welcome research laurel, plan "moments a year with your people", personal paywall (saved v32 = /saved-v32/) · v32: Opal-style Screen Time primer (saved v31 = /saved-v31/) · v31: logo only on Home like Cal AI (saved v30 in Archive) · v30: app icon = 10d "head rising" · v29: wordmark app icon + removed the icon→Safari "Test mode" screen · v28: idea options as Cal AI-style rows (v27 tiles looked "AI") · v27: back to the regular v25 flow (v26 test flow removed) + clean idea tiles on "What makes you feel good?" · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
    Apple Screen Time style picker with real app icons, demo home screen, tab bar (Today / Progress / Settings), one onboarding progress bar */
 /* earlier v9: Cal AI onboarding patterns · v8: any app + categories · v7: Steven Cravotta blueprint · design: Passion Finder + Stress glass */
 :root{
@@ -106,6 +106,7 @@ svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stro
 /* v19: the background fades to one solid colour at the bottom, and the strip below the app uses that same colour, so it looks continuous */
 html,body{background:#A15F40}
 .mesh::before{content:"";position:absolute;left:0;right:0;top:calc(var(--H,100vh) - 170px);bottom:0;background:linear-gradient(rgba(161,95,64,0),#A15F40 170px);z-index:1}
+html.darkbg,html.darkbg body{background:#24120A!important}
 html.tabsbg,html.tabsbg body{background:#5C341E}
 .shortvp .screen{padding-bottom:20px}
 .shortvp .screen.tabbed{padding-bottom:80px}
@@ -254,7 +255,8 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 /* v31: logo like Cal AI: only on Home (mark + name, top-left); onboarding, paywall and other tabs have no logo */
 .htop{display:flex;justify-content:space-between;align-items:center}
 .hbrand{display:flex;align-items:center;gap:8px;font-size:22px;font-weight:700;letter-spacing:-.2px}
-.hmark{width:30px;height:30px;border-radius:8px;display:block}
+.hmark{width:34px;height:18px;display:block;color:#FFF3E4}
+.hword{font-family:Unbounded,Heebo,sans-serif;font-weight:600;font-size:19px;letter-spacing:.6px;text-transform:uppercase;direction:ltr}
 .ptitle{text-align:start!important;font-size:32px!important;margin-top:6px!important}
 .req{color:#E0702F;font-style:normal;font-weight:700;margin-inline-start:2px}
 .pneed{text-align:center;font-size:14px;color:#B4501C;margin-top:16px;min-height:20px;font-weight:500}
@@ -264,7 +266,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .pbg{position:fixed!important;inset:-4%;background:var(--photo) center/cover;z-index:0;animation:kb 18s ease-in-out infinite alternate}
 .pbg.blur{filter:blur(28px) saturate(1.1);inset:-10%;animation:none;opacity:.9}
 @keyframes kb{from{transform:scale(1.08)}to{transform:scale(1)}}
-.pshade{position:fixed!important;inset:0;z-index:0;pointer-events:none;background:linear-gradient(rgba(35,14,4,.55),rgba(35,14,4,.12) 28%,rgba(35,14,4,.18) 55%,rgba(35,14,4,.82) 88%)}
+.pshade{position:fixed!important;inset:0 0 -2px 0;z-index:0;pointer-events:none;background:linear-gradient(rgba(36,18,10,.55),rgba(36,18,10,.12) 28%,rgba(36,18,10,.2) 55%,rgba(36,18,10,.85) 84%,#24120A 99%)}
 .ptop{grid-template-columns:48px 1fr 48px}
 .ptop .pchip{justify-self:center;max-width:100%;overflow:hidden;white-space:nowrap}
 .ptop .gbtn{background:rgba(0,0,0,.28);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
@@ -311,6 +313,11 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .rule .st.now{background:#FFF8F1;color:var(--ink)}
 .rule b{font-size:16.5px;line-height:1.2}.rule small{font-size:13.5px;opacity:.85}
 .rule.off{opacity:.75}
+.acard{display:flex;align-items:center;gap:12px;margin-top:10px;padding:14px;border-radius:22px}
+.acard .ai{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;flex:none}.acard .ai svg{width:22px;height:22px}
+.acard .tx{flex:1;display:flex;flex-direction:column}.acard b{font-size:16px}.acard small{font-size:13.5px;opacity:.85;line-height:1.35}
+.acard button{height:38px;padding:0 14px;border-radius:19px;background:#FFF8F1;color:var(--ink);font-weight:600;font-size:14.5px;flex:none}
+#anyway.wait{opacity:.55;font-variant-numeric:tabular-nums}
 /* day-of-rest sheet */
 .rsrow{display:flex;align-items:center;gap:10px;margin-top:10px}
 .rsrow span{flex:1;font-weight:600}
@@ -360,6 +367,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .phero.mom .num{font-size:62px;line-height:1;margin-top:6px;letter-spacing:-1px}
 .phero.mom .ml{display:block;font-size:18px;color:var(--ink);margin-top:4px}
 .phero.mom>span{font-size:14.5px}
+.pmath{display:block;font-style:normal;font-size:13px;color:#8A7A6D;margin-top:8px;font-variant-numeric:tabular-nums}
 .gl2{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(80,40,10,.12);font-size:14px;font-weight:600;color:#C2541C}
 .gl2 svg{width:16px;height:16px}
 .avs{display:flex;justify-content:center}
@@ -411,22 +419,6 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .gapp b{font-size:15.5px;font-weight:500}
 
 /* pause */
-#pause .bgph{position:fixed!important;inset:-60px;background:center/cover;filter:blur(50px) saturate(1.2);opacity:.3;z-index:0;mix-blend-mode:soft-light}
-#pause .circ{margin-top:3vh}
-#pause .msg{opacity:0;transform:translateY(8px);transition:all .9s var(--ease);text-align:center}
-#pause .msg.on{opacity:1;transform:none}
-#pause .title{font-size:30px;font-weight:600;line-height:1.18;margin-top:20px;text-shadow:0 1px 14px rgba(80,30,0,.3)}
-#pause .idea{display:inline-block;margin-top:14px;padding:12px 18px;border-radius:20px;max-width:330px}
-#pause .idea small{display:block;font-size:13px;font-weight:600;color:var(--amber);margin-bottom:2px}
-#pause .idea span{font-size:18.5px;font-weight:500;line-height:1.35}
-#pause .cue{text-align:center;font-size:18px;font-weight:500;margin-top:16px;min-height:26px}
-#pause .ph{transform:scale(.86)}
-#pause.in .ph{transform:scale(1)}
-#pause.out .ph{transform:scale(.9)}
-#pause .round{opacity:.5;pointer-events:none;transition:opacity .5s,transform .15s}
-#pause.ready .round{opacity:1;pointer-events:auto}
-#pause .anyway{opacity:0;pointer-events:none;transition:opacity .6s;margin-top:12px;width:auto;padding:0 20px;height:46px;flex:none;align-self:center;font-size:15.5px;font-weight:500}
-#pause.ready .anyway{opacity:1;pointer-events:auto}
 .top>.pchip{justify-self:center}
 .pchip{display:inline-flex;align-items:center;gap:8px;height:36px;padding-inline:5px 12px;border-radius:18px;background:rgba(0,0,0,.22);font-size:14.5px;font-weight:500}
 
@@ -915,9 +907,10 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 
 <!-- ============ TODAY (home) ============ -->
 <section class="screen tabbed" id="home">
-  <div class="top htop"><div class="hbrand"><svg class="hmark" viewBox="0 0 1024 1024" aria-hidden="true"><defs><radialGradient id="hmo" cx="50%" cy="60%" r="75%"><stop offset="0" stop-color="#F2A15C"/><stop offset=".55" stop-color="#D9762F"/><stop offset="1" stop-color="#9C6550"/></radialGradient><clipPath id="hmc"><rect width="1024" height="640"/></clipPath></defs><rect width="1024" height="1024" fill="url(#hmo)"/><circle cx="512" cy="600" r="190" fill="#FFF8F1" clip-path="url(#hmc)"/><rect x="202" y="640" width="620" height="70" rx="35" fill="#FFF8F1"/></svg><span>Look Up</span></div><span class="streak" id="streak" onclick="go('stats',{anim:'fade'})"></span></div>
+  <div class="top htop"><div class="hbrand"><svg class="hmark" viewBox="180 380 664 350" aria-hidden="true"><defs><clipPath id="hmc"><rect width="1024" height="640"/></clipPath></defs><circle cx="512" cy="600" r="190" fill="currentColor" clip-path="url(#hmc)"/><rect x="202" y="640" width="620" height="70" rx="35" fill="currentColor"/></svg><span class="hword">Look Up</span></div><span class="streak" id="streak" onclick="go('stats',{anim:'fade'})"></span></div>
   <div class="wstrip" id="wStrip"></div>
   <div id="sessBar"></div>
+  <div id="alertCard"></div>
   <div class="gauge glass">
     <div class="h"><span data-t="h_today"></span><span id="hDate" style="font-size:14px;opacity:.85"></span></div>
     <div class="num" id="tHere">0</div>
@@ -968,7 +961,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
   <div class="shead" data-t="set_priv_h"></div>
   <div class="slist" id="setList3"></div>
   <button class="pill link" style="margin-top:14px" onclick="resetAll()"><svg class="i"><use href="#i-trash"/></svg><span data-t="reset"></span></button>
-  <p class="foot" style="font-size:13px;opacity:.8;margin-bottom:90px">Look Up · v39</p>
+  <p class="foot" style="font-size:13px;opacity:.8;margin-bottom:90px">Look Up · v40</p>
 </section>
 
 <!-- ============ PAUSE ============ -->
@@ -1547,6 +1540,12 @@ const MO={en:{m_title:'Moments you chose',m_week:'this week, instead of the scro
  ar:{m_title:'لحظات اخترتها',m_week:'هذا الأسبوع، بدل التمرير',m_empty:'كل مرة تختار فيها «ليس الآن» تُحفظ لحظة هنا.',m_tot:n=>`${n} لحظة معًا حتى الآن`,m_next:(k,n)=>`${k} أخرى للوصول إلى ${n}`,m_wk:'هذا الأسبوع',m_self:'لنفسك',m_self_s:'راحة، تنفّس، المهمة التي أنهيتها',m_n:(w,n)=>`اللحظة رقم ${w} مع ${n} هذا الأسبوع`,m_mile:(m,n)=>`هذه ${m} لحظة مع ${n}. استمر.`,
   set_people:'أشخاصك',set_people_s:n=>n?`${n} في التوقف · اضغط للإضافة أو التعديل`:'أضف من تريد رؤيتهم',set_feel:'إحساس التوقف',set_quiet:'أوقات هادئة',set_breaths:'أنفاس قبل الفتح',set_breaths_s:n=>n===1?'نفس واحد · اضغط للتغيير':`${n} أنفاس · اضغط للتغيير`,set_sound:'صوت التنفّس',set_sound_s:'صوت هادئ أثناء التنفّس',set_open:'مدة الفتح المعتادة',set_open_s:m=>`${m} د · يمكنك تغييرها كل مرة`,set_priv_h:'الخصوصية',set_priv:'صورك تبقى على هذا الهاتف',set_priv_s:'لا يُرفع شيء. بلا حساب.',t_priv:'الصور والأسماء محفوظة على هذا الجهاز فقط.'}};
 for(const l in MO)Object.assign(V[l],MO[l]);
+const SX={en:{pl_math:(a,b,n)=>`From your answers: about ${a} opens a day → ${b}. That’s ${a-b} pauses a day × 365 = ${n}.`,strict_t:'Strict family time',strict_on_s:'On · 30 sec wait to open',strict_off_s:'Off · tap to turn on',strict_set_s:'During family time and your day of rest, opening anyway takes a 30-second wait',strict_wait:s=>`Only if it’s important · ${s}s`,strict_ok:a=>`Open ${a}, it’s important`,strict_t_on:'Strict family time is on',strict_t_off:'Strict family time is off',al2_t:'Gentle reminders',al2_s:'A quiet note when family time starts, and your weekly moments.',al2_go:'Turn on',al2_ok:'Reminders are on'},
+ he:{pl_math:(a,b,n)=>`לפי התשובות שלך: בערך ${a} פתיחות ביום ← ${b}. זה ${a-b} הפסקות ביום × 365 = ${n}.`,strict_t:'זמן משפחה קשוח',strict_on_s:'פעיל · 30 שניות המתנה לפתיחה',strict_off_s:'כבוי · להפעלה',strict_set_s:'בזמן משפחה וביום המנוחה, פתיחה בכל זאת מחייבת 30 שניות המתנה',strict_wait:s=>`רק אם זה חשוב · ${s} שנ׳`,strict_ok:a=>`לפתוח את ${a}, זה חשוב`,strict_t_on:'זמן משפחה קשוח פעיל',strict_t_off:'זמן משפחה קשוח כבוי',al2_t:'תזכורות עדינות',al2_s:'הודעה שקטה כשזמן המשפחה מתחיל, והרגעים של השבוע.',al2_go:'להפעיל',al2_ok:'התזכורות פעילות'},
+ es:{pl_math:(a,b,n)=>`Según tus respuestas: unas ${a} aperturas al día → ${b}. Son ${a-b} pausas al día × 365 = ${n}.`,strict_t:'Tiempo en familia estricto',strict_on_s:'Activo · 30 s de espera para abrir',strict_off_s:'Apagado · toca para activar',strict_set_s:'En el tiempo en familia y tu día de descanso, abrir igualmente requiere esperar 30 segundos',strict_wait:s=>`Solo si es importante · ${s}s`,strict_ok:a=>`Abrir ${a}, es importante`,strict_t_on:'Tiempo en familia estricto activado',strict_t_off:'Tiempo en familia estricto desactivado',al2_t:'Recordatorios suaves',al2_s:'Un aviso tranquilo cuando empieza el tiempo en familia, y tus momentos de la semana.',al2_go:'Activar',al2_ok:'Recordatorios activados'},
+ fr:{pl_math:(a,b,n)=>`D’après tes réponses : environ ${a} ouvertures par jour → ${b}. Soit ${a-b} pauses par jour × 365 = ${n}.`,strict_t:'Temps en famille strict',strict_on_s:'Activé · 30 s d’attente pour ouvrir',strict_off_s:'Désactivé · touche pour activer',strict_set_s:'Pendant le temps en famille et ton jour de repos, ouvrir quand même demande 30 secondes d’attente',strict_wait:s=>`Seulement si c’est important · ${s} s`,strict_ok:a=>`Ouvrir ${a}, c’est important`,strict_t_on:'Temps en famille strict activé',strict_t_off:'Temps en famille strict désactivé',al2_t:'Rappels doux',al2_s:'Un petit mot quand le temps en famille commence, et tes moments de la semaine.',al2_go:'Activer',al2_ok:'Rappels activés'},
+ ar:{pl_math:(a,b,n)=>`حسب إجاباتك: نحو ${a} مرة فتح يوميًا ← ${b}. أي ${a-b} توقفات يوميًا × 365 = ${n}.`,strict_t:'وقت عائلة صارم',strict_on_s:'مفعّل · انتظار 30 ث للفتح',strict_off_s:'متوقف · اضغط للتفعيل',strict_set_s:'في وقت العائلة ويوم الراحة، الفتح رغم ذلك يتطلب انتظار 30 ثانية',strict_wait:s=>`فقط إن كان مهمًا · ${s} ث`,strict_ok:a=>`افتح ${a}، الأمر مهم`,strict_t_on:'وقت العائلة الصارم مفعّل',strict_t_off:'وقت العائلة الصارم متوقف',al2_t:'تذكيرات لطيفة',al2_s:'رسالة هادئة عند بدء وقت العائلة، ولحظات أسبوعك.',al2_go:'تفعيل',al2_ok:'التذكيرات مفعّلة'}};
+for(const l in SX)Object.assign(V[l],SX[l]);
 const ID2={en:['Ideas for the pause',n=>`${n} chosen`],he:['רעיונות להפסקה',n=>`${n} נבחרו`],es:['Ideas para la pausa',n=>`${n} elegidas`],fr:['Idées pour la pause',n=>`${n} choisies`],ar:['أفكار للتوقف',n=>`${n} مختارة`]};for(const l in ID2){V[l].set_ideas2=ID2[l][0];V[l].set_ideas2_s=ID2[l][1]}
 
 const OF={en:{of_t:'Open it for…',of_s:'After that, Look Up pauses it again.',of_go:m=>`Open for ${m} min`,of_min:m=>m===1?'1 minute':`${m} minutes`,of_never:'Never mind, not now',of_demo:(a,m)=>`Demo: ${a} would open for ${m} min`,
@@ -1649,7 +1648,7 @@ const ONB=['apps','ob2','ob3','ob4'],OBTOT=QZ.length+ONB.length;
 const TABS=['home','stats','settings'];
 let navT=null;
 let doneT=null;
-function go(id,o={}){closeSheet();clearTimeout(doneT);const el=$(id),prev=document.querySelector('.screen.on');const anim=o.anim||(o.back?'pop':'push');
+function go(id,o={}){closeSheet();document.documentElement.classList.toggle('darkbg',id==='pause'||id==='openfor');clearTimeout(doneT);const el=$(id),prev=document.querySelector('.screen.on');const anim=o.anim||(o.back?'pop':'push');
  clearTimeout(navT);document.querySelectorAll('.screen.out').forEach(s=>s.className=s.className.replace(/\s?(out|a-\S+)/g,''));
  if(prev&&prev!==el){prev.classList.remove('on');if(anim!=='none'){prev.classList.add('out','a-'+anim+'-out')}}
  el.className=el.className.replace(/\s?a-\S+/g,'');el.classList.add('on');void el.offsetWidth;if(anim!=='none'&&prev!==el)el.classList.add('a-'+anim+'-in');
@@ -1785,7 +1784,7 @@ function quizBack(){if(qi>0){qi--;renderQuiz();quizStep(-1)}else go('ob1',{back:
 /* ---------- plan + paywall (demo) ---------- */
 const goalDate=()=>new Date(Date.now()+21*864e5).toLocaleDateString(LANGS[LANG].loc,{day:'numeric',month:'long'});
 function renderPlan(){const z=st.quiz||{},T=st.times,TX=t('Q');const{now,g}=goalNums();
- const mom=(now-g)*365,who=whoNames();$('planHero').innerHTML=`<div class="avs" id="plAvs"></div><small>${t('pl_year')}</small><div class="num" id="momN">0</div><b class="ml">${who?t('pl_mom',who):t('pl_mom0')}</b><span>${who?t('pl_each'):t('pl_each0')}</span><div class="gl2">${ic('target')}<span>${t('pw_goal',g,goalDate())}</span></div>`;countUp($('momN'),mom);avatars('plAvs');
+ const mom=(now-g)*365,who=whoNames();$('planHero').innerHTML=`<div class="avs" id="plAvs"></div><small>${t('pl_year')}</small><div class="num" id="momN">0</div><b class="ml">${who?t('pl_mom',who):t('pl_mom0')}</b><span>${who?t('pl_each'):t('pl_each0')}</span><em class="pmath">${t('pl_math',now,g,fmtN(mom))}</em><div class="gl2">${ic('target')}<span>${t('pw_goal',g,goalDate())}</span></div>`;countUp($('momN'),mom);avatars('plAvs');
  const rows=[],per=OPENS_N[z.opens];
  rows.push(per?['phone',t('pr_now',per),t('pr_now_s')]:['phone',t('pr_unk'),t('pr_unk_s')]);
  if(z.goal!==undefined)rows.push(['target',t('pr_goal'),z.goal===3?t('pr_goal_less'):t('pr_goal_s',TX.goal.o[z.goal])]);
@@ -1856,7 +1855,7 @@ async function startPause(app,test,anim){curApp=app||'instagram';isTest=!!test;c
  $('pPhoto').style.backgroundImage=bg;sndIcon();
  $('pGreet').innerHTML=(APPS[curApp]?appIcon(curApp,26):'')+`<span>${esc(greet)}</span>`;$('pTitle').textContent=title;
  $('pIdea').textContent=idea;$('pIdeaLbl').textContent=lbl;
- $('anyway').textContent=t('anyway',appName(curApp));
+ $('anyway').textContent=t('anyway',appName(curApp));strictArm(m);
  $('pMsg').classList.remove('on');
  go('pause',{anim:anim||'fade'});runBreath()}
 
@@ -1912,6 +1911,11 @@ function renderSess(){const el=$('sessBar');if(!el)return;if(!sessOn()){el.inner
 function endSess(){st.session=null;save();hap();renderSess();toast(t('ss_done'))}
 setInterval(()=>{if($('home').classList.contains('on'))renderSess()},1000);
 
+/* strict family time: a commitment you choose ahead of time (not a hard block, so you're never trapped) */
+let strictT=null;
+function strictArm(m){clearInterval(strictT);const a=$('anyway');a.disabled=false;a.classList.remove('wait');
+ if(!(st.strict&&(m==='family'||inRest())))return;let s=30;a.disabled=true;a.classList.add('wait');
+ const tick=()=>{a.textContent=s>0?t('strict_wait',s):t('strict_ok',appName(curApp));if(s<=0){a.disabled=false;a.classList.remove('wait');clearInterval(strictT)}s--};tick();strictT=setInterval(tick,1000)}
 /* quiet times (Opal-style "rules", but ours: morning, family time, bedtime, and a day of rest for any day of the week) */
 st.rest=st.rest||{on:false,sd:6,st:'08:00',ed:6,et:'20:00'};
 function inRest(d=new Date()){const R=st.rest;if(!R||!R.on)return false;const w=d.getDay()*1440+d.getHours()*60+d.getMinutes(),s=R.sd*1440+mins(R.st),e=R.ed*1440+mins(R.et);return s<=e?(w>=s&&w<e):(w>=s||w<e)}
@@ -1921,7 +1925,9 @@ function renderRules(){const T=st.times,m=mode(),R=st.rest;
  $('rules').innerHTML=card('sun','rgba(255,214,120,.45)',t('r_m'),t('r_until',T.mEnd),true,m==='morning',"edit('ob4')")
   +card('users','rgba(255,170,120,.45)',t('r_f'),`${T.fStart}–${T.fEnd}`,true,m==='family',"edit('ob4')")
   +card('moon','rgba(160,140,220,.45)',t('r_n'),t('r_from',T.nStart),true,m==='night',"edit('ob4')")
+  +card('lock','rgba(255,255,255,.3)',t('strict_t'),st.strict?t('strict_on_s'):t('strict_off_s'),!!st.strict,false,'toggleStrict()')
   +card('leaf','rgba(150,210,160,.45)',t('r_r'),R.on?`${dayName(R.sd)} ${R.st} – ${dayName(R.ed)} ${R.et}`:t('rs_hint'),R.on,inRest(),"openRest()")}
+function toggleStrict(){st.strict=!st.strict;save();hap();renderRules();toast(st.strict?t('strict_t_on'):t('strict_t_off'))}
 function openRest(){const R=st.rest,o=i=>[0,1,2,3,4,5,6].map(d=>`<option value="${d}" ${d===i?'selected':''}>${dayName(d)}</option>`).join('');
  $('rsSd').innerHTML=o(R.sd);$('rsEd').innerHTML=o(R.ed);$('rsSt').value=R.st;$('rsEt').value=R.et;$('rsBtn').textContent=R.on?t('rs_save'):t('rs_on');$('rsOff').style.display=R.on?'':'none';$('rsSheet').classList.add('on')}
 function saveRest(on){st.rest={on,sd:+$('rsSd').value,st:$('rsSt').value||'08:00',ed:+$('rsEd').value,et:$('rsEt').value||'20:00'};save();closeSheet();hap();renderRules();toast(on?t('rs_saved'):t('rs_offed'))}
@@ -2001,7 +2007,7 @@ function renderHome(){const now=new Date();
  const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;
  $('connectStatus').innerHTML=(st.perm||st.connected)?(st.connected&&standalone?`<p class="foot" style="margin-top:10px">${t('g_safari_short')}</p>`:''):`<div class="status"><span class="tx"><b>${t('nc_t')}</b><small>${t('nc_s')}</small></span><button class="go" onclick="go('perm')">${t('nc_go')}</button></div>`;
  const wk=st.log.filter(e=>e.t>now-7*864e5);$('wHere').textContent=wk.filter(e=>e.k==='here').length;$('wOpen').textContent=wk.filter(e=>e.k==='open').length;
- $('homeApps').innerHTML=selCardHTML(selApps(),t('h_apps'));renderSess();renderRules()}
+ $('homeApps').innerHTML=selCardHTML(selApps(),t('h_apps'));renderSess();renderRules();$('alertCard').innerHTML=st.alerts?'':`<div class="acard glass"><span class="ai">${ic('bell')}</span><span class="tx"><b>${t('al2_t')}</b><small>${t('al2_s')}</small></span><button onclick="st.alerts=true;save();hap();renderHome();toast(t('al2_ok'))">${t('al2_go')}</button></div>`}
 
 /* ---------- progress ---------- */
 function renderStats(){renderMoments();const now=new Date(),s=streakDays();$('sStreak').textContent=s;
@@ -2037,7 +2043,8 @@ function renderSettings(){const T=st.times,B=selApps(),n=st.people.length;
   +srow('clock','#3E8E6A',t('set_perm'),st.connected?t('perm_test'):st.perm?t('perm_on'):t('perm_off'),st.connected?"go('ob5')":"go('perm')");
  $('setListF').innerHTML=srow('leaf','#3E8E6A',t('set_breaths'),t('set_breaths_s',st.breaths||1),'cycleBreaths()')
   +stog('bell','#E0842F',t('set_sound'),t('set_sound_s'),!st.mute,'st.mute=!st.mute;save();hap();renderSettings()')
-  +srow('clock','#5E8BD9',t('set_open'),t('set_open_s',st.lastMin||5),'cycleOpen()');
+  +srow('clock','#5E8BD9',t('set_open'),t('set_open_s',st.lastMin||5),'cycleOpen()')
+  +stog('lock','#5E4E42',t('strict_t'),t('strict_set_s'),!!st.strict,'st.strict=!st.strict;save();hap();renderSettings()');
  $('setList2').innerHTML=srow('globe','#2F80ED',t('set_lang'),LANGS[LANG].name,'openLang()')
   +srow('play','#D9652A',t('set_replay'),t('set_replay_s'),"qi=0;go('ob1',{anim:'up'})")
   +srow('card','#5E4E42',t('set_plan'),t('plan_s',st.trial&&st.trial.plan),"toast(t('t_restore'))")
