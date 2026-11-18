@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Look Up v41: our own Screen Time primer ("one step left" checklist + people + highlighted Continue), no Opal-style frame/arrow (saved v40 = /saved-v40/) · v40: home logo = mark + LOOK UP wordmark, big breathe text + dark strip on pause, plan shows its math, strict family time (30s wait), gentle reminders card (saved v39 = /saved-v39/) · v39: moments with your people (Progress + Done), new Settings: people first, pause feel (breaths, sound, usual open time), privacy (saved v38 = /saved-v38/) · v38: breathing pause over your person's photo + breath sound/mute, "open for X minutes" wheel, open-session bar, quiet times + day of rest (saved v37 = /saved-v37/) · v37: removed "Photos you love" from the ideas screen (photos come from your people) · v36: clearer "how does phone time affect you?" + required name/photo marks in Add person · v35: Cal AI-style week strip on Home (saved v34 = /saved-v34/) · v34: Settings → "See the intro again" · v33: welcome research laurel, plan "moments a year with your people", personal paywall (saved v32 = /saved-v32/) · v32: Opal-style Screen Time primer (saved v31 = /saved-v31/) · v31: logo only on Home like Cal AI (saved v30 in Archive) · v30: app icon = 10d "head rising" · v29: wordmark app icon + removed the icon→Safari "Test mode" screen · v28: idea options as Cal AI-style rows (v27 tiles looked "AI") · v27: back to the regular v25 flow (v26 test flow removed) + clean idea tiles on "What makes you feel good?" · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
+/* Look Up v42: calmer permission screen (2-row checklist, tiny button hint), alert hint under Continue, strip dims with sheets · v41: our own Screen Time primer ("one step left" checklist + people + highlighted Continue), no Opal-style frame/arrow (saved v40 = /saved-v40/) · v40: home logo = mark + LOOK UP wordmark, big breathe text + dark strip on pause, plan shows its math, strict family time (30s wait), gentle reminders card (saved v39 = /saved-v39/) · v39: moments with your people (Progress + Done), new Settings: people first, pause feel (breaths, sound, usual open time), privacy (saved v38 = /saved-v38/) · v38: breathing pause over your person's photo + breath sound/mute, "open for X minutes" wheel, open-session bar, quiet times + day of rest (saved v37 = /saved-v37/) · v37: removed "Photos you love" from the ideas screen (photos come from your people) · v36: clearer "how does phone time affect you?" + required name/photo marks in Add person · v35: Cal AI-style week strip on Home (saved v34 = /saved-v34/) · v34: Settings → "See the intro again" · v33: welcome research laurel, plan "moments a year with your people", personal paywall (saved v32 = /saved-v32/) · v32: Opal-style Screen Time primer (saved v31 = /saved-v31/) · v31: logo only on Home like Cal AI (saved v30 in Archive) · v30: app icon = 10d "head rising" · v29: wordmark app icon + removed the icon→Safari "Test mode" screen · v28: idea options as Cal AI-style rows (v27 tiles looked "AI") · v27: back to the regular v25 flow (v26 test flow removed) + clean idea tiles on "What makes you feel good?" · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
    Apple Screen Time style picker with real app icons, demo home screen, tab bar (Today / Progress / Settings), one onboarding progress bar */
 /* earlier v9: Cal AI onboarding patterns · v8: any app + categories · v7: Steven Cravotta blueprint · design: Passion Finder + Stress glass */
 :root{
@@ -106,6 +106,7 @@ svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stro
 /* v19: the background fades to one solid colour at the bottom, and the strip below the app uses that same colour, so it looks continuous */
 html,body{background:#A15F40}
 .mesh::before{content:"";position:absolute;left:0;right:0;top:calc(var(--H,100vh) - 170px);bottom:0;background:linear-gradient(rgba(161,95,64,0),#A15F40 170px);z-index:1}
+html.sheetbg,html.sheetbg body{background:var(--stripbg)!important;transition:background .3s}
 html.darkbg,html.darkbg body{background:#24120A!important}
 html.tabsbg,html.tabsbg body{background:#5C341E}
 .shortvp .screen{padding-bottom:20px}
@@ -361,9 +362,13 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .wd.has .bg{stroke-dasharray:none}
 .wd.fut{opacity:.45}
 /* v41: our permission primer */
-.pmlist{margin-top:16px;padding:6px 16px;border-radius:24px}
+.pmlist{margin:22px auto 0;width:100%;max-width:340px}
 .pmrow{display:flex;align-items:center;gap:12px;padding:11px 0}
-.pmrow+.pmrow{border-top:1px solid rgba(255,255,255,.16)}
+.pmrow+.pmrow{border-top:1px solid rgba(255,255,255,.14)}
+.pmhint{display:flex;gap:8px;justify-content:center;margin-top:26px}
+.pmb{min-width:104px;height:36px;padding:0 14px;border-radius:18px;display:grid;place-items:center;font-size:14px;font-weight:500;background:rgba(255,255,255,.12);color:rgba(255,255,255,.55)}
+.pmb.on{background:#FFF8F1;color:var(--ink);font-weight:600;box-shadow:0 0 0 3px rgba(255,248,241,.25),0 8px 20px -8px rgba(60,20,0,.5);animation:pmPulse 1.8s ease-in-out infinite}
+.pmtip2{text-align:center;font-size:14.5px;color:#FFE2B8;margin-top:10px;font-weight:500}
 .pmrow .ck{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;flex:none;background:#FFF8F1;color:var(--ink)}
 .pmrow .ck svg{width:16px;height:16px;stroke-width:3}
 .pmrow .tx{flex:1;display:flex;flex-direction:column}.pmrow b{font-size:16px}.pmrow small{font-size:13px;opacity:.8}
@@ -644,7 +649,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .alr button+button{border-inline-start:.5px solid rgba(60,60,67,.3)}.alr button.b{font-weight:600}
 .alhint{display:flex;flex-direction:column;align-items:center;margin-top:10px;font-size:16px;font-weight:700;color:#fff;text-align:center;text-shadow:0 1px 8px rgba(0,0,0,.6)}
 .alhint span:first-child{font-size:26px;line-height:1;animation:bob 1.2s ease-in-out infinite}
-.alhint{margin-inline-start:50%}
+.alhint{margin-inline-start:0;width:50%}
 @keyframes bob{50%{transform:translateY(-6px)}}
 .toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 12px);transform:translate(-50%,-20px);background:#fff;color:var(--ink);padding:12px 20px;border-radius:16px;font-size:15px;font-weight:500;opacity:0;transition:.3s;z-index:40;pointer-events:none;box-shadow:0 10px 30px -10px rgba(0,0,0,.3);width:max-content;max-width:88vw;text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
@@ -900,15 +905,13 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 <!-- ============ SCREEN TIME PERMISSION (what the real app asks; primer + system alert, like Opal / one sec) ============ -->
 <section class="screen" id="perm">
   <div class="top"><span></span><span></span><span></span></div>
-  <div class="avs" id="pmAvs" style="margin-top:6px"></div>
-  <h1 class="t" style="margin-top:12px" data-t="pm_t"></h1>
+  <div class="grow" style="min-height:8px"></div>
+  <div class="avs" id="pmAvs"></div>
+  <h1 class="t" style="margin-top:14px" data-t="pm_t"></h1>
   <p class="d" id="pmSub"></p>
-  <div class="pmlist glass" id="pmList"></div>
-  <div class="grow" style="min-height:14px"></div>
-  <div class="pmprev" aria-hidden="true">
-    <div class="opcard"><b data-t="al_t"></b><p data-t="al_d"></p><div class="opbtns"><span class="c glow" data-t="al_c"></span><span class="b" data-t="al_n"></span></div></div>
-    <div class="pmtip"><svg class="i" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg><span data-t="pm_tip"></span></div>
-  </div>
+  <div class="pmlist" id="pmList"></div>
+  <div class="pmhint"><span class="pmb on" data-t="al_c"></span><span class="pmb" data-t="al_n"></span></div>
+  <p class="pmtip2" data-t="pm_tip2"></p>
   <div class="grow" style="min-height:14px"></div>
   <p class="opsafe"><svg class="i"><use href="#i-lock"/></svg><span data-t="op_safe"></span></p>
   <div class="duo" style="margin-top:14px"><button class="pill white" onclick="hap();openAlert()" data-t="pm_cta"></button></div>
@@ -981,7 +984,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
   <div class="shead" data-t="set_priv_h"></div>
   <div class="slist" id="setList3"></div>
   <button class="pill link" style="margin-top:14px" onclick="resetAll()"><svg class="i"><use href="#i-trash"/></svg><span data-t="reset"></span></button>
-  <p class="foot" style="font-size:13px;opacity:.8;margin-bottom:90px">Look Up · v41</p>
+  <p class="foot" style="font-size:13px;opacity:.8;margin-bottom:90px">Look Up · v42</p>
 </section>
 
 <!-- ============ PAUSE ============ -->
@@ -1572,6 +1575,12 @@ const PMS={en:{pm_t:'One step left',pm_s:n=>`So your pause with ${n} can show up
  fr:{pm_t:'Plus qu’une étape',pm_s:n=>`Pour que ta pause avec ${n} apparaisse juste avant les apps choisies.`,pm_s0:'Pour que la pause apparaisse juste avant les apps choisies.',pm_now:'Maintenant',pm_apps:n=>`${n} apps`,pm_tip:'À l’écran suivant, touche Continuer',pm_cta:'Autoriser Temps d’écran'},
  ar:{pm_t:'خطوة واحدة فقط',pm_s:n=>`لكي يظهر توقفك مع ${n} قبل التطبيقات التي اخترتها مباشرة.`,pm_s0:'لكي يظهر التوقف قبل التطبيقات التي اخترتها مباشرة.',pm_now:'الآن',pm_apps:n=>`${n} تطبيقات`,pm_tip:'في الشاشة التالية، اضغط متابعة',pm_cta:'السماح بمدة استخدام الجهاز'}};
 for(const l in PMS)Object.assign(V[l],PMS[l]);
+const PM2={en:{pm_ready:n=>`Your people and ${n} apps are ready`,pm_ready0:n=>`${n} apps are ready`,pm_tip2:'Apple will ask once. Tap Continue.'},
+ he:{pm_ready:n=>`האנשים שלך ו־${n} אפליקציות מוכנים`,pm_ready0:n=>`${n} אפליקציות מוכנות`,pm_tip2:'אפל תשאל פעם אחת. ללחוץ על "המשך".'},
+ es:{pm_ready:n=>`Tus personas y ${n} apps están listas`,pm_ready0:n=>`${n} apps están listas`,pm_tip2:'Apple lo preguntará una vez. Toca Continuar.'},
+ fr:{pm_ready:n=>`Tes proches et ${n} apps sont prêts`,pm_ready0:n=>`${n} apps sont prêtes`,pm_tip2:'Apple demandera une seule fois. Touche Continuer.'},
+ ar:{pm_ready:n=>`أشخاصك و${n} تطبيقات جاهزة`,pm_ready0:n=>`${n} تطبيقات جاهزة`,pm_tip2:'ستسأل Apple مرة واحدة. اضغط متابعة.'}};
+for(const l in PM2)Object.assign(V[l],PM2[l]);
 const ID2={en:['Ideas for the pause',n=>`${n} chosen`],he:['רעיונות להפסקה',n=>`${n} נבחרו`],es:['Ideas para la pausa',n=>`${n} elegidas`],fr:['Idées pour la pause',n=>`${n} choisies`],ar:['أفكار للتوقف',n=>`${n} مختارة`]};for(const l in ID2){V[l].set_ideas2=ID2[l][0];V[l].set_ideas2_s=ID2[l][1]}
 
 const OF={en:{of_t:'Open it for…',of_s:'After that, Look Up pauses it again.',of_go:m=>`Open for ${m} min`,of_min:m=>m===1?'1 minute':`${m} minutes`,of_never:'Never mind, not now',of_demo:(a,m)=>`Demo: ${a} would open for ${m} min`,
@@ -1689,6 +1698,10 @@ function back(id){if(editing){editing=false;go('settings',{back:1})}else go(id,{
 function edit(id){editing=true;go(id)}
 function tab(id){const cur=document.querySelector('.screen.on');if(cur&&cur.id===id){cur.scrollTo({top:0,behavior:'smooth'});return}go(id,{anim:'fade'})}
 let toastT;function toast(x){const e=$('toast');e.textContent=x;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),2000)}
+const dimMix=(hex,a,r2,g2,b2)=>{const n=parseInt(hex.slice(1),16),r=n>>16,g=n>>8&255,b=n&255,m=(x,y)=>Math.round(x*(1-a)+y*a);return`rgb(${m(r,r2)},${m(g,g2)},${m(b,b2)})`};
+function stripDim(){const s=document.querySelector('.sheet.on'),H=document.documentElement;if(!s){H.style.removeProperty('--stripbg');H.classList.remove('sheetbg');return}
+ const base=H.classList.contains('darkbg')?'#24120A':H.classList.contains('tabsbg')?'#5C341E':'#A15F40';H.style.setProperty('--stripbg',s.classList.contains('al')?dimMix(base,.35,0,0,0):dimMix(base,.4,40,15,0));H.classList.add('sheetbg')}
+new MutationObserver(stripDim).observe(document.body,{subtree:true,attributes:true,attributeFilter:['class']});
 function closeSheet(){document.querySelectorAll('.sheet').forEach(s=>{s.classList.remove('on');s.firstElementChild.style.transform=''})}
 function doneEditing(){editing=false;toast(t('t_saved'));go('settings',{back:1})}
 
@@ -1850,7 +1863,7 @@ function renderCommit(){const ppl=st.people.map(p=>p.name);const z=st.quiz||{};
 /* Screen Time permission (demo of AuthorizationCenter.requestAuthorization(for: .individual)) */
 function renderPerm(){const who=whoNames(),n=coveredApps(selApps()).length;avatars('pmAvs');$('pmSub').innerHTML=who?t('pm_s',who):t('pm_s0');
  const row=(done,title,sub)=>`<div class="pmrow ${done?'':'next'}"><span class="ck">${done?ic('check'):'<i></i>'}</span><span class="tx"><b>${title}</b>${sub?`<small>${sub}</small>`:''}</span>${done?'':`<span class="now">${t('pm_now')}</span>`}</div>`;
- $('pmList').innerHTML=(st.people.length?row(true,t('set_people'),esc(st.people.map(p=>p.name).join(', '))):'')+row(true,t('set_apps'),t('pm_apps',n))+row(false,t('set_perm'),'')}
+ $('pmList').innerHTML=row(true,st.people.length?t('pm_ready',n):t('pm_ready0',n),'')+row(false,t('set_perm'),'')}
 function openAlert(){$('alSheet').classList.add('on')}
 function permYes(){closeSheet();st.perm=true;const first=!st.setup;st.setup=true;save();hap();
  if(pendingApp){const a=pendingApp;pendingApp=null;st.connected=true;save();startPause(a);return} /* came in from a shortcut before setup: show that pause now */
