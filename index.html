@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Look Up v38: breathing pause over your person's photo + breath sound/mute, "open for X minutes" wheel, open-session bar, quiet times + day of rest (saved v37 = /saved-v37/) · v37: removed "Photos you love" from the ideas screen (photos come from your people) · v36: clearer "how does phone time affect you?" + required name/photo marks in Add person · v35: Cal AI-style week strip on Home (saved v34 = /saved-v34/) · v34: Settings → "See the intro again" · v33: welcome research laurel, plan "moments a year with your people", personal paywall (saved v32 = /saved-v32/) · v32: Opal-style Screen Time primer (saved v31 = /saved-v31/) · v31: logo only on Home like Cal AI (saved v30 in Archive) · v30: app icon = 10d "head rising" · v29: wordmark app icon + removed the icon→Safari "Test mode" screen · v28: idea options as Cal AI-style rows (v27 tiles looked "AI") · v27: back to the regular v25 flow (v26 test flow removed) + clean idea tiles on "What makes you feel good?" · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
+/* Look Up v39: moments with your people (Progress + Done), new Settings: people first, pause feel (breaths, sound, usual open time), privacy (saved v38 = /saved-v38/) · v38: breathing pause over your person's photo + breath sound/mute, "open for X minutes" wheel, open-session bar, quiet times + day of rest (saved v37 = /saved-v37/) · v37: removed "Photos you love" from the ideas screen (photos come from your people) · v36: clearer "how does phone time affect you?" + required name/photo marks in Add person · v35: Cal AI-style week strip on Home (saved v34 = /saved-v34/) · v34: Settings → "See the intro again" · v33: welcome research laurel, plan "moments a year with your people", personal paywall (saved v32 = /saved-v32/) · v32: Opal-style Screen Time primer (saved v31 = /saved-v31/) · v31: logo only on Home like Cal AI (saved v30 in Archive) · v30: app icon = 10d "head rising" · v29: wordmark app icon + removed the icon→Safari "Test mode" screen · v28: idea options as Cal AI-style rows (v27 tiles looked "AI") · v27: back to the regular v25 flow (v26 test flow removed) + clean idea tiles on "What makes you feel good?" · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
    Apple Screen Time style picker with real app icons, demo home screen, tab bar (Today / Progress / Settings), one onboarding progress bar */
 /* earlier v9: Cal AI onboarding patterns · v8: any app + categories · v7: Steven Cravotta blueprint · design: Passion Finder + Stress glass */
 :root{
@@ -315,6 +315,32 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .rsrow{display:flex;align-items:center;gap:10px;margin-top:10px}
 .rsrow span{flex:1;font-weight:600}
 .rsrow select,.rsrow input{height:44px;border-radius:12px;border:1px solid #E6D8CA;background:#fff;padding:0 10px;font:inherit;font-size:16px;color:var(--ink)}
+/* v39: moments on Progress, photo on Done, people card + switches in Settings */
+.mhero{padding:18px 20px;border-radius:26px;text-align:center;margin-top:14px}
+.mhero small{display:block;font-size:14.5px;font-weight:600;color:#FFE2B8}
+.mhero .num{font-size:60px;line-height:1.05;margin-top:4px}
+.mhero span{display:block;font-size:15px;opacity:.9;margin-top:4px}
+.mrow{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:22px;margin-top:10px}
+.mrow.solid{color:var(--ink)}
+.mmp{width:54px;height:54px;border-radius:50%;flex:none;background:#E9D6C4 center/cover;border:2px solid #fff;display:grid;place-items:center}
+.mmp.self{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.5)}.mmp.self svg{width:24px;height:24px}
+.mrow .tx{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.mrow .tx b{font-size:17px}.mrow .tx small{font-size:13px;opacity:.75}
+.mbar{display:block;height:6px;border-radius:3px;background:rgba(80,40,10,.12);margin-top:6px;overflow:hidden}
+.mbar b{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#E8833A,#D9652A)}
+.mrow .nx{font-size:12px!important;margin-top:2px}
+.mw{display:flex;flex-direction:column;align-items:center;flex:none;min-width:54px}
+.mw b{font-size:28px;line-height:1}.mw small{font-size:11.5px;opacity:.7}
+.dph{width:150px;height:150px;border-radius:50%;margin:0 auto;background:center/cover;border:4px solid #fff;box-shadow:0 20px 40px -18px rgba(60,20,0,.6);animation:dpop .6s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes dpop{from{transform:scale(.6);opacity:0}}
+#dMom{font-size:16px;font-weight:600;color:#FFE2B8;margin-top:10px;text-align:center}
+.pcard{display:flex;align-items:center;gap:14px;width:100%;text-align:start;margin-top:14px;padding:14px 16px;border-radius:24px;background:#FFF8F1;color:var(--ink)}
+.pcard .avs{justify-content:flex-start}.pcard .avs i{width:46px;height:46px}
+.pcard .tx{flex:1;display:flex;flex-direction:column}.pcard b{font-size:18px}.pcard small{font-size:13.5px;color:#7A6A5D}
+.pcard .addp{width:46px;height:46px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;flex:none}
+.sw{width:50px;height:30px;border-radius:15px;background:#D9CFC5;position:relative;flex:none;transition:background .2s}
+.sw i{position:absolute;top:2px;inset-inline-start:2px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.2);transition:inset-inline-start .2s}
+.sw.on{background:#34A853}.sw.on i{inset-inline-start:22px}
 /* v35: Home week strip (Cal AI pattern) */
 .wstrip{display:flex;justify-content:space-between;margin:10px -4px 4px}
 .wd{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 0 10px;border-radius:22px}
@@ -914,6 +940,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 <section class="screen tabbed" id="stats">
   <div class="top"><span></span><span></span><span></span></div>
   <h1 class="t ptitle" data-t="s_title"></h1>
+  <div id="moms"></div>
   <div class="glass" style="padding:18px;margin-top:16px">
     <div style="display:flex;align-items:center;gap:14px"><svg class="i" style="width:46px;height:46px;color:#FFD08A;fill:#FFD08A;stroke:none"><use href="#i-flame"/></svg><div><div class="num" id="sStreak" style="font-size:54px">0</div><div style="font-size:15px;font-weight:500" data-t="s_streak"></div></div></div>
     <div class="miles" id="sMiles"></div>
@@ -923,19 +950,25 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
     <div class="tile glass"><span class="h" data-t="s_rate"></span><span><span class="num" id="sRate">0%</span><small class="s" style="display:block;margin-top:6px" data-t="s_rate_s"></small></span></div>
   </div>
   <div class="glass" style="padding:16px 16px 12px;margin-top:10px"><div style="font-size:15.5px;font-weight:500" data-t="s_week"></div><div class="week" id="week"></div></div>
-  <div id="pplWrap"><div class="lbl" data-t="s_people"></div><div id="pplStats"></div></div>
+  <div id="pplWrap" hidden style="display:none!important"><div class="lbl" data-t="s_people"></div><div id="pplStats"></div></div>
 </section>
 
 <!-- ============ SETTINGS ============ -->
 <section class="screen tabbed" id="settings">
   <div class="top"><span></span><span></span><span></span></div>
   <h1 class="t ptitle" data-t="set_t"></h1>
+  <!-- the people come first: they are the reason the app exists -->
+  <button class="pcard" id="setPeople" onclick="edit('ob2')"></button>
   <div class="shead" data-t="set_pause"></div>
   <div class="slist" id="setList1"></div>
+  <div class="shead" data-t="set_feel"></div>
+  <div class="slist" id="setListF"></div>
   <div class="shead" data-t="set_app"></div>
   <div class="slist" id="setList2"></div>
+  <div class="shead" data-t="set_priv_h"></div>
+  <div class="slist" id="setList3"></div>
   <button class="pill link" style="margin-top:14px" onclick="resetAll()"><svg class="i"><use href="#i-trash"/></svg><span data-t="reset"></span></button>
-  <p class="foot" style="font-size:13px;opacity:.8">Look Up · v10</p>
+  <p class="foot" style="font-size:13px;opacity:.8;margin-bottom:90px">Look Up · v39</p>
 </section>
 
 <!-- ============ PAUSE ============ -->
@@ -968,9 +1001,9 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 
 <section class="screen" id="done">
   <div class="grow"></div>
-  <div class="round big" style="pointer-events:none"><svg class="i" style="color:#34A853;width:40px;height:40px"><use href="#i-check"/></svg></div>
+  <div class="dph" id="dPh" style="display:none"></div><div class="round big" id="dChk" style="pointer-events:none"><svg class="i" style="color:#34A853;width:40px;height:40px"><use href="#i-check"/></svg></div>
   <h1 class="t" id="dTitle" style="font-size:32px;margin-top:26px"></h1>
-  <p class="d" id="dSub"></p>
+  <p class="d" id="dSub"></p><p id="dMom"></p>
   <div class="grow"></div>
   <p class="foot" id="dFoot"></p>
 </section>
@@ -1503,6 +1536,19 @@ const NW={en:{w_badge:'Backed by research: a short pause cut app opens by 57%',p
  fr:{w_badge:'Validé par la recherche : une courte pause a réduit de 57 % les ouvertures',pl_year:'En un an, c’est',pl_mom:n=>`moments avec ${n}`,pl_mom0:'moments pour ce qui compte',pl_each:'Chaque pause avant une app, c’est un moment où vous les choisissez.',pl_each0:'Chaque pause avant une app, c’est un moment retrouvé.',pw3_tp:n=>`Être là pour ${n},<br>chaque jour`,pw_mom:n=>`Soit ${n} moments par an`},
  ar:{w_badge:'مدعوم بالأبحاث: توقف قصير خفّض فتح التطبيقات بنسبة 57%',pl_year:'في سنة واحدة، هذا',pl_mom:n=>`لحظة مع ${n}`,pl_mom0:'لحظة لما يهمّ',pl_each:'كل توقف قبل تطبيق هو لحظة تختارهم فيها.',pl_each0:'كل توقف قبل تطبيق هو لحظة تستعيدها.',pw3_tp:n=>`كن حاضرًا لـ ${n}،<br>كل يوم`,pw_mom:n=>`أي ${n} لحظة في السنة`}};
 for(const l in NW)Object.assign(V[l],NW[l]);
+const MO={en:{m_title:'Moments you chose',m_week:'this week, instead of the scroll',m_empty:'Every time you choose “Not now”, a moment is saved here.',m_tot:n=>`${n} moments together so far`,m_next:(k,n)=>`${k} more to ${n}`,m_wk:'this week',m_self:'For yourself',m_self_s:'Rest, breath, the task you finished',m_n:(w,n)=>`Moment #${w} with ${n} this week`,m_mile:(m,n)=>`That’s ${m} moments with ${n}. Keep going.`,
+  set_people:'Your people',set_people_s:n=>n?`${n} in your pause · tap to add or edit`:'Add the people you want to see',set_feel:'How the pause feels',set_quiet:'Quiet times',set_breaths:'Breaths before opening',set_breaths_s:n=>n===1?'1 breath · tap to change':`${n} breaths · tap to change`,set_sound:'Breath sound',set_sound_s:'Soft sound while you breathe',set_open:'Usual open time',set_open_s:m=>`${m} min · you can still change it each time`,set_priv_h:'Privacy',set_priv:'Your photos stay on this phone',set_priv_s:'Nothing is uploaded. No account needed.',t_priv:'Photos and names are saved only on this device.'},
+ he:{m_title:'רגעים שבחרת',m_week:'השבוע, במקום הגלילה',m_empty:'בכל פעם שבוחרים "לא עכשיו", נשמר כאן רגע.',m_tot:n=>`${n} רגעים ביחד עד עכשיו`,m_next:(k,n)=>`עוד ${k} עד ${n}`,m_wk:'השבוע',m_self:'בשבילך',m_self_s:'מנוחה, נשימה, המשימה שסיימת',m_n:(w,n)=>`רגע מספר ${w} עם ${n} השבוע`,m_mile:(m,n)=>`זה ${m} רגעים עם ${n}. ממשיכים.`,
+  set_people:'האנשים שלך',set_people_s:n=>n?`${n} בהפסקה · להוספה או עריכה`:'להוסיף את מי שרוצים לראות',set_feel:'איך ההפסקה מרגישה',set_quiet:'זמנים שקטים',set_breaths:'נשימות לפני שנפתח',set_breaths_s:n=>n===1?'נשימה אחת · לשינוי':`${n} נשימות · לשינוי`,set_sound:'צליל נשימה',set_sound_s:'צליל רך בזמן הנשימה',set_open:'זמן פתיחה רגיל',set_open_s:m=>`${m} דק׳ · אפשר לשנות בכל פעם`,set_priv_h:'פרטיות',set_priv:'התמונות נשארות בטלפון',set_priv_s:'שום דבר לא עולה לרשת. בלי חשבון.',t_priv:'תמונות ושמות נשמרים רק במכשיר הזה.'},
+ es:{m_title:'Momentos que elegiste',m_week:'esta semana, en vez del scroll',m_empty:'Cada vez que eliges “Ahora no”, se guarda un momento aquí.',m_tot:n=>`${n} momentos juntos hasta ahora`,m_next:(k,n)=>`${k} más para ${n}`,m_wk:'esta semana',m_self:'Para ti',m_self_s:'Descanso, respiración, la tarea que terminaste',m_n:(w,n)=>`Momento n.º ${w} con ${n} esta semana`,m_mile:(m,n)=>`Ya son ${m} momentos con ${n}. Sigue así.`,
+  set_people:'Tus personas',set_people_s:n=>n?`${n} en tu pausa · toca para añadir o editar`:'Añade a quien quieres ver',set_feel:'Cómo se siente la pausa',set_quiet:'Momentos tranquilos',set_breaths:'Respiraciones antes de abrir',set_breaths_s:n=>n===1?'1 respiración · toca para cambiar':`${n} respiraciones · toca para cambiar`,set_sound:'Sonido de respiración',set_sound_s:'Sonido suave mientras respiras',set_open:'Tiempo habitual',set_open_s:m=>`${m} min · puedes cambiarlo cada vez`,set_priv_h:'Privacidad',set_priv:'Tus fotos se quedan en este teléfono',set_priv_s:'No se sube nada. Sin cuenta.',t_priv:'Fotos y nombres se guardan solo en este dispositivo.'},
+ fr:{m_title:'Moments choisis',m_week:'cette semaine, au lieu du scroll',m_empty:'Chaque fois que tu choisis « Pas maintenant », un moment est gardé ici.',m_tot:n=>`${n} moments ensemble jusqu’ici`,m_next:(k,n)=>`Encore ${k} pour ${n}`,m_wk:'cette semaine',m_self:'Pour toi',m_self_s:'Repos, respiration, la tâche terminée',m_n:(w,n)=>`Moment n° ${w} avec ${n} cette semaine`,m_mile:(m,n)=>`Déjà ${m} moments avec ${n}. Continue.`,
+  set_people:'Tes proches',set_people_s:n=>n?`${n} dans ta pause · touche pour ajouter ou modifier`:'Ajoute les personnes à voir',set_feel:'Le ressenti de la pause',set_quiet:'Moments calmes',set_breaths:'Respirations avant d’ouvrir',set_breaths_s:n=>n===1?'1 respiration · touche pour changer':`${n} respirations · touche pour changer`,set_sound:'Son de respiration',set_sound_s:'Un son doux pendant que tu respires',set_open:'Durée habituelle',set_open_s:m=>`${m} min · modifiable à chaque fois`,set_priv_h:'Confidentialité',set_priv:'Tes photos restent sur ce téléphone',set_priv_s:'Rien n’est envoyé. Aucun compte.',t_priv:'Photos et prénoms sont gardés uniquement sur cet appareil.'},
+ ar:{m_title:'لحظات اخترتها',m_week:'هذا الأسبوع، بدل التمرير',m_empty:'كل مرة تختار فيها «ليس الآن» تُحفظ لحظة هنا.',m_tot:n=>`${n} لحظة معًا حتى الآن`,m_next:(k,n)=>`${k} أخرى للوصول إلى ${n}`,m_wk:'هذا الأسبوع',m_self:'لنفسك',m_self_s:'راحة، تنفّس، المهمة التي أنهيتها',m_n:(w,n)=>`اللحظة رقم ${w} مع ${n} هذا الأسبوع`,m_mile:(m,n)=>`هذه ${m} لحظة مع ${n}. استمر.`,
+  set_people:'أشخاصك',set_people_s:n=>n?`${n} في التوقف · اضغط للإضافة أو التعديل`:'أضف من تريد رؤيتهم',set_feel:'إحساس التوقف',set_quiet:'أوقات هادئة',set_breaths:'أنفاس قبل الفتح',set_breaths_s:n=>n===1?'نفس واحد · اضغط للتغيير':`${n} أنفاس · اضغط للتغيير`,set_sound:'صوت التنفّس',set_sound_s:'صوت هادئ أثناء التنفّس',set_open:'مدة الفتح المعتادة',set_open_s:m=>`${m} د · يمكنك تغييرها كل مرة`,set_priv_h:'الخصوصية',set_priv:'صورك تبقى على هذا الهاتف',set_priv_s:'لا يُرفع شيء. بلا حساب.',t_priv:'الصور والأسماء محفوظة على هذا الجهاز فقط.'}};
+for(const l in MO)Object.assign(V[l],MO[l]);
+const ID2={en:['Ideas for the pause',n=>`${n} chosen`],he:['רעיונות להפסקה',n=>`${n} נבחרו`],es:['Ideas para la pausa',n=>`${n} elegidas`],fr:['Idées pour la pause',n=>`${n} choisies`],ar:['أفكار للتوقف',n=>`${n} مختارة`]};for(const l in ID2){V[l].set_ideas2=ID2[l][0];V[l].set_ideas2_s=ID2[l][1]}
+
 const OF={en:{of_t:'Open it for…',of_s:'After that, Look Up pauses it again.',of_go:m=>`Open for ${m} min`,of_min:m=>m===1?'1 minute':`${m} minutes`,of_never:'Never mind, not now',of_demo:(a,m)=>`Demo: ${a} would open for ${m} min`,
   ss_t:a=>`${a} is open`,ss_left:s=>`${s} left · enjoy it mindfully`,ss_stop:'Pause now',ss_done:'Paused again. Nice.',
   r_title:'Your quiet times',r_m:'Calm morning',r_f:'Family time',r_n:'Bedtime',r_r:'Day of rest',r_until:x=>`Until ${x}`,r_from:x=>`From ${x}`,r_now:'Now',r_on:'On',r_off:'Off',
@@ -1804,6 +1850,7 @@ async function startPause(app,test,anim){curApp=app||'instagram';isTest=!!test;c
  else if(m==='morning'){title=t('gm');idea=pick(t('MORNING'));pic=pick(st.general)||pick(st.people.flatMap(p=>p.pics));greet=t('g_morning')}
  else if(m==='night'){const n=pick(t('NIGHT'));title=n[0];idea=n[1];pic=pick(st.general)||pick(st.people.flatMap(p=>p.pics));greet=t('g_night');lbl=t('now_lbl')}
  else{title=pick(t('DAY'));const I=t('IDEAS');const pool=[...st.cats.flatMap(c=>I[c]||[]),...st.custom,...st.custom];idea=pick(pool.length?pool:I.breath);pic=pick([...st.general,...st.people.flatMap(p=>p.pics)]);greet=t('g_before',appName(curApp))}
+ if(!curPerson&&pic){const o=st.people.find(p=>p.pics.includes(pic));if(o)curPerson=o.id}
  if(!isTest)greet+=t('g_nth',tries);
  const src=await photo(pic)||'';const bg=src?`url(${src})`:(m==='night'?'var(--photoNight)':'var(--photo)');
  $('pPhoto').style.backgroundImage=bg;sndIcon();
@@ -1817,7 +1864,7 @@ function choose(kind){timers.forEach(clearTimeout);clearInterval(breathI);sndSto
  if(kind==='here'){const today=countDay(new Date());$('dTitle').innerHTML=t('d_title');
   const p=st.people.find(x=>x.id===curPerson);$('dSub').textContent=p?t('d_person',p.name):(isTest?t('d_test'):t('d_nth',today.here||1));
   const after=firstRun?'perm':'home';
-  $('dFoot').textContent=isTest?(firstRun?t('d_first'):t('d_home')):t('d_close');go('done',{anim:'fade'});hap();setTimeout(hap,140);if(isTest)doneT=setTimeout(()=>{firstRun=false;go(after,{anim:'up'})},2600);return}
+  $('dFoot').textContent=isTest?(firstRun?t('d_first'):t('d_home')):t('d_close');go('done',{anim:'fade'});doneMoment().then(()=>{$('dChk').style.display=$('dPh').style.display==='none'?'':'none'});hap();setTimeout(hap,140);if(isTest)doneT=setTimeout(()=>{firstRun=false;go(after,{anim:'up'})},2600);return}
  if(isTest){toast(t('t_noopen'));const a=firstRun?'perm':'home';firstRun=false;go(a,{anim:'up'});return}
  const u=(APPS[curApp]||{}).u;if(!u){toast(t('t_opennow'));return}
  location.href='shortcuts://run-shortcut?name='+encodeURIComponent('Look Up Pass')+'&input=text&text='+encodeURIComponent(u)}
@@ -1829,7 +1876,7 @@ function runBreath(){timers.forEach(clearTimeout);clearInterval(breathI);const s
  let n=0;const cycle=()=>{r.classList.add('inh');setCue(t('cue_in'));snd(1);hap();
   timers.push(setTimeout(()=>{r.classList.remove('inh');setCue(t('cue_out'));snd(0)},4000));n++};
  requestAnimationFrame(()=>requestAnimationFrame(cycle));breathI=setInterval(cycle,8000);
- timers=[setTimeout(()=>{$('pMsg').classList.add('on')},7600),setTimeout(()=>{s.classList.add('ready')},8400)]}
+ const X=((st.breaths||1)-1)*8000;timers=[setTimeout(()=>{$('pMsg').classList.add('on')},7600+X),setTimeout(()=>{s.classList.add('ready')},8400+X)]}
 let breathI=null;
 /* soft "breath" sound: filtered noise that swells on the in-breath and fades on the out-breath (no audio files) */
 let AC=null,nGain=null,nFilt=null;
@@ -1878,6 +1925,28 @@ function renderRules(){const T=st.times,m=mode(),R=st.rest;
 function openRest(){const R=st.rest,o=i=>[0,1,2,3,4,5,6].map(d=>`<option value="${d}" ${d===i?'selected':''}>${dayName(d)}</option>`).join('');
  $('rsSd').innerHTML=o(R.sd);$('rsEd').innerHTML=o(R.ed);$('rsSt').value=R.st;$('rsEt').value=R.et;$('rsBtn').textContent=R.on?t('rs_save'):t('rs_on');$('rsOff').style.display=R.on?'':'none';$('rsSheet').classList.add('on')}
 function saveRest(on){st.rest={on,sd:+$('rsSd').value,st:$('rsSt').value||'08:00',ed:+$('rsEd').value,et:$('rsEt').value||'20:00'};save();closeSheet();hap();renderRules();toast(on?t('rs_saved'):t('rs_offed'))}
+
+/* ---------- v39: moments (every "Not now" is a moment with the person you saw), milestones, new settings ---------- */
+const MILES=[5,10,25,50,100,250,500];
+const nextMile=n=>MILES.find(m=>m>n)||n+100;
+function momCount(pid,since=0){return st.log.filter(e=>e.k==='here'&&e.t>=since&&(pid===undefined?true:pid===null?!e.p:e.p===pid)).length}
+const weekStart=()=>Date.now()-7*864e5;
+function renderMoments(){const el=$('moms');if(!el)return;const wk=weekStart(),all=momCount(undefined,wk);
+ const ppl=st.people.map(p=>({p,w:momCount(p.id,wk),tot:momCount(p.id)})).sort((a,b)=>b.w-a.w),self=momCount(null,wk);
+ let h=`<div class="mhero glass"><small>${t('m_title')}</small><div class="num">${all}</div><span>${all?t('m_week'):t('m_empty')}</span></div>`;
+ h+=ppl.map(({p,w,tot})=>{const nx=nextMile(tot),prev=[0,...MILES].filter(m=>m<=tot).pop()||0,f=(tot-prev)/(nx-prev);
+  return`<div class="mrow solid"><i class="mmp" data-pic="${p.pics[0]||''}"></i><span class="tx"><b>${esc(p.name)}</b><small>${t('m_tot',tot)}</small><span class="mbar"><b style="width:${Math.round(f*100)}%"></b></span><small class="nx">${t('m_next',nx-tot,nx)}</small></span><span class="mw"><b>${w}</b><small>${t('m_wk')}</small></span></div>`}).join('');
+ if(self)h+=`<div class="mrow glass"><i class="mmp self">${ic('leaf')}</i><span class="tx"><b>${t('m_self')}</b><small>${t('m_self_s')}</small></span><span class="mw"><b>${self}</b><small>${t('m_wk')}</small></span></div>`;
+ el.innerHTML=h;el.querySelectorAll('.mmp[data-pic]').forEach(i=>{if(i.dataset.pic)photo(i.dataset.pic).then(s=>{if(s)i.style.backgroundImage=`url(${s})`})})}
+/* the "Done" screen: show who the moment was for, and count it */
+async function doneMoment(){const p=st.people.find(x=>x.id===curPerson),box=$('dPh');if(!box)return;box.style.display='none';$('dMom').textContent='';
+ if(!p)return;const s=await photo(pickPic(p));if(s){box.style.backgroundImage=`url(${s})`;box.style.display=''}
+ if(isTest)return;const tot=momCount(p.id),w=momCount(p.id,weekStart());$('dMom').textContent=MILES.includes(tot)?t('m_mile',tot,p.name):t('m_n',w,p.name)}
+const pickPic=p=>p.pics[0];
+/* settings rows */
+function stog(icon,col,title,sub,on,act){return`<button class="srow" onclick="${act}"><span class="ic" style="background:${col}">${ic(icon)}</span><span class="tx"><b>${title}</b><small>${esc(sub)}</small></span><span class="sw ${on?'on':''}"><i></i></span></button>`}
+function cycleBreaths(){st.breaths=((st.breaths||1)%3)+1;save();hap();renderSettings()}
+function cycleOpen(){const L=[1,2,3,5,10,15],i=L.indexOf(st.lastMin||5);st.lastMin=L[(i+1)%L.length];save();hap();renderSettings()}
 
 /* ---------- apps: summary card + Apple-style picker ---------- */
 function selApps(){st.block=st.block||{cats:['social','ent'],apps:[]};return st.block}
@@ -1935,7 +2004,7 @@ function renderHome(){const now=new Date();
  $('homeApps').innerHTML=selCardHTML(selApps(),t('h_apps'));renderSess();renderRules()}
 
 /* ---------- progress ---------- */
-function renderStats(){const now=new Date(),s=streakDays();$('sStreak').textContent=s;
+function renderStats(){renderMoments();const now=new Date(),s=streakDays();$('sStreak').textContent=s;
  $('sMiles').innerHTML=[3,7,14,30].map(n=>`<div class="${s>=n?'ok':''}"><i>${s>=n?ic('check'):n}</i>${t('mile',n)}</div>`).join('');
  const wk=st.log.filter(e=>e.t>now-7*864e5),here=wk.filter(e=>e.k==='here').length,tot=wk.length;
  $('sMin').innerHTML=`${here*5}<small>${t('min')}</small>`;$('sRate').textContent=tot?Math.round(here/tot*100)+'%':'–';
@@ -1960,15 +2029,20 @@ function cp(x){(navigator.clipboard?navigator.clipboard.writeText(x):Promise.rej
 
 /* ---------- settings ---------- */
 function srow(icon,col,title,sub,act){return`<button class="srow" onclick="${act}"><span class="ic" style="background:${col}">${ic(icon)}</span><span class="tx"><b>${title}</b><small>${esc(sub)}</small></span><span class="end">${ic('chev')}</span></button>`}
-function renderSettings(){const T=st.times,B=selApps();
+function renderSettings(){const T=st.times,B=selApps(),n=st.people.length;
+ $('setPeople').innerHTML=`<span class="avs" id="setAvs"></span>${n?'':`<span class="addp">${ic('plus')}</span>`}<span class="tx"><b>${t('set_people')}</b><small>${esc(n?st.people.map(p=>p.name).join(', '):t('set_people_s',0))}</small></span><span style="color:#B3A396">${ic('chev')}</span>`;avatars('setAvs');
  $('setList1').innerHTML=srow('phone','#D9652A',t('set_apps'),[...B.cats.map(catL),...B.apps.map(appName)].join(', ')||t('none_yet'),'openPicker()')
-  +srow('users','#E0842F',t('set_ppl'),st.people.length?st.people.map(p=>p.name).join(', '):t('none_yet'),"edit('ob2')")
-  +srow('bulb','#C9A227',t('set_ideas'),t('ideas_s',st.general.length,st.cats.length+st.custom.length),"edit('ob3')")
-  +srow('clock','#8A6E8C',t('set_times'),t('times_s',T),"edit('ob4')")
+  +srow('bulb','#C9A227',t('set_ideas2'),t('set_ideas2_s',st.cats.length+st.custom.length),"edit('ob3')")
+  +srow('moon','#8A6E8C',t('set_quiet'),`${t('r_until',T.mEnd)} · ${T.fStart}–${T.fEnd} · ${t('r_from',T.nStart)}`+(st.rest&&st.rest.on?' · '+t('r_r'):''),"edit('ob4')")
   +srow('clock','#3E8E6A',t('set_perm'),st.connected?t('perm_test'):st.perm?t('perm_on'):t('perm_off'),st.connected?"go('ob5')":"go('perm')");
+ $('setListF').innerHTML=srow('leaf','#3E8E6A',t('set_breaths'),t('set_breaths_s',st.breaths||1),'cycleBreaths()')
+  +stog('bell','#E0842F',t('set_sound'),t('set_sound_s'),!st.mute,'st.mute=!st.mute;save();hap();renderSettings()')
+  +srow('clock','#5E8BD9',t('set_open'),t('set_open_s',st.lastMin||5),'cycleOpen()');
  $('setList2').innerHTML=srow('globe','#2F80ED',t('set_lang'),LANGS[LANG].name,'openLang()')
-  +srow('play','#D9652A',t('set_replay'),t('set_replay_s'),"qi=0;go('ob1',{anim:'up'})")+srow('card','#5E4E42',t('set_plan'),t('plan_s',st.trial&&st.trial.plan),"toast(t('t_restore'))")
-  +srow('link','#8E8E93',t('set_test'),(st.connected?t('conn_y'):t('conn_n'))+' · '+t('set_test_s'),"go('ob5')")}
+  +srow('play','#D9652A',t('set_replay'),t('set_replay_s'),"qi=0;go('ob1',{anim:'up'})")
+  +srow('card','#5E4E42',t('set_plan'),t('plan_s',st.trial&&st.trial.plan),"toast(t('t_restore'))")
+  +srow('link','#8E8E93',t('set_test'),(st.connected?t('conn_y'):t('conn_n'))+' · '+t('set_test_s'),"go('ob5')");
+ $('setList3').innerHTML=srow('lock','#5E4E42',t('set_priv'),t('set_priv_s'),"toast(t('t_priv'))")}
 async function resetAll(){if(!confirm(t('reset_q')))return;await DB.clear();const l=st.lang;localStorage.removeItem('lu');if(l)S.set({lang:l});location.hash='';location.reload()}
 
 /* ---------- boot ---------- */
