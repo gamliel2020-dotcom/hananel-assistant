@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Look Up v37: removed "Photos you love" from the ideas screen (photos come from your people) · v36: clearer "how does phone time affect you?" + required name/photo marks in Add person · v35: Cal AI-style week strip on Home (saved v34 = /saved-v34/) · v34: Settings → "See the intro again" · v33: welcome research laurel, plan "moments a year with your people", personal paywall (saved v32 = /saved-v32/) · v32: Opal-style Screen Time primer (saved v31 = /saved-v31/) · v31: logo only on Home like Cal AI (saved v30 in Archive) · v30: app icon = 10d "head rising" · v29: wordmark app icon + removed the icon→Safari "Test mode" screen · v28: idea options as Cal AI-style rows (v27 tiles looked "AI") · v27: back to the regular v25 flow (v26 test flow removed) + clean idea tiles on "What makes you feel good?" · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
+/* Look Up v38: breathing pause over your person's photo + breath sound/mute, "open for X minutes" wheel, open-session bar, quiet times + day of rest (saved v37 = /saved-v37/) · v37: removed "Photos you love" from the ideas screen (photos come from your people) · v36: clearer "how does phone time affect you?" + required name/photo marks in Add person · v35: Cal AI-style week strip on Home (saved v34 = /saved-v34/) · v34: Settings → "See the intro again" · v33: welcome research laurel, plan "moments a year with your people", personal paywall (saved v32 = /saved-v32/) · v32: Opal-style Screen Time primer (saved v31 = /saved-v31/) · v31: logo only on Home like Cal AI (saved v30 in Archive) · v30: app icon = 10d "head rising" · v29: wordmark app icon + removed the icon→Safari "Test mode" screen · v28: idea options as Cal AI-style rows (v27 tiles looked "AI") · v27: back to the regular v25 flow (v26 test flow removed) + clean idea tiles on "What makes you feel good?" · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
    Apple Screen Time style picker with real app icons, demo home screen, tab bar (Today / Progress / Settings), one onboarding progress bar */
 /* earlier v9: Cal AI onboarding patterns · v8: any app + categories · v7: Steven Cravotta blueprint · design: Passion Finder + Stress glass */
 :root{
@@ -259,6 +259,62 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .req{color:#E0702F;font-style:normal;font-weight:700;margin-inline-start:2px}
 .pneed{text-align:center;font-size:14px;color:#B4501C;margin-top:16px;min-height:20px;font-weight:500}
 .sf.need{border-color:#E0702F;box-shadow:0 0 0 3px rgba(224,112,47,.18)}
+/* v38: pause = the person's photo full screen + a glowing breathing ring (in 4s / out 4s) + soft breath sound with mute */
+#pause{padding-top:calc(env(safe-area-inset-top) + 8px)}
+.pbg{position:fixed!important;inset:-4%;background:var(--photo) center/cover;z-index:0;animation:kb 18s ease-in-out infinite alternate}
+.pbg.blur{filter:blur(28px) saturate(1.1);inset:-10%;animation:none;opacity:.9}
+@keyframes kb{from{transform:scale(1.08)}to{transform:scale(1)}}
+.pshade{position:fixed!important;inset:0;z-index:0;pointer-events:none;background:linear-gradient(rgba(35,14,4,.55),rgba(35,14,4,.12) 28%,rgba(35,14,4,.18) 55%,rgba(35,14,4,.82) 88%)}
+.ptop{grid-template-columns:48px 1fr 48px}
+.ptop .pchip{justify-self:center;max-width:100%;overflow:hidden;white-space:nowrap}
+.ptop .gbtn{background:rgba(0,0,0,.28);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.bring{position:relative;width:min(60vw,240px);aspect-ratio:1;margin:0 auto;border-radius:50%;transform:scale(.68);transition:transform 4s cubic-bezier(.45,0,.55,1),box-shadow 4s;
+ border:2px solid rgba(255,255,255,.85);box-shadow:0 0 18px rgba(255,255,255,.45),inset 0 0 22px rgba(255,255,255,.25),0 0 50px rgba(255,214,170,.2);
+ backdrop-filter:blur(3px) brightness(1.12);-webkit-backdrop-filter:blur(3px) brightness(1.12)}
+.bring.inh{transform:scale(1);box-shadow:0 0 34px rgba(255,255,255,.75),inset 0 0 40px rgba(255,255,255,.4),0 0 110px rgba(255,214,170,.45)}
+.bring i{position:absolute;inset:-5px;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 62%,rgba(255,255,255,.95) 82%,transparent 100%);
+ -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px));mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px));animation:spin 5s linear infinite;filter:blur(1.5px)}
+.bring b{position:absolute;inset:18%;border-radius:50%;background:radial-gradient(rgba(255,240,220,.28),transparent 70%);opacity:.4;transition:opacity 4s}
+.bring.inh b{opacity:1}
+@keyframes spin{to{transform:rotate(360deg)}}
+#pause .cue{font-size:40px;font-weight:700;letter-spacing:-.5px;text-align:center;min-height:52px;margin-top:22px;text-shadow:0 2px 20px rgba(0,0,0,.35);transition:opacity .6s}
+#pause .cue span{display:inline-block;opacity:0;animation:cin .5s forwards}
+@keyframes cin{to{opacity:1}}
+#pause.ready .cue{font-size:20px;min-height:28px;margin-top:14px;opacity:.85}
+#pause .msg{opacity:0;transform:translateY(10px);transition:all .9s var(--ease);text-align:center}
+#pause .msg.on{opacity:1;transform:none}
+#pause .title{font-size:28px;font-weight:700;line-height:1.18;margin-top:8px;text-shadow:0 2px 18px rgba(0,0,0,.4)}
+#pause .idea{display:inline-block;margin-top:12px;padding:12px 18px;border-radius:20px;max-width:330px;background:rgba(0,0,0,.28);border-color:rgba(255,255,255,.25)}
+#pause .idea small{display:block;font-size:13px;font-weight:600;color:#FFD9A8;margin-bottom:2px}
+#pause .idea span{font-size:18px;font-weight:500;line-height:1.35}
+.pacts{display:flex;flex-direction:column;align-items:stretch;opacity:0;pointer-events:none;transform:translateY(12px);transition:all .7s var(--ease)}
+#pause.ready .pacts{opacity:1;pointer-events:auto;transform:none}
+.pacts .pill{flex:none;height:56px;width:100%}.pacts .pill.link{height:48px;color:rgba(255,255,255,.85);font-weight:500}.pacts{padding-bottom:6px}
+/* open-for wheel (like the iOS timer picker) */
+.wheel{position:relative;height:240px;margin:0 10px}
+.wband{position:absolute;left:0;right:0;top:96px;height:48px;border-radius:24px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);pointer-events:none}
+.wlist{position:relative;height:240px;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none;-webkit-mask:linear-gradient(transparent,#000 30%,#000 70%,transparent);mask:linear-gradient(transparent,#000 30%,#000 70%,transparent)}
+.wlist::-webkit-scrollbar{display:none}
+.wlist div{height:48px;display:grid;place-items:center;scroll-snap-align:center;font-size:20px;font-weight:500;color:rgba(255,255,255,.5);transition:color .15s,font-size .15s}
+.wlist div.on{color:#fff;font-size:23px;font-weight:600}
+.wlist .sp{scroll-snap-align:none}
+/* home: open session bar + quiet times */
+.sess{display:flex;align-items:center;gap:12px;margin-top:10px;padding:12px 12px 12px 14px;border-radius:22px;background:linear-gradient(90deg,rgba(255,255,255,.95),rgba(255,236,214,.95));color:var(--ink);box-shadow:0 12px 26px -16px rgba(60,20,0,.6)}
+.sess .tx{flex:1;display:flex;flex-direction:column}.sess b{font-size:16px}.sess small{font-size:13.5px;color:#7A5A44;font-variant-numeric:tabular-nums}
+.sess button{height:40px;padding:0 14px;border-radius:20px;background:var(--ink);color:#fff;font-size:14.5px;font-weight:600;flex:none}
+.rules{display:flex;gap:10px;overflow-x:auto;margin:0 -16px;padding:2px 16px 6px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.rules::-webkit-scrollbar{display:none}#home .rules{margin-bottom:80px}
+.rule{flex:none;width:152px;scroll-snap-align:start;text-align:start;padding:14px;border-radius:22px;display:flex;flex-direction:column;gap:6px}
+.rule .ri{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.22)}
+.rule .ri svg{width:20px;height:20px}
+.rule .st{align-self:flex-start;font-size:12.5px;font-weight:600;padding:3px 9px;border-radius:10px;background:rgba(0,0,0,.18);margin-top:6px}
+.rule .st.now{background:#FFF8F1;color:var(--ink)}
+.rule b{font-size:16.5px;line-height:1.2}.rule small{font-size:13.5px;opacity:.85}
+.rule.off{opacity:.75}
+/* day-of-rest sheet */
+.rsrow{display:flex;align-items:center;gap:10px;margin-top:10px}
+.rsrow span{flex:1;font-weight:600}
+.rsrow select,.rsrow input{height:44px;border-radius:12px;border:1px solid #E6D8CA;background:#fff;padding:0 10px;font:inherit;font-size:16px;color:var(--ink)}
 /* v35: Home week strip (Cal AI pattern) */
 .wstrip{display:flex;justify-content:space-between;margin:10px -4px 4px}
 .wd{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 0 10px;border-radius:22px}
@@ -835,6 +891,7 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 <section class="screen tabbed" id="home">
   <div class="top htop"><div class="hbrand"><svg class="hmark" viewBox="0 0 1024 1024" aria-hidden="true"><defs><radialGradient id="hmo" cx="50%" cy="60%" r="75%"><stop offset="0" stop-color="#F2A15C"/><stop offset=".55" stop-color="#D9762F"/><stop offset="1" stop-color="#9C6550"/></radialGradient><clipPath id="hmc"><rect width="1024" height="640"/></clipPath></defs><rect width="1024" height="1024" fill="url(#hmo)"/><circle cx="512" cy="600" r="190" fill="#FFF8F1" clip-path="url(#hmc)"/><rect x="202" y="640" width="620" height="70" rx="35" fill="#FFF8F1"/></svg><span>Look Up</span></div><span class="streak" id="streak" onclick="go('stats',{anim:'fade'})"></span></div>
   <div class="wstrip" id="wStrip"></div>
+  <div id="sessBar"></div>
   <div class="gauge glass">
     <div class="h"><span data-t="h_today"></span><span id="hDate" style="font-size:14px;opacity:.85"></span></div>
     <div class="num" id="tHere">0</div>
@@ -849,6 +906,8 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
     <div class="tile glass"><span class="h" data-t="h_open"></span><span class="num" id="wOpen">0</span></div>
   </div>
   <button class="glass selcard" id="homeApps" style="margin-top:10px" onclick="openPicker()"></button>
+  <div class="lbl" data-t="r_title"></div>
+  <div class="rules" id="rules"></div>
 </section>
 
 <!-- ============ PROGRESS ============ -->
@@ -881,20 +940,30 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 
 <!-- ============ PAUSE ============ -->
 <section class="screen" id="pause">
-  <div class="bgph" id="pBgBlur"></div>
-  <div class="top" style="grid-template-columns:1fr"><span class="pchip" id="pGreet"></span></div>
-  <div class="circ" id="pCirc" style="--len:820">
-    <svg class="arc" viewBox="0 0 280 280"><circle class="bgc" cx="140" cy="140" r="130"/><circle class="fg" id="pArc" cx="140" cy="140" r="130"/></svg>
-    <div class="ph" id="pPhoto"></div>
-  </div>
+  <div class="pbg" id="pPhoto"></div><div class="pshade"></div>
+  <div class="top ptop"><button class="gbtn" onclick="choose('here')" aria-label="close"><svg class="i"><use href="#i-x"/></svg></button><span class="pchip" id="pGreet"></span><button class="gbtn" id="pSnd" onclick="toggleSnd()" aria-label="sound"></button></div>
+  <div class="grow" style="min-height:10px"></div>
+  <div class="bring" id="bRing"><i></i><b></b></div>
   <div class="cue" id="cue"></div>
   <div class="msg" id="pMsg">
     <div class="title" id="pTitle"></div>
     <div class="idea glass"><small id="pIdeaLbl"></small><span id="pIdea"></span></div>
   </div>
   <div class="grow" style="min-height:16px"></div>
-  <button class="round big" id="orb" onclick="choose('here')"><span><svg class="i" style="display:block;margin:0 auto 4px;color:#34A853"><use href="#i-leaf"/></svg><span data-t="here"></span></span></button>
-  <button class="pill glassb anyway" id="anyway" onclick="choose('open')"></button>
+  <div class="pacts"><button class="pill white" id="orb" onclick="choose('here')"><span data-t="here"></span></button><button class="pill link" id="anyway" onclick="choose('open')"></button></div>
+</section>
+
+<!-- ============ OPEN FOR X MINUTES (after "open anyway": you decide how long, then it pauses again) ============ -->
+<section class="screen" id="openfor">
+  <div class="pbg blur" id="ofBg"></div><div class="pshade"></div>
+  <div class="top"><button class="gbtn navback" onclick="back('pause')"><svg class="i fl"><use href="#i-back"/></svg></button><span></span><span class="pchip" id="ofApp" style="justify-self:end"></span></div>
+  <h1 class="t" style="margin-top:22px" data-t="of_t"></h1>
+  <p class="d" data-t="of_s"></p>
+  <div class="grow" style="min-height:10px"></div>
+  <div class="wheel"><div class="wband"></div><div class="wlist" id="ofWheel"></div></div>
+  <div class="grow" style="min-height:10px"></div>
+  <div class="duo"><button class="pill white" id="ofGo" onclick="openFor()"></button></div>
+  <button class="pill link" onclick="choose('here')" data-t="of_never"></button>
 </section>
 
 <section class="screen" id="done">
@@ -949,6 +1018,15 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
   <p class="pkf" data-t="pk_foot"></p>
 </div></div>
 
+<div class="sheet" id="rsSheet" onclick="if(event.target===this)closeSheet()"><div>
+  <div class="grab"></div>
+  <h3 class="lmh" data-t="r_r"></h3>
+  <p style="color:#6B5B4E;font-size:15px;line-height:1.45;margin-top:4px" data-t="rs_d"></p>
+  <div class="rsrow"><span data-t="rs_start"></span><select id="rsSd"></select><input type="time" id="rsSt"></div>
+  <div class="rsrow"><span data-t="rs_end"></span><select id="rsEd"></select><input type="time" id="rsEt"></div>
+  <button class="pill ink" style="margin-top:20px;width:100%" id="rsBtn" onclick="saveRest(true)"></button>
+  <button class="pill link" style="color:#7A6A5D" id="rsOff" onclick="saveRest(false)" data-t="rs_off"></button>
+</div></div>
 <div class="sheet" id="lmSheet" onclick="if(event.target===this)closeSheet()"><div>
   <div class="grab"></div>
   <h3 class="lmh" data-t="op_more_t"></h3>
@@ -1425,6 +1503,28 @@ const NW={en:{w_badge:'Backed by research: a short pause cut app opens by 57%',p
  fr:{w_badge:'Validé par la recherche : une courte pause a réduit de 57 % les ouvertures',pl_year:'En un an, c’est',pl_mom:n=>`moments avec ${n}`,pl_mom0:'moments pour ce qui compte',pl_each:'Chaque pause avant une app, c’est un moment où vous les choisissez.',pl_each0:'Chaque pause avant une app, c’est un moment retrouvé.',pw3_tp:n=>`Être là pour ${n},<br>chaque jour`,pw_mom:n=>`Soit ${n} moments par an`},
  ar:{w_badge:'مدعوم بالأبحاث: توقف قصير خفّض فتح التطبيقات بنسبة 57%',pl_year:'في سنة واحدة، هذا',pl_mom:n=>`لحظة مع ${n}`,pl_mom0:'لحظة لما يهمّ',pl_each:'كل توقف قبل تطبيق هو لحظة تختارهم فيها.',pl_each0:'كل توقف قبل تطبيق هو لحظة تستعيدها.',pw3_tp:n=>`كن حاضرًا لـ ${n}،<br>كل يوم`,pw_mom:n=>`أي ${n} لحظة في السنة`}};
 for(const l in NW)Object.assign(V[l],NW[l]);
+const OF={en:{of_t:'Open it for…',of_s:'After that, Look Up pauses it again.',of_go:m=>`Open for ${m} min`,of_min:m=>m===1?'1 minute':`${m} minutes`,of_never:'Never mind, not now',of_demo:(a,m)=>`Demo: ${a} would open for ${m} min`,
+  ss_t:a=>`${a} is open`,ss_left:s=>`${s} left · enjoy it mindfully`,ss_stop:'Pause now',ss_done:'Paused again. Nice.',
+  r_title:'Your quiet times',r_m:'Calm morning',r_f:'Family time',r_n:'Bedtime',r_r:'Day of rest',r_until:x=>`Until ${x}`,r_from:x=>`From ${x}`,r_now:'Now',r_on:'On',r_off:'Off',
+  rs_hint:'Any day, any hours',rs_d:'One day a week with a gentler phone: every app you chose gets a pause. Pick any day and hours.',rs_start:'Starts',rs_end:'Ends',rs_on:'Turn on',rs_save:'Save',rs_off:'Turn off',rs_saved:'Day of rest is on',rs_offed:'Day of rest is off'},
+ he:{of_t:'לפתוח ל…',of_s:'אחרי זה, Look Up תעצור אותה שוב.',of_go:m=>`לפתוח ל־${m} דק׳`,of_min:m=>m===1?'דקה אחת':`${m} דקות`,of_never:'בעצם, לא עכשיו',of_demo:(a,m)=>`הדגמה: ${a} הייתה נפתחת ל־${m} דק׳`,
+  ss_t:a=>`${a} פתוחה`,ss_left:s=>`נשארו ${s} · ליהנות בתשומת לב`,ss_stop:'לעצור עכשיו',ss_done:'נעצר שוב. יפה.',
+  r_title:'הזמנים השקטים',r_m:'בוקר רגוע',r_f:'זמן משפחה',r_n:'לפני שינה',r_r:'יום מנוחה',r_until:x=>`עד ${x}`,r_from:x=>`מ־${x}`,r_now:'עכשיו',r_on:'פעיל',r_off:'כבוי',
+  rs_hint:'כל יום, כל שעות',rs_d:'יום אחד בשבוע עם טלפון רגוע יותר: כל אפליקציה שנבחרה מקבלת הפסקה. בוחרים כל יום וכל שעות.',rs_start:'מתחיל',rs_end:'נגמר',rs_on:'להפעיל',rs_save:'לשמור',rs_off:'לכבות',rs_saved:'יום המנוחה פעיל',rs_offed:'יום המנוחה כבוי'},
+ es:{of_t:'Abrir durante…',of_s:'Después, Look Up la pausa otra vez.',of_go:m=>`Abrir ${m} min`,of_min:m=>m===1?'1 minuto':`${m} minutos`,of_never:'Mejor no, ahora no',of_demo:(a,m)=>`Demo: ${a} se abriría ${m} min`,
+  ss_t:a=>`${a} está abierta`,ss_left:s=>`Quedan ${s} · disfrútalo con calma`,ss_stop:'Pausar ya',ss_done:'Pausada otra vez. Bien.',
+  r_title:'Tus momentos tranquilos',r_m:'Mañana tranquila',r_f:'Tiempo en familia',r_n:'Hora de dormir',r_r:'Día de descanso',r_until:x=>`Hasta ${x}`,r_from:x=>`Desde ${x}`,r_now:'Ahora',r_on:'Activo',r_off:'Apagado',
+  rs_hint:'Cualquier día y hora',rs_d:'Un día a la semana con un móvil más tranquilo: cada app elegida tiene una pausa. Elige el día y las horas.',rs_start:'Empieza',rs_end:'Termina',rs_on:'Activar',rs_save:'Guardar',rs_off:'Desactivar',rs_saved:'Día de descanso activado',rs_offed:'Día de descanso desactivado'},
+ fr:{of_t:'Ouvrir pendant…',of_s:'Ensuite, Look Up la remet en pause.',of_go:m=>`Ouvrir ${m} min`,of_min:m=>m===1?'1 minute':`${m} minutes`,of_never:'Finalement, pas maintenant',of_demo:(a,m)=>`Démo : ${a} s’ouvrirait ${m} min`,
+  ss_t:a=>`${a} est ouverte`,ss_left:s=>`Encore ${s} · profite en conscience`,ss_stop:'Pause maintenant',ss_done:'De nouveau en pause. Bravo.',
+  r_title:'Tes moments calmes',r_m:'Matin calme',r_f:'Temps en famille',r_n:'Coucher',r_r:'Jour de repos',r_until:x=>`Jusqu’à ${x}`,r_from:x=>`Dès ${x}`,r_now:'Maintenant',r_on:'Activé',r_off:'Désactivé',
+  rs_hint:'N’importe quel jour',rs_d:'Un jour par semaine avec un téléphone plus calme : chaque app choisie a une pause. Choisis le jour et les heures.',rs_start:'Début',rs_end:'Fin',rs_on:'Activer',rs_save:'Enregistrer',rs_off:'Désactiver',rs_saved:'Jour de repos activé',rs_offed:'Jour de repos désactivé'},
+ ar:{of_t:'افتحه لمدة…',of_s:'بعدها يوقفه Look Up مرة أخرى.',of_go:m=>`افتح لمدة ${m} د`,of_min:m=>m===1?'دقيقة واحدة':`${m} دقائق`,of_never:'لا، ليس الآن',of_demo:(a,m)=>`عرض: كان ${a} سيفتح لمدة ${m} د`,
+  ss_t:a=>`${a} مفتوح`,ss_left:s=>`متبقٍ ${s} · استمتع بوعي`,ss_stop:'أوقفه الآن',ss_done:'تم الإيقاف مجددًا. أحسنت.',
+  r_title:'أوقاتك الهادئة',r_m:'صباح هادئ',r_f:'وقت العائلة',r_n:'وقت النوم',r_r:'يوم راحة',r_until:x=>`حتى ${x}`,r_from:x=>`من ${x}`,r_now:'الآن',r_on:'مفعّل',r_off:'متوقف',
+  rs_hint:'أي يوم وأي ساعات',rs_d:'يوم في الأسبوع مع هاتف أهدأ: كل تطبيق اخترته يحصل على توقف. اختر اليوم والساعات.',rs_start:'يبدأ',rs_end:'ينتهي',rs_on:'تفعيل',rs_save:'حفظ',rs_off:'إيقاف',rs_saved:'يوم الراحة مفعّل',rs_offed:'يوم الراحة متوقف'}};
+for(const l in OF)Object.assign(V[l],OF[l]);
+
 const PN={en:['Add a name and at least 1 photo to save','Add a name to save','Add at least 1 photo to save'],he:['כדי לשמור, צריך שם ולפחות תמונה אחת','כדי לשמור, צריך שם','כדי לשמור, צריך לפחות תמונה אחת'],es:['Añade un nombre y al menos 1 foto para guardar','Añade un nombre para guardar','Añade al menos 1 foto para guardar'],fr:['Ajoute un prénom et au moins 1 photo pour enregistrer','Ajoute un prénom pour enregistrer','Ajoute au moins 1 photo pour enregistrer'],ar:['أضف اسمًا وصورة واحدة على الأقل للحفظ','أضف اسمًا للحفظ','أضف صورة واحدة على الأقل للحفظ']};for(const l in PN){V[l].ps_need_both=PN[l][0];V[l].ps_need_name=PN[l][1];V[l].ps_need_pic=PN[l][2]}
 const RP={en:['See the intro again','Welcome, plan and paywall · your people stay'],he:['לראות את הפתיחה שוב','פתיחה, תוכנית ומחירים · האנשים נשמרים'],es:['Ver la introducción otra vez','Bienvenida, plan y precios · tus personas se quedan'],fr:['Revoir l’introduction','Accueil, plan et offres · vos proches restent'],ar:['مشاهدة المقدمة مرة أخرى','الترحيب والخطة والأسعار · يبقى أشخاصك']};for(const l in RP){V[l].set_replay=RP[l][0];V[l].set_replay_s=RP[l][1]}
 const OP={en:{op_t:'Let’s connect Look Up to Screen Time. Securely.',op_safe:'Your information is protected by Apple and stays 100% on your phone.',op_more:'Learn more',op_more_t:'What Look Up can and can’t do',op_ok:'Got it'},
@@ -1493,7 +1593,7 @@ function mode(d=new Date()){const T=st.times,now=d.getHours()*60+d.getMinutes(),
  if(now>=mins(T.nStart)||now<240)return'night';
  if(now<mins(T.mEnd))return'morning';
  const shab=false&&((day===5&&now>=mins('17:00'))||day===6);
- if((now>=mins(T.fStart)&&now<mins(T.fEnd))||shab)return st.people.length?'family':'day';
+ if((now>=mins(T.fStart)&&now<mins(T.fEnd))||shab||inRest(d))return st.people.length?'family':'day';
  return'day'}
 
 /* ---------- navigation (push / pop / fade / zoom / up) ---------- */
@@ -1512,7 +1612,7 @@ function go(id,o={}){closeSheet();clearTimeout(doneT);const el=$(id),prev=docume
  const tb=TABS.includes(id);$('tabbar').classList.toggle('on',tb);document.body.classList.toggle('tabs',tb);document.documentElement.classList.toggle('tabsbg',tb);
  document.querySelectorAll('#tabbar button').forEach(b=>b.classList.toggle('on',b.dataset.tab===id));
  const ob=el.querySelector('.obbar');if(ob){const hide=editing||st.setup;ob.style.visibility=hide?'hidden':'';const n=id==='quiz'?qi+1:QZ.length+ONB.indexOf(id)+1;ob.firstElementChild.style.width=(n/OBTOT*100)+'%'}
- ({ob1:renderWelcome,ob2:renderPeople,ob3:renderGeneral,ob4:loadTimes,ob5:renderGuide,home:renderHome,stats:renderStats,settings:renderSettings,build:runBuild,pw3:renderPw3,quiz:renderQuiz,plan:renderPlan,apps:renderApps,commit:renderCommit,spring:renderSpring}[id]||(()=>{}))();
+ ({ob1:renderWelcome,ob2:renderPeople,ob3:renderGeneral,ob4:loadTimes,ob5:renderGuide,home:renderHome,stats:renderStats,settings:renderSettings,build:runBuild,pw3:renderPw3,quiz:renderQuiz,plan:renderPlan,apps:renderApps,commit:renderCommit,spring:renderSpring,openfor:renderOpenFor}[id]||(()=>{}))();
  if(id==='first'||id==='pw1')photo(anyPic()).then(s=>{if(s)$(id==='first'?'firstPh':'pw1ph').style.backgroundImage=`url(${s})`})}
 function back(id){if(editing){editing=false;go('settings',{back:1})}else go(id,{back:1})}
 function edit(id){editing=true;go(id)}
@@ -1706,19 +1806,14 @@ async function startPause(app,test,anim){curApp=app||'instagram';isTest=!!test;c
  else{title=pick(t('DAY'));const I=t('IDEAS');const pool=[...st.cats.flatMap(c=>I[c]||[]),...st.custom,...st.custom];idea=pick(pool.length?pool:I.breath);pic=pick([...st.general,...st.people.flatMap(p=>p.pics)]);greet=t('g_before',appName(curApp))}
  if(!isTest)greet+=t('g_nth',tries);
  const src=await photo(pic)||'';const bg=src?`url(${src})`:(m==='night'?'var(--photoNight)':'var(--photo)');
- $('pPhoto').style.backgroundImage=bg;$('pBgBlur').style.backgroundImage=bg;
+ $('pPhoto').style.backgroundImage=bg;sndIcon();
  $('pGreet').innerHTML=(APPS[curApp]?appIcon(curApp,26):'')+`<span>${esc(greet)}</span>`;$('pTitle').textContent=title;
  $('pIdea').textContent=idea;$('pIdeaLbl').textContent=lbl;
  $('anyway').textContent=t('anyway',appName(curApp));
  $('pMsg').classList.remove('on');
  go('pause',{anim:anim||'fade'});runBreath()}
-function runBreath(){timers.forEach(clearTimeout);const s=$('pause'),c=$('cue'),a=$('pArc');
- s.classList.remove('in','out','ready');c.textContent=t('cue_in');a.style.transition='none';a.style.strokeDashoffset=820;
- requestAnimationFrame(()=>requestAnimationFrame(()=>{s.classList.add('in');a.style.transition='stroke-dashoffset 6.4s linear';a.style.strokeDashoffset=0}));
- timers=[setTimeout(()=>{s.classList.replace('in','out');c.textContent=t('cue_out')},3000),
- setTimeout(()=>{c.textContent='';$('pMsg').classList.add('on')},5400),
- setTimeout(()=>{s.classList.remove('out');s.classList.add('in','ready');s.style.transformOrigin=''},6500)]}
-function choose(kind){if(!isTest){st.log.push({t:Date.now(),k:kind,app:curApp,p:curPerson});st.log=st.log.slice(-2000);save()}
+
+function choose(kind){timers.forEach(clearTimeout);clearInterval(breathI);sndStop();if(kind==='open'){go('openfor',{anim:'up'});return}if(!isTest){st.log.push({t:Date.now(),k:kind,app:curApp,p:curPerson});st.log=st.log.slice(-2000);save()}
  if(kind==='here'){const today=countDay(new Date());$('dTitle').innerHTML=t('d_title');
   const p=st.people.find(x=>x.id===curPerson);$('dSub').textContent=p?t('d_person',p.name):(isTest?t('d_test'):t('d_nth',today.here||1));
   const after=firstRun?'perm':'home';
@@ -1726,6 +1821,63 @@ function choose(kind){if(!isTest){st.log.push({t:Date.now(),k:kind,app:curApp,p:
  if(isTest){toast(t('t_noopen'));const a=firstRun?'perm':'home';firstRun=false;go(a,{anim:'up'});return}
  const u=(APPS[curApp]||{}).u;if(!u){toast(t('t_opennow'));return}
  location.href='shortcuts://run-shortcut?name='+encodeURIComponent('Look Up Pass')+'&input=text&text='+encodeURIComponent(u)}
+
+/* ---------- v38: breathing pause, breath sound, open-for-X-minutes, open session, quiet times ---------- */
+function setCue(s){const c=$('cue');c.innerHTML=[...s].map((ch,i)=>`<span style="animation-delay:${i*45}ms">${ch===' '?'&nbsp;':esc(ch)}</span>`).join('')}
+function runBreath(){timers.forEach(clearTimeout);clearInterval(breathI);const s=$('pause'),r=$('bRing');
+ s.classList.remove('ready');$('pMsg').classList.remove('on');r.classList.remove('inh');
+ let n=0;const cycle=()=>{r.classList.add('inh');setCue(t('cue_in'));snd(1);hap();
+  timers.push(setTimeout(()=>{r.classList.remove('inh');setCue(t('cue_out'));snd(0)},4000));n++};
+ requestAnimationFrame(()=>requestAnimationFrame(cycle));breathI=setInterval(cycle,8000);
+ timers=[setTimeout(()=>{$('pMsg').classList.add('on')},7600),setTimeout(()=>{s.classList.add('ready')},8400)]}
+let breathI=null;
+/* soft "breath" sound: filtered noise that swells on the in-breath and fades on the out-breath (no audio files) */
+let AC=null,nGain=null,nFilt=null;
+function sndInit(){if(AC)return;try{AC=new (window.AudioContext||window.webkitAudioContext)();const b=AC.createBuffer(1,AC.sampleRate*2,AC.sampleRate),d=b.getChannelData(0);let l=0;for(let i=0;i<d.length;i++){l=(l+0.02*(Math.random()*2-1))/1.02;d[i]=l*3.5}
+ const src=AC.createBufferSource();src.buffer=b;src.loop=true;nFilt=AC.createBiquadFilter();nFilt.type='lowpass';nFilt.frequency.value=500;nGain=AC.createGain();nGain.gain.value=0;src.connect(nFilt);nFilt.connect(nGain);nGain.connect(AC.destination);src.start()}catch(e){AC=null}}
+function snd(inb){if(st.mute||!$('pause').classList.contains('on'))return;sndInit();if(!AC)return;if(AC.state==='suspended')AC.resume();const t0=AC.currentTime;
+ nGain.gain.cancelScheduledValues(t0);nFilt.frequency.cancelScheduledValues(t0);nGain.gain.setValueAtTime(nGain.gain.value,t0);nFilt.frequency.setValueAtTime(nFilt.frequency.value,t0);
+ nGain.gain.linearRampToValueAtTime(inb?0.5:0.04,t0+4);nFilt.frequency.linearRampToValueAtTime(inb?1400:380,t0+4)}
+function sndStop(){if(AC&&nGain){nGain.gain.cancelScheduledValues(AC.currentTime);nGain.gain.setTargetAtTime(0,AC.currentTime,.15)}}
+function sndIcon(){$('pSnd').innerHTML=st.mute?'<svg class="i" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></svg>':'<svg class="i" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>'}
+function toggleSnd(){st.mute=!st.mute;save();sndIcon();hap();if(st.mute)sndStop();else{sndInit();if(AC)AC.resume();snd($('bRing').classList.contains('inh')?1:0)}}
+document.addEventListener('pointerdown',()=>{if(AC&&AC.state==='suspended')AC.resume()},{passive:true});
+
+/* open for X minutes: you choose the time, Look Up stays quiet until it ends, then pauses again */
+const OF_MIN=[1,2,3,5,10,15,20,30,45,60];let ofI=3;
+function renderOpenFor(){$('ofApp').innerHTML=(APPS[curApp]?appIcon(curApp,26):'')+`<span>${esc(appName(curApp))}</span>`;$('ofBg').style.backgroundImage=$('pPhoto').style.backgroundImage;
+ const w=$('ofWheel');w.innerHTML='<div class="sp"></div><div class="sp"></div>'+OF_MIN.map((m,i)=>`<div data-i="${i}" onclick="ofScroll(${i},true)">${t('of_min',m)}</div>`).join('')+'<div class="sp"></div><div class="sp"></div>';
+ ofI=OF_MIN.indexOf(st.lastMin||5);if(ofI<0)ofI=3;requestAnimationFrame(()=>{w.scrollTop=ofI*48;ofMark()});
+ w.onscroll=()=>{const i=Math.max(0,Math.min(OF_MIN.length-1,Math.round(w.scrollTop/48)));if(i!==ofI){ofI=i;ofMark();hap()}}}
+function ofScroll(i){$('ofWheel').scrollTo({top:i*48,behavior:'smooth'})}
+function ofMark(){[...$('ofWheel').querySelectorAll('[data-i]')].forEach(d=>d.classList.toggle('on',+d.dataset.i===ofI));$('ofGo').textContent=t('of_go',OF_MIN[ofI])}
+function openFor(){const m=OF_MIN[ofI];st.lastMin=m;hap();
+ if(!isTest){st.log.push({t:Date.now(),k:'open',app:curApp,p:curPerson});st.log=st.log.slice(-2000)}
+ st.session={app:curApp,until:Date.now()+m*60000,min:m};save();sndStop();
+ if(isTest){toast(t('of_demo',appName(curApp),m));const a=firstRun?'perm':'home';firstRun=false;go(a,{anim:'up'});return}
+ openApp(curApp)}
+function openApp(app){const u=(APPS[app]||{}).u;if(!u){toast(t('t_opennow'));go('home',{anim:'fade'});return}
+ location.href='shortcuts://run-shortcut?name='+encodeURIComponent('Look Up Pass')+'&input=text&text='+encodeURIComponent(u)}
+const sessOn=app=>st.session&&st.session.until>Date.now()&&(!app||st.session.app===app);
+function renderSess(){const el=$('sessBar');if(!el)return;if(!sessOn()){el.innerHTML='';return}
+ const s=Math.max(0,Math.round((st.session.until-Date.now())/1000)),mm=Math.floor(s/60),ss=String(s%60).padStart(2,'0');
+ el.innerHTML=`<div class="sess">${APPS[st.session.app]?appIcon(st.session.app,40):''}<span class="tx"><b>${esc(t('ss_t',appName(st.session.app)))}</b><small>${t('ss_left',mm+':'+ss)}</small></span><button onclick="endSess()">${t('ss_stop')}</button></div>`}
+function endSess(){st.session=null;save();hap();renderSess();toast(t('ss_done'))}
+setInterval(()=>{if($('home').classList.contains('on'))renderSess()},1000);
+
+/* quiet times (Opal-style "rules", but ours: morning, family time, bedtime, and a day of rest for any day of the week) */
+st.rest=st.rest||{on:false,sd:6,st:'08:00',ed:6,et:'20:00'};
+function inRest(d=new Date()){const R=st.rest;if(!R||!R.on)return false;const w=d.getDay()*1440+d.getHours()*60+d.getMinutes(),s=R.sd*1440+mins(R.st),e=R.ed*1440+mins(R.et);return s<=e?(w>=s&&w<e):(w>=s||w<e)}
+const dayName=i=>new Date(2024,8,1+i).toLocaleDateString(LANGS[LANG].loc,{weekday:'short'});
+function renderRules(){const T=st.times,m=mode(),R=st.rest;
+ const card=(icon,col,title,sub,on,now,act)=>`<button class="rule glass ${on?'':'off'}" onclick="${act}"><span class="ri" style="background:${col}">${ic(icon)}</span><span class="st ${now?'now':''}">${now?t('r_now'):on?t('r_on'):t('r_off')}</span><b>${title}</b><small>${sub}</small></button>`;
+ $('rules').innerHTML=card('sun','rgba(255,214,120,.45)',t('r_m'),t('r_until',T.mEnd),true,m==='morning',"edit('ob4')")
+  +card('users','rgba(255,170,120,.45)',t('r_f'),`${T.fStart}–${T.fEnd}`,true,m==='family',"edit('ob4')")
+  +card('moon','rgba(160,140,220,.45)',t('r_n'),t('r_from',T.nStart),true,m==='night',"edit('ob4')")
+  +card('leaf','rgba(150,210,160,.45)',t('r_r'),R.on?`${dayName(R.sd)} ${R.st} – ${dayName(R.ed)} ${R.et}`:t('rs_hint'),R.on,inRest(),"openRest()")}
+function openRest(){const R=st.rest,o=i=>[0,1,2,3,4,5,6].map(d=>`<option value="${d}" ${d===i?'selected':''}>${dayName(d)}</option>`).join('');
+ $('rsSd').innerHTML=o(R.sd);$('rsEd').innerHTML=o(R.ed);$('rsSt').value=R.st;$('rsEt').value=R.et;$('rsBtn').textContent=R.on?t('rs_save'):t('rs_on');$('rsOff').style.display=R.on?'':'none';$('rsSheet').classList.add('on')}
+function saveRest(on){st.rest={on,sd:+$('rsSd').value,st:$('rsSt').value||'08:00',ed:+$('rsEd').value,et:$('rsEt').value||'20:00'};save();closeSheet();hap();renderRules();toast(on?t('rs_saved'):t('rs_offed'))}
 
 /* ---------- apps: summary card + Apple-style picker ---------- */
 function selApps(){st.block=st.block||{cats:['social','ent'],apps:[]};return st.block}
@@ -1780,7 +1932,7 @@ function renderHome(){const now=new Date();
  const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;
  $('connectStatus').innerHTML=(st.perm||st.connected)?(st.connected&&standalone?`<p class="foot" style="margin-top:10px">${t('g_safari_short')}</p>`:''):`<div class="status"><span class="tx"><b>${t('nc_t')}</b><small>${t('nc_s')}</small></span><button class="go" onclick="go('perm')">${t('nc_go')}</button></div>`;
  const wk=st.log.filter(e=>e.t>now-7*864e5);$('wHere').textContent=wk.filter(e=>e.k==='here').length;$('wOpen').textContent=wk.filter(e=>e.k==='open').length;
- $('homeApps').innerHTML=selCardHTML(selApps(),t('h_apps'))}
+ $('homeApps').innerHTML=selCardHTML(selApps(),t('h_apps'));renderSess();renderRules()}
 
 /* ---------- progress ---------- */
 function renderStats(){const now=new Date(),s=streakDays();$('sStreak').textContent=s;
@@ -1828,7 +1980,7 @@ function toSafari(){if(!(navigator.standalone||matchMedia('(display-mode: standa
  setTimeout(()=>{document.body.insertAdjacentHTML('beforeend',`<div style="position:fixed;inset:0;z-index:99;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:30px;text-align:center;background:#A15F40;color:#fff;font:500 17px/1.5 Heebo,sans-serif"><b style="font-size:22px">Look Up</b><span>${t('g_safari_short')}</span><a href="${location.origin+location.pathname}" target="_blank" style="background:#fff;color:#231A14;padding:14px 22px;border-radius:16px;text-decoration:none;font-weight:600">Safari</a></div>`)},1500);return true}
 function boot(){applyLang();/* v29: no more auto-handover to Safari (it showed a confusing "Test mode" screen); test Shortcuts from Safari instead */const h=location.hash.slice(1),q=new URLSearchParams(h.replace(/^pause&?/,''));
  if(h.startsWith('pause')){const app=q.get('app')||'instagram';history.replaceState(null,'',location.pathname);
-  if(!st.setup){pendingApp=app;go('ob1',{anim:'none'});return}st.connected=true;save();startPause(app,false,'none');return}
+  if(!st.setup){pendingApp=app;go('ob1',{anim:'none'});return}st.connected=true;save();if(sessOn(app)){openApp(app);return}startPause(app,false,'none');return}
  go(st.setup?'home':'ob1',{anim:'none'})}
 /* the Shortcuts automation opens ROOT#pause&app=… ; if Look Up is already open in the background iOS may only change the hash, so listen for it */
 addEventListener('hashchange',()=>{if(location.hash.startsWith('#pause'))boot()});
