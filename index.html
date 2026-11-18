@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Unbounded:wght@500;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Look Up v35: Cal AI-style week strip on Home (saved v34 = /saved-v34/) · v34: Settings → "See the intro again" · v33: welcome research laurel, plan "moments a year with your people", personal paywall (saved v32 = /saved-v32/) · v32: Opal-style Screen Time primer (saved v31 = /saved-v31/) · v31: logo only on Home like Cal AI (saved v30 in Archive) · v30: app icon = 10d "head rising" · v29: wordmark app icon + removed the icon→Safari "Test mode" screen · v28: idea options as Cal AI-style rows (v27 tiles looked "AI") · v27: back to the regular v25 flow (v26 test flow removed) + clean idea tiles on "What makes you feel good?" · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
+/* Look Up v36: clearer "how does phone time affect you?" + required name/photo marks in Add person · v35: Cal AI-style week strip on Home (saved v34 = /saved-v34/) · v34: Settings → "See the intro again" · v33: welcome research laurel, plan "moments a year with your people", personal paywall (saved v32 = /saved-v32/) · v32: Opal-style Screen Time primer (saved v31 = /saved-v31/) · v31: logo only on Home like Cal AI (saved v30 in Archive) · v30: app icon = 10d "head rising" · v29: wordmark app icon + removed the icon→Safari "Test mode" screen · v28: idea options as Cal AI-style rows (v27 tiles looked "AI") · v27: back to the regular v25 flow (v26 test flow removed) + clean idea tiles on "What makes you feel good?" · v25: home-screen icon hands over to Safari (one shared data store with the Shortcuts pause) · v24: icon opens in Safari so it shares data with the Shortcuts pause · v23: explain Safari vs home-screen data in test mode · v22: Shortcuts test mode counts as connected; pause opens even if app was already open · v21: no fake vibration visuals on hold · v20: welcome demo calm again; vibration on press-and-hold · v19: seamless bottom (fade to solid colour) · v18: strip painted to match, auto-advance without Continue, tap/ripple/buzz demo · v17: docked tab bar, real screen height on iPhone · v16: Screen Time permission step; Shortcuts = test mode in Settings · v15: minimal welcome with rotating reasons · v14: restore link on welcome · v13: new welcome with live demo, no background lines, bottom strip fix · v12: no Shabbat, verified stats, "Not now", rising chart, people preview · v10: English default + Hebrew (RTL), iOS-style navigation (push/pop, edge swipe, haptics, sheets you can drag down),
    Apple Screen Time style picker with real app icons, demo home screen, tab bar (Today / Progress / Settings), one onboarding progress bar */
 /* earlier v9: Cal AI onboarding patterns · v8: any app + categories · v7: Steven Cravotta blueprint · design: Passion Finder + Stress glass */
 :root{
@@ -256,6 +256,9 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 .hbrand{display:flex;align-items:center;gap:8px;font-size:22px;font-weight:700;letter-spacing:-.2px}
 .hmark{width:30px;height:30px;border-radius:8px;display:block}
 .ptitle{text-align:start!important;font-size:32px!important;margin-top:6px!important}
+.req{color:#E0702F;font-style:normal;font-weight:700;margin-inline-start:2px}
+.pneed{text-align:center;font-size:14px;color:#B4501C;margin-top:16px;min-height:20px;font-weight:500}
+.sf.need{border-color:#E0702F;box-shadow:0 0 0 3px rgba(224,112,47,.18)}
 /* v35: Home week strip (Cal AI pattern) */
 .wstrip{display:flex;justify-content:space-between;margin:10px -4px 4px}
 .wd{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 0 10px;border-radius:22px}
@@ -912,13 +915,13 @@ h1.t{font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.4px;text-a
 <!-- person sheet -->
 <div class="sheet" id="pSheet" onclick="if(event.target===this)closeSheet()"><div>
   <h2 data-t="ps_t"></h2>
-  <div class="lbl" style="margin-top:16px" data-t="ps_name"></div>
+  <div class="lbl" style="margin-top:16px"><span data-t="ps_name"></span><i class="req">*</i></div>
   <input class="sf" id="pName" data-tp="ps_name_ph" oninput="checkPerson()">
   <div class="lbl" data-t="ps_rel"></div>
   <div class="chips" id="relChips"></div>
-  <div class="lbl"><span data-t="ps_pics"></span><small data-t="ps_pics_s"></small></div>
+  <div class="lbl"><span data-t="ps_pics"></span><i class="req">*</i><small data-t="ps_pics_s"></small></div>
   <div class="pgrid" id="pPicGrid"></div>
-  <button class="pill ink" id="pSave" style="margin-top:20px" onclick="savePerson()" disabled data-t="save"></button>
+  <p class="pneed" id="pNeed"></p><button class="pill ink" id="pSave" style="margin-top:8px" onclick="savePerson()" disabled data-t="save"></button>
   <button class="pill link" style="color:#7A6A5D" onclick="closeSheet()" data-t="cancel"></button>
 </div></div>
 
@@ -1036,7 +1039,7 @@ en:{
  copy:'Copy',
  Q:{opens:{q:'About how many times a day do you open social media, videos or games?',o:['Under 10','10–30','30–60','More than 60','No idea']},
   heard:{q:'How did you hear about Look Up?',o:['TikTok','Instagram','Friend or family','YouTube','App Store search','Other']},
-  pain:{q:'What bothers you most about it?',h:'Choose all that apply',o:['Missing moments with family','My kids ask me to put the phone down','Hard to fall asleep','Hard to focus','Feels like wasted time']},
+  pain:{q:'How does phone time affect you?',h:'Choose all that apply',o:['Missing moments with family','My kids ask me to put the phone down','Hard to fall asleep','Hard to focus','Feels like wasted time']},
   f76:{q:'It’s not just you',t:'of parents pick up their phone without thinking, vs. 57% of people without kids. Phones are built for this. It’s not a weakness.'},
   feel:{q:'How do you feel after a long scroll?',o:['Tired','A bit guilty','Like I wasted time','Totally fine','Depends on the day']},
   tried:{q:'How long have you been trying to cut back?',o:['I haven’t tried yet','A few weeks','A few months','Years']},
@@ -1110,7 +1113,7 @@ he:{
  copy:'העתקה',
  Q:{opens:{q:'כמה פעמים ביום, בערך, פותחים רשתות, סרטונים או משחקים?',o:['פחות מ-10','10–30','30–60','יותר מ-60','אין לי מושג']},
   heard:{q:'איך שמעת על Look Up?',o:['טיקטוק','אינסטגרם','חבר או משפחה','יוטיוב','חיפוש באפסטור','אחר']},
-  pain:{q:'מה הכי מפריע לך בזה?',h:'אפשר לבחור כמה',o:['לפספס רגעים עם המשפחה','הילדים מבקשים שאניח את הטלפון','קשה להירדם בלילה','קשה להתרכז','תחושה של בזבוז זמן']},
+  pain:{q:'איך הזמן בטלפון משפיע עליך?',h:'אפשר לבחור כמה',o:['לפספס רגעים עם המשפחה','הילדים מבקשים שאניח את הטלפון','קשה להירדם בלילה','קשה להתרכז','תחושה של בזבוז זמן']},
   f76:{q:'זה לא רק אצלך',t:'מההורים מרימים את הטלפון בלי לחשוב, לעומת 57% מאלה שאין להם ילדים. הטלפון בנוי לזה, וזו לא חולשה שלך.'},
   feel:{q:'איך מרגישים אחרי גלילה ארוכה?',o:['עייפות','קצת אשמה','בזבוז זמן','בסדר גמור','תלוי ביום']},
   tried:{q:'כמה זמן כבר מנסים לצמצם?',o:['עוד לא ניסיתי','כמה שבועות','כמה חודשים','שנים']},
@@ -1185,7 +1188,7 @@ es:{
  copy:'Copiar',
  Q:{opens:{q:'¿Cuántas veces al día, más o menos, abres redes, vídeos o juegos?',o:['Menos de 10','10–30','30–60','Más de 60','Ni idea']},
   heard:{q:'¿Cómo conociste Look Up?',o:['TikTok','Instagram','Amigos o familia','YouTube','Búsqueda en App Store','Otro']},
-  pain:{q:'¿Qué es lo que más te molesta?',h:'Elige todas las que apliquen',o:['Perderme momentos en familia','Mis hijos me piden que suelte el teléfono','Me cuesta dormirme','Me cuesta concentrarme','Siento que pierdo el tiempo']},
+  pain:{q:'¿Cómo te afecta el tiempo con el móvil?',h:'Elige todas las que apliquen',o:['Perderme momentos en familia','Mis hijos me piden que suelte el teléfono','Me cuesta dormirme','Me cuesta concentrarme','Siento que pierdo el tiempo']},
   f76:{q:'No te pasa solo a ti',t:'de los padres cogen el teléfono sin pensar, frente al 57% de quienes no tienen hijos. Los teléfonos están hechos para esto. No es una debilidad.'},
   feel:{q:'¿Cómo te sientes tras un scroll largo?',o:['Cansancio','Algo de culpa','Como si perdiera el tiempo','Perfectamente','Depende del día']},
   tried:{q:'¿Cuánto tiempo llevas intentando reducirlo?',o:['Aún no lo he intentado','Unas semanas','Unos meses','Años']},
@@ -1259,7 +1262,7 @@ fr:{
  copy:'Copier',
  Q:{opens:{q:'Environ combien de fois par jour ouvres-tu les réseaux, les vidéos ou les jeux ?',o:['Moins de 10','10–30','30–60','Plus de 60','Aucune idée']},
   heard:{q:'Comment as-tu connu Look Up ?',o:['TikTok','Instagram','Ami ou famille','YouTube','Recherche App Store','Autre']},
-  pain:{q:'Qu’est-ce qui te gêne le plus ?',h:'Choisis tout ce qui s’applique',o:['Rater des moments en famille','Mes enfants me demandent de poser le téléphone','Du mal à m’endormir','Du mal à me concentrer','L’impression de perdre mon temps']},
+  pain:{q:'Comment le temps sur ton téléphone t’affecte-t-il ?',h:'Choisis tout ce qui s’applique',o:['Rater des moments en famille','Mes enfants me demandent de poser le téléphone','Du mal à m’endormir','Du mal à me concentrer','L’impression de perdre mon temps']},
   f76:{q:'Tu n’es pas le seul',t:'des parents prennent leur téléphone sans réfléchir, contre 57 % des personnes sans enfants. Les téléphones sont conçus pour ça. Ce n’est pas une faiblesse.'},
   feel:{q:'Comment te sens-tu après un long scroll ?',o:['Fatigué','Un peu coupable','Comme si j’avais perdu mon temps','Très bien','Ça dépend du jour']},
   tried:{q:'Depuis quand essaies-tu de réduire ?',o:['Je n’ai pas encore essayé','Quelques semaines','Quelques mois','Des années']},
@@ -1333,7 +1336,7 @@ ar:{
  copy:'نسخ',
  Q:{opens:{q:'كم مرّة تقريبًا تفتح يوميًا مواقع التواصل أو الفيديوهات أو الألعاب؟',o:['أقل من 10','10–30','30–60','أكثر من 60','لا فكرة لدي']},
   heard:{q:'كيف سمعت عن Look Up؟',o:['تيك توك','إنستغرام','صديق أو العائلة','يوتيوب','البحث في App Store','غير ذلك']},
-  pain:{q:'ما أكثر ما يزعجك في ذلك؟',h:'اختر كل ما ينطبق',o:['تفويت لحظات مع العائلة','أولادي يطلبون أن أترك الهاتف','صعوبة في النوم','صعوبة في التركيز','شعور بضياع الوقت']},
+  pain:{q:'كيف يؤثر عليك الوقت على الهاتف؟',h:'اختر كل ما ينطبق',o:['تفويت لحظات مع العائلة','أولادي يطلبون أن أترك الهاتف','صعوبة في النوم','صعوبة في التركيز','شعور بضياع الوقت']},
   f76:{q:'لست وحدك',t:'من الآباء والأمهات يمسكون الهاتف دون تفكير، مقابل 57% ممن ليس لديهم أولاد. الهواتف مصمّمة لذلك. هذا ليس ضعفًا.'},
   feel:{q:'كيف تشعر بعد تمرير طويل؟',o:['تعب','شيء من الذنب','كأنني أضعت وقتي','بخير تمامًا','يعتمد على اليوم']},
   tried:{q:'منذ متى تحاول التقليل؟',o:['لم أحاول بعد','بضعة أسابيع','بضعة أشهر','سنوات']},
@@ -1422,6 +1425,7 @@ const NW={en:{w_badge:'Backed by research: a short pause cut app opens by 57%',p
  fr:{w_badge:'Validé par la recherche : une courte pause a réduit de 57 % les ouvertures',pl_year:'En un an, c’est',pl_mom:n=>`moments avec ${n}`,pl_mom0:'moments pour ce qui compte',pl_each:'Chaque pause avant une app, c’est un moment où vous les choisissez.',pl_each0:'Chaque pause avant une app, c’est un moment retrouvé.',pw3_tp:n=>`Être là pour ${n},<br>chaque jour`,pw_mom:n=>`Soit ${n} moments par an`},
  ar:{w_badge:'مدعوم بالأبحاث: توقف قصير خفّض فتح التطبيقات بنسبة 57%',pl_year:'في سنة واحدة، هذا',pl_mom:n=>`لحظة مع ${n}`,pl_mom0:'لحظة لما يهمّ',pl_each:'كل توقف قبل تطبيق هو لحظة تختارهم فيها.',pl_each0:'كل توقف قبل تطبيق هو لحظة تستعيدها.',pw3_tp:n=>`كن حاضرًا لـ ${n}،<br>كل يوم`,pw_mom:n=>`أي ${n} لحظة في السنة`}};
 for(const l in NW)Object.assign(V[l],NW[l]);
+const PN={en:['Add a name and at least 1 photo to save','Add a name to save','Add at least 1 photo to save'],he:['כדי לשמור, צריך שם ולפחות תמונה אחת','כדי לשמור, צריך שם','כדי לשמור, צריך לפחות תמונה אחת'],es:['Añade un nombre y al menos 1 foto para guardar','Añade un nombre para guardar','Añade al menos 1 foto para guardar'],fr:['Ajoute un prénom et au moins 1 photo pour enregistrer','Ajoute un prénom pour enregistrer','Ajoute au moins 1 photo pour enregistrer'],ar:['أضف اسمًا وصورة واحدة على الأقل للحفظ','أضف اسمًا للحفظ','أضف صورة واحدة على الأقل للحفظ']};for(const l in PN){V[l].ps_need_both=PN[l][0];V[l].ps_need_name=PN[l][1];V[l].ps_need_pic=PN[l][2]}
 const RP={en:['See the intro again','Welcome, plan and paywall · your people stay'],he:['לראות את הפתיחה שוב','פתיחה, תוכנית ומחירים · האנשים נשמרים'],es:['Ver la introducción otra vez','Bienvenida, plan y precios · tus personas se quedan'],fr:['Revoir l’introduction','Accueil, plan et offres · vos proches restent'],ar:['مشاهدة المقدمة مرة أخرى','الترحيب والخطة والأسعار · يبقى أشخاصك']};for(const l in RP){V[l].set_replay=RP[l][0];V[l].set_replay_s=RP[l][1]}
 const OP={en:{op_t:'Let’s connect Look Up to Screen Time. Securely.',op_safe:'Your information is protected by Apple and stays 100% on your phone.',op_more:'Learn more',op_more_t:'What Look Up can and can’t do',op_ok:'Got it'},
  he:{op_t:'בואו נחבר את Look Up לזמן מסך. בצורה מאובטחת.',op_safe:'המידע מוגן על ידי Apple ונשאר 100% בטלפון.',op_more:'מידע נוסף',op_more_t:'מה Look Up יכולה ומה לא',op_ok:'הבנתי'},
@@ -1532,13 +1536,13 @@ function doneEditing(){editing=false;toast(t('t_saved'));go('settings',{back:1})
 let draft=null;
 function openPerson(){draft={id:uid(),name:'',rel:'daughter',pics:[]};$('pName').value='';renderRel();renderDraftPics();checkPerson();$('pSheet').classList.add('on')}
 function renderRel(){$('relChips').innerHTML=Object.keys(REL).map(k=>`<button class="chip ${draft.rel===k?'on':''}" onclick="draft.rel='${k}';renderRel()">${relL(k)}</button>`).join('')}
-function checkPerson(){$('pSave').disabled=!$('pName').value.trim()}
+function checkPerson(){const n=!!$('pName').value.trim(),p=!!(draft&&draft.pics.length);$('pSave').disabled=!(n&&p);$('pNeed').textContent=n&&p?'':!n&&!p?t('ps_need_both'):!n?t('ps_need_name'):t('ps_need_pic');$('pName').classList.toggle('need',!n&&p)}
 async function pickPersonPics(inp){for(const f of inp.files){if(draft.pics.length>=5)break;const id='ph_'+uid();await DB.put(id,await resize(f));draft.pics.push(id)}inp.value='';renderDraftPics()}
 async function renderDraftPics(){let h='';
  for(const id of draft.pics)h+=`<div class="pt" style="background-image:url(${await photo(id)})"><button onclick="rmDraftPic('${id}')" aria-label="remove">${ic('x')}</button></div>`;
- if(draft.pics.length<5)h+=`<label class="pt"><span>${ic('image')}${t('addOne')}</span><input type="file" accept="image/*" multiple hidden onchange="pickPersonPics(this)"></label>`;$('pPicGrid').innerHTML=h}
+ if(draft.pics.length<5)h+=`<label class="pt"><span>${ic('image')}${t('addOne')}</span><input type="file" accept="image/*" multiple hidden onchange="pickPersonPics(this)"></label>`;$('pPicGrid').innerHTML=h;checkPerson()}
 function rmDraftPic(id){draft.pics=draft.pics.filter(x=>x!==id);DB.del(id);renderDraftPics()}
-function savePerson(){draft.name=$('pName').value.trim();if(!draft.name)return;st.people.push(draft);save();closeSheet();renderPeople();toast(t('t_added',draft.name))}
+function savePerson(){draft.name=$('pName').value.trim();if(!draft.name||!draft.pics.length)return;st.people.push(draft);save();closeSheet();renderPeople();toast(t('t_added',draft.name))}
 function delPerson(id){const p=st.people.find(x=>x.id===id);if(!p||!confirm(t('rm_q',p.name)))return;st.people=st.people.filter(x=>x.id!==id);p.pics.forEach(x=>DB.del(x));save();renderPeople()}
 async function renderPeople(){let h='';const sizes=[112,100,92,104,96];
  for(let i=0;i<st.people.length;i++){const p=st.people[i];const src=await photo(p.pics[0]);
